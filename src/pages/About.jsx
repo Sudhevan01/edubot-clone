@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Workflow, Plug, Users, Sliders, Rocket, Globe, Leaf, Menu, X } from 'lucide-react';
 import './About.css';
-import whoWeAre1 from '../../../assets/images/who_we_are_1.png';
-import whoWeAre2 from '../../../assets/images/who_we_are_2.png';
-import whoWeAre3 from '../../../assets/images/who_we_are_3.png';
-import whoWeAre4 from '../../../assets/images/who_we_are_4.png';
-import visionImage from '../../../assets/images/vision_image.png';
+import whoWeAre1 from '../assets/images/who_we_are_1.png';
+import whoWeAre2 from '../assets/images/who_we_are_2.png';
+import whoWeAre3 from '../assets/images/who_we_are_3.png';
+import whoWeAre4 from '../assets/images/who_we_are_4.png';
+import visionImage from '../assets/images/vision_image.png';
+
 
 const About = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
