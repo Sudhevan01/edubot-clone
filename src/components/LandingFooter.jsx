@@ -41,6 +41,8 @@ const LandingFooter = () => {
           <a href="/product" className="footer-link" onClick={(e) => { e.preventDefault(); navigate('/product'); }}>Product</a>
           <a href="/about" className="footer-link" onClick={(e) => { e.preventDefault(); navigate('/about'); }}>About</a>
           <a href="/contact" className="footer-link" onClick={(e) => { e.preventDefault(); navigate('/contact'); }}>Contact</a>
+          <a href="/docs" className="footer-link" onClick={(e) => { e.preventDefault(); navigate('/docs'); }}>Docs</a>
+          <a href="/downloads" className="footer-link" onClick={(e) => { e.preventDefault(); navigate('/downloads'); }}>Downloads</a>
         </div>
 
         {/* Legal Column */}

@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import './Terms.css';
 import LandingFooter from '../components/LandingFooter';
+import Header from '../components/Header';
 
 const Terms = ({ onLoginClick }) => {
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
 
   useEffect(() => {
     // Enable standard page scrolling
@@ -20,122 +21,11 @@ const Terms = ({ onLoginClick }) => {
     };
   }, []);
 
-  const handleLoginClick = onLoginClick;
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
 
   return (
     <div className="terms-page">
-      {/* Header */}
-      <header className="landing-header">
-        <div className="landing-logo" onClick={() => navigate('/')}>
-          <img src="/assets/images/educroplogo.png" alt="EduCrop" className="landing-logo-img" />
-        </div>
-
-        <nav className="landing-nav">
-          <a
-            href="/"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/');
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="/product"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/product');
-            }}
-          >
-            Product
-          </a>
-          <a
-            href="/about"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/about');
-            }}
-          >
-            About
-          </a>
-          <a
-            href="/contact"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/contact');
-            }}
-          >
-            Contact
-          </a>
-        </nav>
-
-        <div className="landing-auth">
-          <button className="btn-login" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-
-        <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </header>
-
-      {/* Mobile Nav Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-nav-panel">
-          <a
-            href="/"
-            className="nav-link"
-            onClick={() => {
-              navigate('/');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="/product"
-            className="nav-link"
-            onClick={() => {
-              navigate('/product');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Product
-          </a>
-          <a
-            href="/about"
-            className="nav-link"
-            onClick={() => {
-              navigate('/about');
-              setMobileMenuOpen(false);
-            }}
-          >
-            About
-          </a>
-          <a
-            href="/contact"
-            className="nav-link"
-            onClick={() => {
-              navigate('/contact');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Contact
-          </a>
-          <button className="btn-login w-full mt-4" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-      )}
+      <Header onLoginClick={onLoginClick} />
 
       {/* Main Content */}
       <main className="terms-main">

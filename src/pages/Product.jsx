@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Shield, Check, Network, Sparkles, Database, Cpu, Smartphone, Cloud, ArrowUpRight, Menu, X, Receipt, Building, Calendar, GraduationCap, ClipboardList, Award, TrendingUp, CalendarCheck, CalendarX, Bell } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
+import Header from '../components/Header';
 import './Product.css';
 
 const Product = ({ onLoginClick }) => {
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('product');
+
 
   useEffect(() => {
     // Enable standard page scrolling for the landing page
@@ -47,122 +47,11 @@ const Product = ({ onLoginClick }) => {
     };
   }, []);
 
-  const handleLoginClick = onLoginClick;
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
 
   return (
     <div className="product-page">
-      {/* Header */}
-      <header className="landing-header">
-        <div className="landing-logo" onClick={() => navigate('/')}>
-          <img src="/assets/images/educroplogo.png" alt="EduCrop" className="landing-logo-img" />
-        </div>
-
-        <nav className="landing-nav">
-          <a
-            href="/"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/');
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="/product"
-            className="nav-link active"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/product');
-            }}
-          >
-            Product
-          </a>
-          <a
-            href="/about"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/about');
-            }}
-          >
-            About
-          </a>
-          <a
-            href="/contact"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/contact');
-            }}
-          >
-            Contact
-          </a>
-        </nav>
-
-        <div className="landing-auth">
-          <button className="btn-login" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-
-        <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </header>
-
-      {/* Mobile Nav Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-nav-panel">
-          <a
-            href="/"
-            className="nav-link"
-            onClick={() => {
-              navigate('/');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="/product"
-            className="nav-link active"
-            onClick={() => {
-              navigate('/product');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Product
-          </a>
-          <a
-            href="/about"
-            className="nav-link"
-            onClick={() => {
-              navigate('/about');
-              setMobileMenuOpen(false);
-            }}
-          >
-            About
-          </a>
-          <a
-            href="/contact"
-            className="nav-link"
-            onClick={() => {
-              navigate('/contact');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Contact
-          </a>
-          <button className="btn-login w-full mt-4" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-      )}
+      <Header onLoginClick={onLoginClick} />
 
       {/* Product Hero Section */}
       <section className="product-hero">

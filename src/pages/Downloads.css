@@ -1,0 +1,352 @@
+/* Premium Downloads Page Theme & Styles */
+.downloads-page {
+  background-color: #fafbfc;
+  color: #1e293b;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+/* Premium Animated Hero Banner */
+.downloads-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  color: white;
+  padding: 6rem 2rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.downloads-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 140%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 60%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.downloads-hero-container {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.downloads-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 855;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #ffffff, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.downloads-hero p {
+  font-size: 1.3rem;
+  opacity: 0.85;
+  font-weight: 400;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Card Grid Layout */
+.downloads-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  width: 100%;
+  flex: 1;
+}
+
+.downloads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 3rem;
+  margin-bottom: 5rem;
+}
+
+@media (max-width: 480px) {
+  .downloads-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Modern Card Design & Interactive States */
+.download-card {
+  background: white;
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUpFade 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.download-card:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.download-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+}
+
+.download-card:hover::before {
+  opacity: 0.1;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.platform-icon {
+  padding: 0.9rem;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+}
+
+.download-card:hover .platform-icon {
+  transform: scale(1.05) rotate(3deg);
+}
+
+.platform-icon.desktop {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.platform-icon.mobile {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.card-meta span {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+}
+
+.card-meta h3 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.card-description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #475569;
+  margin-bottom: 2rem;
+  flex: 1;
+}
+
+/* Beautiful Specs Box */
+.card-info-specs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2.25rem;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.spec-item .label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.spec-item .value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Micro-animated Action Buttons */
+.download-actions-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.download-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: #2563eb;
+  color: white;
+  padding: 1.1rem;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+}
+
+.download-btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+}
+
+.download-btn-primary svg {
+  transition: transform 0.2s ease;
+}
+
+.download-btn-primary:hover svg {
+  transform: translateY(2px);
+}
+
+.download-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.85rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.download-btn-secondary:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* Glassmorphism Quick Installation Guide */
+.install-guide-section {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 3.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  animation: slideUpFade 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: 0.2s;
+}
+
+.install-guide-section h2 {
+  font-size: 2.25rem;
+  font-weight: 850;
+  color: #0f172a;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.guides-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 3.5rem;
+}
+
+.guide-card h4 {
+  font-size: 1.3rem;
+  font-weight: 750;
+  color: #1e293b;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.guide-card ol {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.guide-card ol li {
+  position: relative;
+  padding-left: 2rem;
+  line-height: 1.6;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.guide-card ol li::before {
+  content: counter(li-counter);
+  counter-increment: li-counter;
+  position: absolute;
+  left: 0;
+  top: 0.15rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #bfdbfe;
+}
+
+.guide-card ol {
+  counter-reset: li-counter;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .install-guide-section {
+    padding: 2rem;
+  }
+  .downloads-hero h1 {
+    font-size: 2.75rem;
+  }
+}

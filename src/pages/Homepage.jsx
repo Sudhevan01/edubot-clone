@@ -2,12 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
+import Header from '../components/Header';
 import './Homepage.css';
 
 const Homepage = ({ onLoginClick }) => {
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('home');
+
   const reachRef = useRef(null);
   const [reachInView, setReachInView] = useState(false);
   const [partnerCount, setPartnerCount] = useState(0);
@@ -91,122 +91,11 @@ const Homepage = ({ onLoginClick }) => {
     requestAnimationFrame(animate);
   }, [reachInView]);
 
-  const handleLoginClick = onLoginClick;
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
 
   return (
     <div className="landing-page">
-      {/* Header */}
-      <header className="landing-header">
-        <div className="landing-logo">
-          <img src="/assets/images/educroplogo.png" alt="EduCrop" className="landing-logo-img" />
-        </div>
-
-        <nav className="landing-nav">
-          <a
-            href="#home"
-            className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}
-            onClick={() => setActiveTab('home')}
-          >
-            Home
-          </a>
-          <a
-            href="/product"
-            className={`nav-link ${activeTab === 'product' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/product');
-            }}
-          >
-            Product
-          </a>
-          <a
-            href="/about"
-            className={`nav-link ${activeTab === 'about' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/about');
-            }}
-          >
-            About
-          </a>
-          <a
-            href="/contact"
-            className={`nav-link ${activeTab === 'contact' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/contact');
-            }}
-          >
-            Contact
-          </a>
-        </nav>
-
-        <div className="landing-auth">
-          <button className="btn-login" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-
-        <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </header>
-
-      {/* Mobile Nav Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-nav-panel">
-          <a
-            href="#home"
-            className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('home');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="/product"
-            className={`nav-link ${activeTab === 'product' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/product');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Product
-          </a>
-          <a
-            href="/about"
-            className={`nav-link ${activeTab === 'about' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/about');
-              setMobileMenuOpen(false);
-            }}
-          >
-            About
-          </a>
-          <a
-            href="/contact"
-            className={`nav-link ${activeTab === 'contact' ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/contact');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Contact
-          </a>
-          <button className="btn-login w-full mt-4" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-      )}
+      <Header onLoginClick={onLoginClick} />
 
       {/* Hero Section */}
       <main
@@ -258,7 +147,7 @@ const Homepage = ({ onLoginClick }) => {
             Educrop provides the robust structural foundation and digital orchestration required for modern educational institutions to thrive in an era of rapid digital transformation.
           </p>
           <div className="hero-actions">
-            <button className="btn-explore" onClick={handleLoginClick}>
+            <button className="btn-explore" onClick={onLoginClick}>
               Explore Platform <ArrowRight size={18} />
             </button>
             <button className="btn-demo" onClick={() => navigate('/contact')}>
@@ -436,7 +325,7 @@ const Homepage = ({ onLoginClick }) => {
             Join the leading educational facilities worldwide that rely on Educrop for their mission-critical academic infrastructure.
           </p>
           <div className="cta-buttons">
-            <button className="btn-cta-primary" onClick={handleLoginClick}>
+            <button className="btn-cta-primary" onClick={onLoginClick}>
               Get Started Today
             </button>
             <button className="btn-cta-secondary" onClick={() => navigate('/contact')}>

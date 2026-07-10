@@ -4,10 +4,11 @@ import { Mail, Phone, MapPin, Menu, X, ArrowRight, CheckCircle } from 'lucide-re
 import './Contact.css';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import LandingFooter from '../components/LandingFooter';
+import Header from '../components/Header';
 
 const Contact = ({ onLoginClick }) => {
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   useScrollReveal();
 
   useEffect(() => {
@@ -23,11 +24,7 @@ const Contact = ({ onLoginClick }) => {
   const [errors, setErrors] = useState({ name: '', email: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleLoginClick = onLoginClick;
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -105,114 +102,7 @@ const Contact = ({ onLoginClick }) => {
 
   return (
     <div className="contact-page">
-      {/* Header */}
-      <header className="landing-header">
-        <div className="landing-logo" onClick={() => navigate('/')}>
-          <img src="/assets/images/educroplogo.png" alt="EduCrop" className="landing-logo-img" />
-        </div>
-
-        <nav className="landing-nav">
-          <a
-            href="/"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/');
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="/product"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/product');
-            }}
-          >
-            Product
-          </a>
-          <a
-            href="/about"
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/about');
-            }}
-          >
-            About
-          </a>
-          <a
-            href="/contact"
-            className="nav-link active"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/contact');
-            }}
-          >
-            Contact
-          </a>
-        </nav>
-
-        <div className="landing-auth">
-          <button className="btn-login" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-
-        <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </header>
-
-      {/* Mobile Nav Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-nav-panel">
-          <a
-            href="/"
-            className="nav-link"
-            onClick={() => {
-              navigate('/');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="/product"
-            className="nav-link"
-            onClick={() => {
-              navigate('/product');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Product
-          </a>
-          <a
-            href="/about"
-            className="nav-link"
-            onClick={() => {
-              navigate('/about');
-              setMobileMenuOpen(false);
-            }}
-          >
-            About
-          </a>
-          <a
-            href="/contact"
-            className="nav-link active"
-            onClick={() => {
-              navigate('/contact');
-              setMobileMenuOpen(false);
-            }}
-          >
-            Contact
-          </a>
-          <button className="btn-login w-full mt-4" onClick={handleLoginClick}>
-            Login
-          </button>
-        </div>
-      )}
+      <Header onLoginClick={onLoginClick} />
 
       {/* Hero Section */}
       <section className="contact-hero">

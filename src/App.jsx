@@ -7,6 +7,8 @@ import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
+import Docs from './pages/Docs';
+import Downloads from './pages/Downloads';
 import './styles/global.css';
 
 const ScrollToTop = () => {
@@ -55,6 +57,8 @@ function App() {
         <Route path="/privacy" element={<Privacy onLoginClick={handleLoginClick} />} />
         <Route path="/terms" element={<Terms onLoginClick={handleLoginClick} />} />
         <Route path="/accessibility" element={<Accessibility onLoginClick={handleLoginClick} />} />
+        <Route path="/docs" element={<Docs onLoginClick={handleLoginClick} />} />
+        <Route path="/downloads" element={<Downloads onLoginClick={handleLoginClick} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
