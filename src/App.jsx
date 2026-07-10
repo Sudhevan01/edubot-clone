@@ -23,7 +23,7 @@ import './styles/global.css';
 // Redirect Component to App Portal Subdomain
 const RedirectToPortal = ({ path = '' }) => {
   useEffect(() => {
-    const portalUrl = import.meta.env.VITE_APP_PORTAL_URL || 'https://app.educrop.in';
+    const portalUrl = import.meta.env.VITE_APP_PORTAL_URL || 'https://org.educrop.com';
     window.location.href = `${portalUrl}${path}`;
   }, [path]);
 
