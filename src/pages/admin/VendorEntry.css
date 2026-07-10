@@ -1,0 +1,15 @@
+/* Inherits VisitorEntry styles via StudentEntry.css */
+@import './StudentEntry.css';
+
+.vendor-entry-page-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.vendor-entry-page-wrapper .entry-card-standard {
+  margin-top: 0;
+}
