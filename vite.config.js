@@ -12,11 +12,11 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['assets/images/logo1.png', 'assets/images/logo.png'],
+      includeAssets: ['assets/icons/logo.jpeg', 'assets/images/logo.jpeg'],
       manifest: {
-        name: 'VMS',
-        short_name: 'VMS',
-        description: 'Visitor Management System',
+        name: 'EduCrop',
+        short_name: 'EduCrop',
+        description: 'EduCrop Academic Infrastructure',
         theme_color: '#2563eb',
         background_color: '#ffffff',
         display: 'standalone',
@@ -25,20 +25,9 @@ export default defineConfig({
         scope: '/',
         icons: [
           {
-            src: 'assets/icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'assets/icons/icon-512x512.png',
+            src: 'assets/icons/logo.jpeg',
             sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: 'assets/icons/maskable-icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
+            type: 'image/jpeg'
           }
         ]
       },
