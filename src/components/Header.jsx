@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Phone, Mail } from 'lucide-react';
+import './Header.css';
 
 const Header = ({ onLoginClick }) => {
   const navigate = useNavigate();
@@ -24,38 +25,31 @@ const Header = ({ onLoginClick }) => {
     setMobileMenuOpen(false);
   };
 
+  // Lock ALL scroll when drawer is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   return (
-    <header className="landing-header">
-      <div className="landing-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-        <img src="/assets/images/educroplogo.png" alt="EduCrop" className="landing-logo-img" />
-      </div>
+    <React.Fragment>
 
-      <nav className="landing-nav">
-        {navLinks.map((link) => (
-          <a
-            key={link.name}
-            href={link.path}
-            className={`nav-link ${isActive(link.path) ? 'active' : ''}`}
-            onClick={(e) => handleNavClick(e, link.path)}
-          >
-            {link.name}
-          </a>
-        ))}
-      </nav>
+      {/* ── Sticky Header Bar ── */}
+      <header className="landing-header">
+        <div className="landing-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+          <img src="/assets/images/educroplogo.png" alt="EduCrop" className="landing-logo-img" />
+        </div>
 
-      <div className="landing-auth">
-        <button className="btn-login" onClick={onLoginClick}>
-          Login
-        </button>
-      </div>
-
-      <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
-      {/* Mobile Nav Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-nav-panel">
+        <nav className="landing-nav">
           {navLinks.map((link) => (
             <a
               key={link.name}
@@ -66,12 +60,71 @@ const Header = ({ onLoginClick }) => {
               {link.name}
             </a>
           ))}
-          <button className="btn-login w-full mt-4" onClick={() => { onLoginClick(); setMobileMenuOpen(false); }}>
+        </nav>
+
+        <div className="landing-auth">
+          <button className="btn-login" onClick={onLoginClick}>Login</button>
+        </div>
+
+        <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>
+          <Menu size={24} />
+        </button>
+      </header>
+
+      {/* ── Backdrop — outside header so position:fixed works ── */}
+      <div
+        className={`drawer-backdrop ${mobileMenuOpen ? 'open' : ''}`}
+        onClick={() => setMobileMenuOpen(false)}
+      />
+
+      {/* ── Slide-in Drawer — outside header so position:fixed works ── */}
+      <div className={`mobile-drawer ${mobileMenuOpen ? 'open' : ''}`}>
+
+        <div className="drawer-header">
+          <div className="drawer-logo" onClick={() => { navigate('/'); setMobileMenuOpen(false); }}>
+            <img src="/assets/images/educroplogo.png" alt="EduCrop" className="drawer-logo-img" />
+          </div>
+          <button className="drawer-close-btn" onClick={() => setMobileMenuOpen(false)}>
+            <X size={22} />
+          </button>
+        </div>
+
+        <nav className="drawer-nav">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.path}
+              className={`drawer-nav-link ${isActive(link.path) ? 'active' : ''}`}
+              onClick={(e) => handleNavClick(e, link.path)}
+            >
+              {link.name}
+              {isActive(link.path) && <span className="drawer-active-dot" />}
+            </a>
+          ))}
+        </nav>
+
+        <div className="drawer-login-wrap">
+          <button
+            className="drawer-login-btn"
+            onClick={() => { onLoginClick(); setMobileMenuOpen(false); }}
+          >
             Login
           </button>
         </div>
-      )}
-    </header>
+
+        <div className="drawer-contact">
+          <p className="drawer-contact-label">CONTACT</p>
+          <a href="mailto:info@devcreationsblr.com" className="drawer-contact-item">
+            <Mail size={14} /> info@devcreationsblr.com
+          </a>
+          <a href="tel:+917337840612" className="drawer-contact-item">
+            <Phone size={14} /> +91 73378 40612
+          </a>
+        </div>
+
+      </div>
+
+    </React.Fragment>
   );
 };
 

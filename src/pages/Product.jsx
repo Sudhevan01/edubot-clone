@@ -107,28 +107,28 @@ const Product = ({ onLoginClick }) => {
                 Secure and efficient tracking of campus visitors. Ensure the safety of your faculty and students with real-time logging, background checks, and automated badge printing.
               </p>
               <div className="system-features-grid">
-                <div className="sys-feature">
+                <div className="sys-feature reveal-on-scroll stagger-1">
                   <span className="bullet-icon"><Check size={16} strokeWidth={3} /></span>
                   <div>
                     <h4>Instant ID Scanning</h4>
                     <p>Rapid check-in via government ID recognition.</p>
                   </div>
                 </div>
-                <div className="sys-feature">
+                <div className="sys-feature reveal-on-scroll stagger-2">
                   <span className="bullet-icon"><Check size={16} strokeWidth={3} /></span>
                   <div>
                     <h4>Digital Watchlist</h4>
                     <p>Automated alerts for restricted access individuals.</p>
                   </div>
                 </div>
-                <div className="sys-feature">
+                <div className="sys-feature reveal-on-scroll stagger-3">
                   <span className="bullet-icon"><Check size={16} strokeWidth={3} /></span>
                   <div>
                     <h4>QR Code Access</h4>
                     <p>Contactless entry for pre-invited VIP guests.</p>
                   </div>
                 </div>
-                <div className="sys-feature">
+                <div className="sys-feature reveal-on-scroll stagger-4">
                   <span className="bullet-icon"><Check size={16} strokeWidth={3} /></span>
                   <div>
                     <h4>Audit Trails</h4>
@@ -162,21 +162,21 @@ const Product = ({ onLoginClick }) => {
               </p>
               
               <div className="receipt-features-stack">
-                <div className="receipt-card-item">
+                <div className="receipt-card-item reveal-on-scroll stagger-1">
                   <div className="receipt-icon"><Sparkles size={18} /></div>
                   <div className="receipt-desc">
                     <h4>Fee Management</h4>
                     <p>Automated generation of student fee receipts and payment tracking.</p>
                   </div>
                 </div>
-                <div className="receipt-card-item">
+                <div className="receipt-card-item reveal-on-scroll stagger-2">
                   <div className="receipt-icon"><Sparkles size={18} /></div>
                   <div className="receipt-desc">
                     <h4>Payroll Processing</h4>
                     <p>Seamless generation of staff salary slips and compensation records.</p>
                   </div>
                 </div>
-                <div className="receipt-card-item">
+                <div className="receipt-card-item reveal-on-scroll stagger-3">
                   <div className="receipt-icon"><Sparkles size={18} /></div>
                   <div className="receipt-desc">
                     <h4>Financial Reporting</h4>
@@ -186,7 +186,7 @@ const Product = ({ onLoginClick }) => {
               </div>
             </div>
             <div className="system-image-col reveal-on-scroll">
-              <div className="product-image-box rms-image-box">
+              <div className="product-image-box">
                 <img
                   src="/assets/images/rms_dashboard.png"
                   alt="RMS Receipt Management System Dashboard Analytics"
@@ -199,105 +199,54 @@ const Product = ({ onLoginClick }) => {
 
         {/* AMS: Academic Management System */}
         <div className="system-row" id="ams">
-          <div className="system-row-container flex-col-container">
-            <div className="uims-header-centered reveal-on-scroll">
-              <div className="system-icon-box uims-purple-box margin-auto">
+          <div className="system-row-container">
+            <div className="system-text-col reveal-on-scroll">
+              <div className="system-icon-box uims-purple-box">
                 <Sparkles size={24} />
               </div>
               <h2 className="system-title">AMS: Academic Management System</h2>
-              <p className="system-subtitle max-w-720">
+              <p className="system-subtitle">
                 A comprehensive solution for managing attendance, academic results, assignments, and student leave requests, providing a holistic view of student engagement and performance.
               </p>
-            </div>
 
-            {/* Split row (70%/30% width ratio) */}
-            <div className="support-grid-new mt-48">
-              {/* Card 1: Attendance & Leave Tracking */}
-              <div className="support-card-new card-white-new reveal-left">
-                <div className="card-white-bordered-wrapper">
-                  <div className="card-white-split">
-                    <div>
-                      <h3 className="card-heading mt-12">Attendance & Leave Tracking</h3>
-                      <p className="card-desc">
-                        Streamline student presence monitoring and digital leave request processing.
-                      </p>
-                      <div className="card-bullets flex-row-bullets mt-24">
-                        <button className="sub-btn-pill flex-row-btn">
-                          <CalendarCheck size={16} className="mr-8" />
-                          <span>Attendance</span>
-                        </button>
-                        <button className="sub-btn-pill flex-row-btn">
-                          <CalendarX size={16} className="mr-8" />
-                          <span>Leave Requests</span>
-                        </button>
-                        <button className="sub-btn-pill flex-row-btn">
-                          <Award size={16} className="mr-8" />
-                          <span>Result</span>
-                        </button>
-                        <button className="sub-btn-pill flex-row-btn">
-                          <Bell size={16} className="mr-8" />
-                          <span>Announcement</span>
-                        </button>
-                        <button className="sub-btn-pill flex-row-btn">
-                          <ClipboardList size={16} className="mr-8" />
-                          <span>Assignment work</span>
-                        </button>
-                      </div>
-                    </div>
-                    <div className="card-calendar-watermark-box">
-                      <Calendar size={130} strokeWidth={0.8} className="calendar-watermark-icon" />
-                    </div>
+              <div className="ams-features-stack">
+                <div className="ams-card-item reveal-on-scroll stagger-1">
+                  <div className="ams-icon">
+                    <CalendarCheck size={18} />
+                  </div>
+                  <div className="ams-desc">
+                    <h4>Attendance & Leave Tracking</h4>
+                    <p>Streamline student presence monitoring and digital leave request processing.</p>
+                  </div>
+                </div>
+                <div className="ams-card-item reveal-on-scroll stagger-2">
+                  <div className="ams-icon">
+                    <TrendingUp size={18} />
+                  </div>
+                  <div className="ams-desc">
+                    <h4>Results & Performance Analytics</h4>
+                    <p>Leverage automated grading and deep analytics to drive academic excellence.</p>
+                  </div>
+                </div>
+                <div className="ams-card-item reveal-on-scroll stagger-3">
+                  <div className="ams-icon">
+                    <ClipboardList size={18} />
+                  </div>
+                  <div className="ams-desc">
+                    <h4>Curriculum & Examinations</h4>
+                    <p>Automate exam scheduling, gradebook computation, and coursework tracking.</p>
                   </div>
                 </div>
               </div>
-
-              {/* Card 2: Results & Performance Analytics */}
-              <div className="support-card-new card-blue-new reveal-right">
-                <div>
-                  <div className="support-icon-dashboard">
-                    <TrendingUp size={36} />
-                  </div>
-                  <h3 className="card-heading text-white">Results & Performance Analytics</h3>
-                  <p className="card-desc text-white">
-                    Leverage automated grading and deep insights to drive academic excellence.
-                  </p>
-                </div>
-                <a href="#analytics" className="card-link" onClick={(e) => e.preventDefault()}>
-                  View Analytics Dashboard <ArrowRight size={18} />
-                </a>
-              </div>
             </div>
 
-            {/* Subgrid row (3 equal columns) */}
-            <div className="support-subgrid mt-32">
-              <div className="subcard reveal-on-scroll stagger-1">
-                <div className="subcard-icon-box purple-box">
-                  <ClipboardList size={20} />
-                </div>
-                <h4 className="subcard-title">ASSIGNMENT & CURRICULUM MANAGEMENT</h4>
-                <p className="subcard-text">
-                  Efficiently track coursework, student submissions, and curriculum alignment.
-                </p>
-              </div>
-
-              <div className="subcard reveal-on-scroll stagger-2">
-                <div className="subcard-icon-box purple-box">
-                  <GraduationCap size={20} />
-                </div>
-                <h4 className="subcard-title">STUDENT & FACULTY PORTAL</h4>
-                <p className="subcard-text">
-                  Centralized access for academic resources and communication.
-                </p>
-              </div>
-
-              <div className="subcard reveal-on-scroll stagger-3">
-                <div className="subcard-icon-box purple-box">
-                  <Award size={20} />
-                </div>
-                <h4 className="subcard-title">EXAMINATIONS & GRADING</h4>
-                <p className="subcard-text">
-                  Automate exam scheduling, gradebook computation, and report card generation.
-                </p>
+            <div className="system-image-col reveal-on-scroll">
+              <div className="product-image-box">
+                <img
+                  src="/assets/images/ams.jpeg"
+                  alt="AMS Academic Management System Dashboard"
+                  className="product-system-img"
+                />
               </div>
             </div>
           </div>

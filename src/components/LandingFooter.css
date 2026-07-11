@@ -86,8 +86,48 @@
   color: #1d4ed8 !important;
 }
 
-/* Responsive Media Query Overrides */
-@media (max-width: 1024px) {
+/* iPad Pro Landscape (1366px) */
+@media (max-width: 1366px) and (min-width: 1025px) {
+  .landing-footer {
+    padding: 24px 5%;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .footer-right-columns {
+    gap: 100px;
+    margin-left: auto;
+  }
+}
+
+/* iPad Pro Portrait (1024px) */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .landing-footer {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 24px 5%;
+  }
+
+  .footer-left {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .dev-highlight {
+    margin-top: 10px;
+    text-align: left;
+  }
+
+  .footer-right-columns {
+    gap: 80px;
+    margin-left: auto;
+    flex-wrap: nowrap;
+  }
+}
+
+/* Responsive Media Query Overrides - Smaller tablets/mobile */
+@media (max-width: 767px) {
   .landing-footer {
     flex-direction: column;
     padding: 24px 5%;

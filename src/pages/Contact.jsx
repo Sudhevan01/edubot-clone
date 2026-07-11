@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin, Menu, X, ArrowRight, CheckCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Menu, X, ArrowRight, CheckCircle, Send } from 'lucide-react';
 import './Contact.css';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import LandingFooter from '../components/LandingFooter';
@@ -20,7 +20,7 @@ const Contact = ({ onLoginClick }) => {
     };
   }, []);
 
-  const [formData, setFormData] = useState({ name: '', email: '', reason: 'software-purchase', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', reason: 'schedule-a-demo', message: '' });
   const [errors, setErrors] = useState({ name: '', email: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -79,21 +79,21 @@ const Contact = ({ onLoginClick }) => {
         method: "POST",
         body: data
       })
-      .then(res => res.json())
-      .then(resData => {
-        if (resData.success) {
-          setIsSubmitted(true);
-          setTimeout(() => {
-            setIsSubmitted(false);
-            setFormData({ name: '', email: '', reason: 'software-purchase', message: '' });
-          }, 5000);
-        } else {
-          console.error("Submission failed:", resData);
-        }
-      })
-      .catch(err => {
-        console.error("Form submission error:", err);
-      });
+        .then(res => res.json())
+        .then(resData => {
+          if (resData.success) {
+            setIsSubmitted(true);
+            setTimeout(() => {
+              setIsSubmitted(false);
+              setFormData({ name: '', email: '', reason: 'software-purchase', message: '' });
+            }, 5000);
+          } else {
+            console.error("Submission failed:", resData);
+          }
+        })
+        .catch(err => {
+          console.error("Form submission error:", err);
+        });
 
     } else {
       setErrors(newErrors);
@@ -110,7 +110,7 @@ const Contact = ({ onLoginClick }) => {
           <h4 className="hero-subtitle">LET'S CONNECT</h4>
           <h1 className="hero-title">GET IN TOUCH</h1>
           <p className="hero-description">
-            Let's build something meaningful together — from websites and applications
+            Let's build something meaningful together from websites and applications
             to ERP systems and premium branding solutions.
           </p>
 
@@ -129,7 +129,7 @@ const Contact = ({ onLoginClick }) => {
 
           {/* Left Column: Form */}
           <div className="contact-form-card reveal-on-scroll">
-            <h2>Send Inquiry</h2>
+            <h2><Send size={24} /> Send Inquiry</h2>
 
             {isSubmitted ? (
               <div className="success-message" style={{ textAlign: 'center', padding: '3rem 1rem' }}>
@@ -169,22 +169,16 @@ const Contact = ({ onLoginClick }) => {
                 <div className="form-group">
                   <label>Reason for Contact <span style={{ color: '#ef4444' }}>*</span></label>
                   <div className="select-wrapper">
-                    <select name="reason" value={formData.reason} onChange={handleInputChange}>
-                      <option value="software-purchase">Software Purchase</option>
-                      <option value="software-maintenance">Software Maintenance</option>
-                      <option value="software-support">Software Support</option>
-                      <option value="report-software-issue">Report a Software Issue</option>
-                      <option value="bug-report">Bug Report</option>
-                      <option value="feature-request">Feature Request</option>
-                      <option value="website-development">Website Development</option>
-                      <option value="mobile-app-development">Mobile App Development</option>
-                      <option value="cloud-hosting-services">Cloud & Hosting Services</option>
-                      <option value="software-upgrade">Software Upgrade</option>
-                      <option value="integration-services">Integration Services</option>
-                      <option value="technical-consultation">Technical Consultation</option>
-                      <option value="pricing-quotation">Pricing & Quotation</option>
-                      <option value="general-inquiry">General Inquiry</option>
-                    </select>
+                     <select name="reason" value={formData.reason} onChange={handleInputChange}>
+                       <option value="schedule-a-demo">Schedule a Demo</option>
+                       <option value="learn-about-software">Learn About the Software</option>
+                       <option value="explore-features">Explore Features</option>
+                       <option value="discuss-requirements">Discuss Requirements</option>
+                       <option value="product-enquiry">Product Enquiry</option>
+                       <option value="technical-support">Technical Support</option>
+                       <option value="general-enquiry">General Enquiry</option>
+                       <option value="other">Other</option>
+                     </select>
                   </div>
                 </div>
 
@@ -201,7 +195,7 @@ const Contact = ({ onLoginClick }) => {
                   ></textarea>
                 </div>
 
-                <button type="submit" className="submit-btn">Send Inquiry</button>
+                <button type="submit" className="submit-btn"><Send size={18} /> Send Inquiry</button>
               </form>
             )}
           </div>

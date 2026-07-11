@@ -769,6 +769,31 @@
   }
 }
 
+/* iPad Pro: 821px - 1200px — match Product page hero proportions, 2-line title */
+@media (max-width: 1200px) and (min-width: 821px) {
+  .hero-container {
+    padding: 5rem 3rem;
+    gap: 3rem;
+  }
+
+  .about-page .hero-heading {
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 28px;
+    text-wrap: balance;
+  }
+
+  .about-page .hero-description {
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .about-page .mission-title {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+}
+
 /* ==================================
    Responsive Design (Media Queries)
    ================================== */

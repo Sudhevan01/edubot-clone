@@ -110,8 +110,7 @@ const Homepage = ({ onLoginClick }) => {
           {slides.map((slide, index) => (
             <div
               key={index}
-              className="hero-bg-slide"
-              style={{ backgroundImage: `url(${slide})` }}
+              className={`hero-bg-slide slide-img-${index}`}
             ></div>
           ))}
         </div>
@@ -141,7 +140,8 @@ const Homepage = ({ onLoginClick }) => {
             The Future of Learning Infrastructure
           </div>
           <h1 className="hero-title">
-            Empowering Academic Excellence
+            <span className="hero-title-line">Empowering</span>
+            <span className="hero-title-line">Academic Excellence</span>
           </h1>
           <p className="hero-desc">
             Educrop provides the robust structural foundation and digital orchestration required for modern educational institutions to thrive in an era of rapid digital transformation.
@@ -231,8 +231,8 @@ const Homepage = ({ onLoginClick }) => {
         {/* Second Row: 3-column subgrid */}
         <div className="support-subgrid">
           {/* Card 1: AI-Driven Insights */}
-          <div className="support-card subcard card-white-center">
-            <div className="subcard-icon-box purple-box">
+          <div className="support-card subcard">
+            <div className="subcard-icon-box purple-box animated-icon-sparkles">
               <Sparkles size={20} />
             </div>
             <h3 className="subcard-title">AI-Driven Insights</h3>
@@ -242,27 +242,25 @@ const Homepage = ({ onLoginClick }) => {
           </div>
 
           {/* Card 2: Collaborative Tools */}
-          <div className="support-card subcard card-white-left">
-            <div className="subcard-header">
-              <div className="subcard-icon-box grey-box">
-                <Users size={18} />
-              </div>
-              <h3 className="subcard-title-inline">Collaborative Tools</h3>
+          <div className="support-card subcard">
+            <div className="subcard-icon-box grey-box animated-icon-users">
+              <Users size={20} />
             </div>
-            <p className="subcard-desc left-align">
+            <h3 className="subcard-title">Collaborative Tools</h3>
+            <p className="subcard-desc">
               Seamless integration for research teams and faculty to share resources in a secure, high-speed environment.
             </p>
           </div>
 
           {/* Card 3: Global Scalability */}
-          <div className="support-card subcard card-grey-watermark">
-            <h3 className="subcard-title-left">Global Scalability</h3>
-            <p className="subcard-desc left-align">
+          <div className="support-card subcard">
+            <div className="subcard-icon-box blue-box animated-icon-globe">
+              <Globe size={20} />
+            </div>
+            <h3 className="subcard-title">Global Scalability</h3>
+            <p className="subcard-desc">
               Deploy infrastructure across multiple regions with sub-millisecond latency for distance learning.
             </p>
-            <div className="watermark-icon">
-              <Globe size={80} />
-            </div>
           </div>
         </div>
       </section>
