@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Check, Network, Sparkles, Database, Cpu, Smartphone, Cloud, ArrowUpRight, Menu, X, Receipt, Building, Calendar, GraduationCap, ClipboardList, Award, TrendingUp, CalendarCheck, CalendarX, Bell } from 'lucide-react';
+import { ArrowRight, Shield, Check, Network, Sparkles, Database, Cpu, Smartphone, Cloud, ArrowUpRight, Menu, X, Receipt, Building, Calendar, GraduationCap, ClipboardList, Award, TrendingUp, CalendarCheck, CalendarX, Bell, Users, BookOpen } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
 import './Product.css';
@@ -23,7 +23,7 @@ const Product = ({ onLoginClick }) => {
 
   useEffect(() => {
     const revealElements = document.querySelectorAll('.reveal-on-scroll, .reveal-left, .reveal-right');
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -42,7 +42,7 @@ const Product = ({ onLoginClick }) => {
       revealElements.forEach((el) => {
         try {
           observer.unobserve(el);
-        } catch (e) {}
+        } catch (e) { }
       });
     };
   }, []);
@@ -54,39 +54,39 @@ const Product = ({ onLoginClick }) => {
       <Header onLoginClick={onLoginClick} />
 
       {/* Product Hero Section */}
-      <section className="product-hero">
-        <div className="product-hero-container">
-          <div className="product-hero-left">
-            <span className="badge-tag">ENTERPRISE ACADEMIC SUITE</span>
-            <h1 className="product-hero-title">
-              Precision Infrastructure for Modern Institutions.
-            </h1>
-            <p className="product-hero-subtitle">
-              Streamline your academic ecosystem with our integrated systems designed for security, performance, and data integrity.
-            </p>
-            <div className="product-hero-actions">
-              <a
-                href="/contact"
-                className="btn-primary"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate('/contact');
-                }}
-              >
-                Request Demo
-              </a>
-              <a href="#systems" className="btn-secondary">
-                View Systems
-              </a>
-            </div>
+      <section className="product-hero-new">
+        <div className="product-hero-card">
+          <div className="product-hero-bg-container">
+            <div className="product-hero-bg"></div>
+            <div className="product-hero-curve-overlay"></div>
           </div>
-          <div className="product-hero-right">
-            <div className="monitor-mockup">
-              <img
-                src="/assets/images/product_hero.png"
-                alt="Educrop System Preview"
-                className="monitor-img"
-              />
+          <div className="product-hero-content-wrapper">
+            <div className="product-hero-left-content">
+              <span className="badge-tag-new">ENTERPRISE ACADEMIC SUITE</span>
+              <h1 className="product-hero-title-new">
+                Precision Infrastructure <br className="hidden-mobile" />
+                for <span className="text-blue">Modern Institutions.</span>
+              </h1>
+              <p className="product-hero-subtitle-new">
+                Streamline your academic ecosystem with our<br />
+                integrated systems designed for security,<br />
+                performance, and data integrity.
+              </p>
+              <div className="product-hero-actions-new">
+                <a
+                  href="/contact"
+                  className="btn-primary-new"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate('/contact');
+                  }}
+                >
+                  Request Demo
+                </a>
+                <a href="#systems" className="btn-secondary-new">
+                  View Systems
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -94,10 +94,113 @@ const Product = ({ onLoginClick }) => {
 
       {/* Product Main Systems Section */}
       <section className="product-systems" id="systems">
-        
+
+        {/* AMS: Academic Management System */}
+        <div className="system-row" id="ams">
+          <div className="system-row-container reverse-row">
+            <div className="system-text-col reveal-on-scroll">
+              <div className="system-icon-box uims-purple-box">
+                <Sparkles size={24} />
+              </div>
+              <h2 className="system-title">AMS: Academic Management System</h2>
+              <p className="system-subtitle">
+                A comprehensive solution for managing attendance, academic results, assignments, and student leave requests, providing a holistic view of student engagement and performance.
+              </p>
+
+              <div className="ams-features-stack">
+                <div className="ams-card-item reveal-on-scroll stagger-1">
+                  <div className="ams-icon">
+                    <CalendarCheck size={18} />
+                  </div>
+                  <div className="ams-desc">
+                    <h4>Attendance & Leave Tracking</h4>
+                    <p>Streamline student presence monitoring and digital leave request processing.</p>
+                  </div>
+                </div>
+                <div className="ams-card-item reveal-on-scroll stagger-2">
+                  <div className="ams-icon">
+                    <TrendingUp size={18} />
+                  </div>
+                  <div className="ams-desc">
+                    <h4>Results & Performance Analytics</h4>
+                    <p>Leverage automated grading and deep analytics to drive academic excellence.</p>
+                  </div>
+                </div>
+                <div className="ams-card-item reveal-on-scroll stagger-3">
+                  <div className="ams-icon">
+                    <ClipboardList size={18} />
+                  </div>
+                  <div className="ams-desc">
+                    <h4>Curriculum & Examinations</h4>
+                    <p>Automate exam scheduling, gradebook computation, and coursework tracking.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="system-image-col reveal-on-scroll">
+              <div className="product-image-box">
+                <img
+                  src="/assets/image.png"
+                  alt="AMS Academic Management System Dashboard"
+                  className="product-system-img"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RMS: Receipt Management System */}
+        <div className="system-row light-bg" id="rms">
+          <div className="system-row-container">
+            <div className="system-text-col reveal-on-scroll">
+              <div className="system-icon-box rms-green-box">
+                <Receipt size={24} />
+              </div>
+              <h2 className="system-title">RMS: Receipt Management System</h2>
+              <p className="system-subtitle">
+                A specialized system for financial documentation and management, streamlining the generation and tracking of fee receipts and salary slips for the entire institution.
+              </p>
+
+              <div className="receipt-features-stack">
+                <div className="receipt-card-item reveal-on-scroll stagger-1">
+                  <div className="receipt-icon"><Sparkles size={18} /></div>
+                  <div className="receipt-desc">
+                    <h4>Fee Management</h4>
+                    <p>Automated generation of student fee receipts and payment tracking.</p>
+                  </div>
+                </div>
+                <div className="receipt-card-item reveal-on-scroll stagger-2">
+                  <div className="receipt-icon"><Sparkles size={18} /></div>
+                  <div className="receipt-desc">
+                    <h4>Payroll Processing</h4>
+                    <p>Seamless generation of staff salary slips and compensation records.</p>
+                  </div>
+                </div>
+                <div className="receipt-card-item reveal-on-scroll stagger-3">
+                  <div className="receipt-icon"><Sparkles size={18} /></div>
+                  <div className="receipt-desc">
+                    <h4>Financial Reporting</h4>
+                    <p>Comprehensive audit logs and transaction history for all financial documents.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="system-image-col reveal-on-scroll">
+              <div className="product-image-box">
+                <img
+                  src="/assets/images/rms_dashboard.png"
+                  alt="RMS Receipt Management System Dashboard Analytics"
+                  className="product-system-img"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* VMS: Visitor Management System */}
         <div className="system-row" id="vms">
-          <div className="system-row-container">
+          <div className="system-row-container reverse-row">
             <div className="system-text-col reveal-on-scroll">
               <div className="system-icon-box vms-blue-box">
                 <Shield size={24} />
@@ -142,109 +245,6 @@ const Product = ({ onLoginClick }) => {
                 <img
                   src="/assets/images/vms_kiosk.png"
                   alt="VMS Visitor Tablet Kiosk"
-                  className="product-system-img"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* RMS: Receipt Management System */}
-        <div className="system-row light-bg" id="rms">
-          <div className="system-row-container reverse-row">
-            <div className="system-text-col reveal-on-scroll">
-              <div className="system-icon-box rms-green-box">
-                <Receipt size={24} />
-              </div>
-              <h2 className="system-title">RMS: Receipt Management System</h2>
-              <p className="system-subtitle">
-                A specialized system for financial documentation and management, streamlining the generation and tracking of fee receipts and salary slips for the entire institution.
-              </p>
-              
-              <div className="receipt-features-stack">
-                <div className="receipt-card-item reveal-on-scroll stagger-1">
-                  <div className="receipt-icon"><Sparkles size={18} /></div>
-                  <div className="receipt-desc">
-                    <h4>Fee Management</h4>
-                    <p>Automated generation of student fee receipts and payment tracking.</p>
-                  </div>
-                </div>
-                <div className="receipt-card-item reveal-on-scroll stagger-2">
-                  <div className="receipt-icon"><Sparkles size={18} /></div>
-                  <div className="receipt-desc">
-                    <h4>Payroll Processing</h4>
-                    <p>Seamless generation of staff salary slips and compensation records.</p>
-                  </div>
-                </div>
-                <div className="receipt-card-item reveal-on-scroll stagger-3">
-                  <div className="receipt-icon"><Sparkles size={18} /></div>
-                  <div className="receipt-desc">
-                    <h4>Financial Reporting</h4>
-                    <p>Comprehensive audit logs and transaction history for all financial documents.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="system-image-col reveal-on-scroll">
-              <div className="product-image-box">
-                <img
-                  src="/assets/images/rms_dashboard.png"
-                  alt="RMS Receipt Management System Dashboard Analytics"
-                  className="product-system-img"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* AMS: Academic Management System */}
-        <div className="system-row" id="ams">
-          <div className="system-row-container">
-            <div className="system-text-col reveal-on-scroll">
-              <div className="system-icon-box uims-purple-box">
-                <Sparkles size={24} />
-              </div>
-              <h2 className="system-title">AMS: Academic Management System</h2>
-              <p className="system-subtitle">
-                A comprehensive solution for managing attendance, academic results, assignments, and student leave requests, providing a holistic view of student engagement and performance.
-              </p>
-
-              <div className="ams-features-stack">
-                <div className="ams-card-item reveal-on-scroll stagger-1">
-                  <div className="ams-icon">
-                    <CalendarCheck size={18} />
-                  </div>
-                  <div className="ams-desc">
-                    <h4>Attendance & Leave Tracking</h4>
-                    <p>Streamline student presence monitoring and digital leave request processing.</p>
-                  </div>
-                </div>
-                <div className="ams-card-item reveal-on-scroll stagger-2">
-                  <div className="ams-icon">
-                    <TrendingUp size={18} />
-                  </div>
-                  <div className="ams-desc">
-                    <h4>Results & Performance Analytics</h4>
-                    <p>Leverage automated grading and deep analytics to drive academic excellence.</p>
-                  </div>
-                </div>
-                <div className="ams-card-item reveal-on-scroll stagger-3">
-                  <div className="ams-icon">
-                    <ClipboardList size={18} />
-                  </div>
-                  <div className="ams-desc">
-                    <h4>Curriculum & Examinations</h4>
-                    <p>Automate exam scheduling, gradebook computation, and coursework tracking.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="system-image-col reveal-on-scroll">
-              <div className="product-image-box">
-                <img
-                  src="/assets/images/ams.jpeg"
-                  alt="AMS Academic Management System Dashboard"
                   className="product-system-img"
                 />
               </div>

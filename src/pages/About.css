@@ -332,7 +332,7 @@
 
 /* Who We Are */
 .who-we-are-section {
-  padding: 6rem 0;
+  padding: 6rem 0 2rem;
 }
 
 .who-we-are-container {
@@ -428,8 +428,8 @@
 
 /* Why We Are */
 .why-we-are-section {
-  padding: 4rem 0 6rem;
-  background-color: #f8f9fc;
+  padding: 3rem 0 5rem;
+  background-color: #f8fafc;
 }
 
 .why-header {
@@ -738,7 +738,7 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .about-page .x-landing-footer {
     flex-direction: column;
     padding: 24px 5%;
@@ -770,7 +770,7 @@
 }
 
 /* iPad Pro: 821px - 1200px — match Product page hero proportions, 2-line title */
-@media (max-width: 1200px) and (min-width: 821px) {
+@media (max-width: 1200px) {
   .hero-container {
     padding: 5rem 3rem;
     gap: 3rem;
@@ -791,6 +791,22 @@
   .about-page .mission-title {
     font-size: 12px;
     margin-bottom: 16px;
+  }
+
+  .hero-container,
+  .who-we-are-container,
+  .vision-container,
+  .security-container {
+    flex-direction: column;
+    padding: 4rem 3rem;
+  }
+
+  .who-we-are-image-wrapper {
+    margin-top: 2rem;
+  }
+
+  .security-image-wrapper {
+    margin-top: 2rem;
   }
 }
 
@@ -871,7 +887,7 @@
   .stats-row {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .who-we-are-container {
     padding: 1rem 2rem;
   }
@@ -1023,5 +1039,179 @@
   .vision-container {
     width: 100%;
     border-radius: 0;
+  }
+}
+
+/* Ecosystem / Flowchart Section */
+.ecosystem-section {
+  padding: 3rem 1rem;
+  background-color: #f8fafc;
+}
+
+.ecosystem-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Security Section */
+.security-section {
+  padding: 4rem 1rem 3rem 1rem;
+  background-color: #f8fafc;
+}
+
+.security-container-modern {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.security-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.security-text-content {
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.security-text-content h2 {
+  font-size: 2.5rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.security-text-content p {
+  font-size: 1.1rem;
+  color: #475569;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+
+.security-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #eff6ff;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+}
+
+.trust-icon {
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.security-trust-badge div {
+  display: flex;
+  flex-direction: column;
+}
+
+.security-trust-badge strong {
+  color: #1e3a8a;
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+}
+
+.security-trust-badge span {
+  color: #3b82f6;
+  font-size: 0.9rem;
+}
+
+.security-features-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.security-feature-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  background: #ffffff;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.security-feature-row:hover {
+  transform: translateX(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  border-color: #cbd5e1;
+}
+
+.feature-icon-box {
+  width: 40px;
+  height: 40px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.feature-text-box h4 {
+  font-size: 1rem;
+  color: #0f172a;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.feature-text-box p {
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.feature-inline-logos {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.feature-inline-logos img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+@media (max-width: 820px) {
+  .security-content-wrapper {
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .security-text-content {
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .security-trust-badge {
+    text-align: left;
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 820px) {
+  .security-section {
+    padding: 3rem 1rem 1rem 1rem;
+  }
+
+  .security-feature-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
   }
 }

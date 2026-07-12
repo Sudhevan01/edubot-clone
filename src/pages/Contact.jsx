@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin, Menu, X, ArrowRight, CheckCircle, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
+import { FaWhatsapp, FaYoutube } from 'react-icons/fa';
 import './Contact.css';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import LandingFooter from '../components/LandingFooter';
@@ -20,28 +21,32 @@ const Contact = ({ onLoginClick }) => {
     };
   }, []);
 
-  const [formData, setFormData] = useState({ name: '', email: '', reason: 'schedule-a-demo', message: '' });
-  const [errors, setErrors] = useState({ name: '', email: '' });
+  const [formData, setFormData] = useState({ organizationName: '', mailId: '', contactPerson: '', contactNo: '', studentCount: '', message: '' });
+  const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
     let newValue = value;
 
-    // Block non-alphabet characters in the name field
-    if (name === 'name') {
+    // Block non-alphabet characters in the contactPerson field
+    if (name === 'contactPerson') {
       if (!/^[a-zA-Z\s]*$/.test(newValue)) {
-        return; // ignore the keystroke if it's not a letter or space
+        return; 
+      }
+    }
+
+    // Block non-numeric characters for contactNo and studentCount
+    if (name === 'contactNo' || name === 'studentCount') {
+      if (!/^\d*$/.test(newValue)) {
+        return;
       }
     }
 
     // Auto-complete email when '@' is typed
-    if (name === 'email') {
-      // If they just typed an '@' and it wasn't there before
-      if (newValue.endsWith('@') && !formData.email.endsWith('@')) {
+    if (name === 'mailId') {
+      if (newValue.endsWith('@') && !formData.mailId.endsWith('@')) {
         newValue = newValue + 'gmail.com';
       }
     }
@@ -53,27 +58,23 @@ const Contact = ({ onLoginClick }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let valid = true;
-    let newErrors = { name: '', email: '' };
-
-    // Validate Name (Alphabets and spaces only)
-    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
-      newErrors.name = 'Name should only contain alphabets.';
-      valid = false;
-    }
+    let newErrors = {};
 
     // Validate Email (must contain @)
-    if (!formData.email.includes('@')) {
-      newErrors.email = 'Email must contain an "@" symbol.';
+    if (!formData.mailId.includes('@')) {
+      newErrors.mailId = 'Email must contain an "@" symbol.';
       valid = false;
     }
 
     if (valid) {
       const data = new FormData();
       data.append("access_key", "3349808f-3514-47c2-bf3e-a76869d002a2");
-      data.append("name", formData.name);
-      data.append("email", formData.email);
-      data.append("reason", formData.reason);
-      data.append("message", formData.message);
+      data.append("Organization Name", formData.organizationName);
+      data.append("Mail ID", formData.mailId);
+      data.append("Contact Person", formData.contactPerson);
+      data.append("Contact No", formData.contactNo);
+      data.append("Student Count", formData.studentCount);
+      data.append("Message", formData.message);
 
       fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -85,7 +86,7 @@ const Contact = ({ onLoginClick }) => {
             setIsSubmitted(true);
             setTimeout(() => {
               setIsSubmitted(false);
-              setFormData({ name: '', email: '', reason: 'software-purchase', message: '' });
+              setFormData({ organizationName: '', mailId: '', contactPerson: '', contactNo: '', studentCount: '', message: '' });
             }, 5000);
           } else {
             console.error("Submission failed:", resData);
@@ -141,45 +142,65 @@ const Contact = ({ onLoginClick }) => {
               <form className="inquiry-form" onSubmit={handleSubmit}>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Full Name <span style={{ color: '#ef4444' }}>*</span></label>
+                    <label>Organization Name <span style={{ color: '#ef4444' }}>*</span></label>
                     <input
                       type="text"
-                      name="name"
-                      placeholder="John Doe"
-                      value={formData.name}
+                      name="organizationName"
+                      placeholder="School/College Name"
+                      value={formData.organizationName}
                       onChange={handleInputChange}
                       required
                     />
-                    {errors.name && <span style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '0.25rem' }}>{errors.name}</span>}
                   </div>
                   <div className="form-group">
-                    <label>Email Address <span style={{ color: '#ef4444' }}>*</span></label>
+                    <label>Mail ID <span style={{ color: '#ef4444' }}>*</span></label>
                     <input
                       type="text"
-                      name="email"
-                      placeholder="john@example.com"
-                      value={formData.email}
+                      name="mailId"
+                      placeholder="school@example.com"
+                      value={formData.mailId}
                       onChange={handleInputChange}
                       required
                     />
-                    {errors.email && <span style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '0.25rem' }}>{errors.email}</span>}
+                    {errors.mailId && <span style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '0.25rem' }}>{errors.mailId}</span>}
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Contact Person <span style={{ color: '#ef4444' }}>*</span></label>
+                    <input
+                      type="text"
+                      name="contactPerson"
+                      placeholder="John Doe"
+                      value={formData.contactPerson}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Contact No <span style={{ color: '#ef4444' }}>*</span></label>
+                    <input
+                      type="tel"
+                      name="contactNo"
+                      placeholder="9876543210"
+                      value={formData.contactNo}
+                      onChange={handleInputChange}
+                      required
+                    />
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label>Reason for Contact <span style={{ color: '#ef4444' }}>*</span></label>
-                  <div className="select-wrapper">
-                     <select name="reason" value={formData.reason} onChange={handleInputChange}>
-                       <option value="schedule-a-demo">Schedule a Demo</option>
-                       <option value="learn-about-software">Learn About the Software</option>
-                       <option value="explore-features">Explore Features</option>
-                       <option value="discuss-requirements">Discuss Requirements</option>
-                       <option value="product-enquiry">Product Enquiry</option>
-                       <option value="technical-support">Technical Support</option>
-                       <option value="general-enquiry">General Enquiry</option>
-                       <option value="other">Other</option>
-                     </select>
-                  </div>
+                  <label>How many students are there? <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input
+                    type="text"
+                    name="studentCount"
+                    placeholder="e.g. 500"
+                    value={formData.studentCount}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
 
                 <div className="form-group">
@@ -187,11 +208,10 @@ const Contact = ({ onLoginClick }) => {
                   <textarea
                     name="message"
                     placeholder="How can we help you?"
-                    rows="6"
+                    rows="4"
                     value={formData.message}
                     onChange={handleInputChange}
                     style={{ resize: 'vertical' }}
-                    required
                   ></textarea>
                 </div>
 
@@ -216,20 +236,32 @@ const Contact = ({ onLoginClick }) => {
                 <div className="info-text">
                   <p className="info-label">Email Address</p>
                   <p className="info-value">
-                    <a href="https://www.devcreationsblr.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
-                      info@devcreationsblr.com
+                    <a href="mailto:Educropblr@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+                      Educropblr@gmail.com
                     </a>
                   </p>
                 </div>
               </div>
 
               <div className="info-item">
-                <div className="info-icon"><Phone size={20} /></div>
+                <div className="info-icon"><FaWhatsapp size={20} /></div>
                 <div className="info-text">
-                  <p className="info-label">Phone Support</p>
+                  <p className="info-label">WhatsApp Support</p>
                   <p className="info-value">
-                    <a href="tel:+917337840612" style={{ color: 'inherit', textDecoration: 'none' }}>
+                    <a href="https://wa.me/917337840612" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
                       +91 73378 40612
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+              <div className="info-item">
+                <div className="info-icon"><FaYoutube size={20} /></div>
+                <div className="info-text">
+                  <p className="info-label">YouTube Channel</p>
+                  <p className="info-value">
+                    <a href="https://youtube.com/@educropblr?si=UbiaZohs1gdn3jsl" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                      @educropblr
                     </a>
                   </p>
                 </div>

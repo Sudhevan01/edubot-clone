@@ -352,7 +352,7 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .accessibility-page .x-landing-footer {
     flex-direction: column;
     padding: 24px 5%;

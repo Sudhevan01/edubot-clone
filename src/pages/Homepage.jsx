@@ -16,9 +16,9 @@ const Homepage = ({ onLoginClick }) => {
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
-    '/assets/images/banner2.jpeg',
-    '/assets/images/banner.jpeg',
-    '/assets/images/banner3.png'
+    '/assets/images/new_slide_1.png',
+    '/assets/images/new_slide_2.png',
+    '/assets/images/vms_dashboard_banner.png'
   ];
 
   const prevSlide = () => {
@@ -111,11 +111,14 @@ const Homepage = ({ onLoginClick }) => {
             <div
               key={index}
               className={`hero-bg-slide slide-img-${index}`}
+              style={{ backgroundImage: `url(${slide})` }}
             ></div>
           ))}
         </div>
-        {/* Hero Overlay */}
-        <div className={`hero-overlay slide-${currentSlide}`}></div>
+
+        {/* Educrop Brand Overlay - Solid blue fading to transparent */}
+        <div className="hero-brand-overlay"></div>
+
         {/* Slide Navigation Arrows */}
         <button className="hero-slide-btn prev" onClick={prevSlide} aria-label="Previous Slide">
           <ChevronLeft size={36} />
@@ -135,52 +138,25 @@ const Homepage = ({ onLoginClick }) => {
           ))}
         </div>
 
-        <div className="hero-left">
-          <div className="hero-badge">
-            The Future of Learning Infrastructure
-          </div>
-          <h1 className="hero-title">
-            <span className="hero-title-line">Empowering</span>
-            <span className="hero-title-line">Academic Excellence</span>
-          </h1>
-          <p className="hero-desc">
-            Educrop provides the robust structural foundation and digital orchestration required for modern educational institutions to thrive in an era of rapid digital transformation.
-          </p>
-          <div className="hero-actions">
-            <button className="btn-explore" onClick={onLoginClick}>
-              Explore Platform <ArrowRight size={18} />
-            </button>
-            <button className="btn-demo" onClick={() => navigate('/contact')}>
-              Schedule Demo
-            </button>
-          </div>
-        </div>
-
-        <div className="hero-right">
-
-          {/* Floating Data Insight Card */}
-          <div className="floating-card card-data-insight">
-            <div className="card-data-insight-header">
-              <div className="insight-icon-box">
-                <BarChart3 size={14} />
-              </div>
-              <span className="insight-label">Data Insight</span>
+        <div className="hero-content-wrapper">
+          <div className="hero-left">
+            <div className="hero-badge">
+              Smart Education Management Software
             </div>
-            <div className="insight-progress-bar">
-              <div className="insight-progress-fill"></div>
-            </div>
-          </div>
-
-          {/* Floating Stats Card */}
-          <div className="floating-card card-stats">
-            <div className="stat-item">
-              <span className="stat-val">99.9%</span>
-              <span className="stat-lbl">Uptime</span>
-            </div>
-            <div className="stat-divider"></div>
-            <div className="stat-item">
-              <span className="stat-val">50k+</span>
-              <span className="stat-lbl">Students</span>
+            <h1 className="hero-title">
+              <span className="hero-title-line">Empowering</span>
+              <span className="hero-title-line">Academic Excellence</span>
+            </h1>
+            <p className="hero-desc">
+              Educrop provides the robust structural foundation and digital orchestration required for modern educational institutions to thrive in an era of rapid digital transformation.
+            </p>
+            <div className="hero-actions">
+              <button className="btn-explore" onClick={onLoginClick}>
+                Explore Platform <ArrowRight size={18} />
+              </button>
+              <button className="btn-demo" onClick={() => navigate('/contact')}>
+                Schedule Demo
+              </button>
             </div>
           </div>
         </div>

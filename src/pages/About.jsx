@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Workflow, Plug, Users, Sliders, Rocket, Globe, Leaf, Menu, X } from 'lucide-react';
+import { Shield, Workflow, Plug, Users, Sliders, Rocket, Globe, Leaf, Menu, X, CheckCircle, ShieldCheck, Lock, UserCheck, Cloud, Monitor, Code } from 'lucide-react';
 import './About.css';
 import whoWeAre from '../assets/images/who we are.png';
 import visionImage from '../assets/images/vision_image.png';
@@ -104,11 +104,11 @@ const About = ({ onLoginClick }) => {
         <div className="who-we-are-container">
           <div className="who-we-are-text">
             <h2 className="reveal-on-scroll">Who <span className="highlight-text">We Are</span></h2>
-            <p className="reveal-on-scroll stagger-1">
-              Dev Creations is a web development and digital branding company that creates websites, business software, UI/UX designs, and branding solutions for startups and businesses.
+            <p className="reveal-on-scroll stagger-1" style={{ textAlign: 'justify' }}>
+              <strong>Dev Creations & Solutions</strong> is a technology company that builds websites, business software, and digital brands. We focus on creating simple and effective solutions for modern businesses.
             </p>
-            <p className="reveal-on-scroll stagger-2">
-              We work with modern businesses to build user-friendly websites, strong brand identities, and digital solutions that help them grow online.
+            <p className="reveal-on-scroll stagger-2" style={{ textAlign: 'justify' }}>
+              We are the proud parent company behind <strong>EduCrop</strong>, which is our flagship product. EduCrop is a powerful educational software designed specifically to help schools and colleges manage everything digitally.
             </p>
             
             <div className="stats-row reveal-on-scroll stagger-3">
@@ -133,6 +133,59 @@ const About = ({ onLoginClick }) => {
           
           <div className="who-we-are-image-wrapper reveal-on-scroll stagger-2">
             <img src={whoWeAre} alt="Who We Are" className="who-we-are-main-img" />
+          </div>
+        </div>
+      </section>
+
+      {/* Security Section */}
+      <section className="security-section">
+        <div className="security-container-modern">
+          <div className="security-content-wrapper">
+             <div className="security-text-content reveal-on-scroll">
+                <h2>HOW IS YOUR DATA SECURE WITH <span className="highlight-text">EDUCROP?</span></h2>
+                <p>At Educrop, the security and privacy of school data is our top priority. We follow industry best practices, legal agreements and use world-class cloud infrastructure to ensure your data is safe, secure and always protected.</p>
+                <div className="security-trust-badge">
+                   <ShieldCheck size={36} className="trust-icon" />
+                   <div>
+                     <strong>100% Secure & Compliant</strong>
+                     <span>Your data is handled strictly as per agreement.</span>
+                   </div>
+                </div>
+             </div>
+
+             <div className="security-features-stack">
+                <div className="security-feature-row reveal-on-scroll stagger-1">
+                   <div className="feature-icon-box"><ShieldCheck size={20} /></div>
+                   <div className="feature-text-box">
+                      <h4>Legal & Compliance</h4>
+                      <p>Strict MOUs and comprehensive privacy policies ensure total legal protection.</p>
+                   </div>
+                </div>
+
+                <div className="security-feature-row reveal-on-scroll stagger-2">
+                   <div className="feature-icon-box"><Cloud size={20} /></div>
+                   <div className="feature-text-box">
+                      <h4>Cloud Infrastructure</h4>
+                      <p>Powered by enterprise-grade AWS, Google Cloud, and MongoDB servers.</p>
+                   </div>
+                </div>
+
+                <div className="security-feature-row reveal-on-scroll stagger-3">
+                   <div className="feature-icon-box"><Lock size={20} /></div>
+                   <div className="feature-text-box">
+                      <h4>Data Encryption</h4>
+                      <p>Bank-grade encryption safeguards your information in transit and at rest.</p>
+                   </div>
+                </div>
+
+                <div className="security-feature-row reveal-on-scroll stagger-4">
+                   <div className="feature-icon-box"><Monitor size={20} /></div>
+                   <div className="feature-text-box">
+                      <h4>24/7 Monitoring</h4>
+                      <p>Continuous threat detection and automated disaster recovery backups.</p>
+                   </div>
+                </div>
+             </div>
           </div>
         </div>
       </section>

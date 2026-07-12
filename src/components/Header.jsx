@@ -14,7 +14,6 @@ const Header = ({ onLoginClick }) => {
     { name: 'Home', path: '/' },
     { name: 'Product', path: '/product' },
     { name: 'Docs', path: '/docs' },
-    { name: 'Downloads', path: '/downloads' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ];
@@ -114,8 +113,8 @@ const Header = ({ onLoginClick }) => {
 
         <div className="drawer-contact">
           <p className="drawer-contact-label">CONTACT</p>
-          <a href="mailto:info@devcreationsblr.com" className="drawer-contact-item">
-            <Mail size={14} /> info@devcreationsblr.com
+          <a href="mailto:Educropblr@gmail.com" className="drawer-contact-item">
+            <Mail size={14} /> Educropblr@gmail.com
           </a>
           <a href="tel:+917337840612" className="drawer-contact-item">
             <Phone size={14} /> +91 73378 40612
