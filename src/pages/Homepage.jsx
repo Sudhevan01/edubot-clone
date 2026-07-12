@@ -8,12 +8,6 @@ import './Homepage.css';
 const Homepage = ({ onLoginClick }) => {
   const navigate = useNavigate();
 
-  const reachRef = useRef(null);
-  const [reachInView, setReachInView] = useState(false);
-  const [partnerCount, setPartnerCount] = useState(0);
-  const [userCount, setUserCount] = useState("0.0");
-  const [centerCount, setCenterCount] = useState(0);
-
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     '/assets/images/new_slide_1.png',
@@ -41,55 +35,12 @@ const Homepage = ({ onLoginClick }) => {
     document.body.style.overflow = 'auto';
     document.documentElement.style.overflow = 'auto';
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setReachInView(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (reachRef.current) {
-      observer.observe(reachRef.current);
-    }
-
     return () => {
       // Restore the dashboard's viewport layout styling when leaving
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
-      if (reachRef.current) {
-        observer.unobserve(reachRef.current);
-      }
     };
   }, []);
-
-  useEffect(() => {
-    if (!reachInView) return;
-
-    let startTime = null;
-    const duration = 2000; // 2 seconds
-
-    const animate = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const easeProgress = progress * (2 - progress); // Ease out quad
-
-      setPartnerCount(Math.floor(easeProgress * 120));
-      setUserCount((easeProgress * 2.4).toFixed(1));
-      setCenterCount(Math.floor(easeProgress * 15));
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setPartnerCount(120);
-        setUserCount("2.4");
-        setCenterCount(15);
-      }
-    };
-
-    requestAnimationFrame(animate);
-  }, [reachInView]);
 
 
 
@@ -241,55 +192,6 @@ const Homepage = ({ onLoginClick }) => {
         </div>
       </section>
 
-      {/* Section 3: Real-time Global Reach / Stats */}
-      <section
-        className={`global-reach-section ${reachInView ? 'in-view' : ''}`}
-        id="about"
-        ref={reachRef}
-      >
-        <div className="reach-header">
-          <h2 className="reach-title">Empowering Global Institutions</h2>
-          <p className="reach-subtitle">
-            Our Infrastructure spans the globe, providing seamless connectivity and real-time insights for the world's leading academic organizations.
-          </p>
-        </div>
-
-        <div className="reach-container">
-          <div className="reach-left">
-            <div className="stat-row-item">
-              <span className="stat-number">{partnerCount}+</span>
-              <span className="stat-label">Partner Institutions</span>
-            </div>
-            <div className="stat-row-item">
-              <span className="stat-number">{userCount}M</span>
-              <span className="stat-label">Active Users Daily</span>
-            </div>
-            <div className="stat-row-item">
-              <span className="stat-number">{centerCount}</span>
-              <span className="stat-label">Global Data Centers</span>
-            </div>
-          </div>
-
-          <div className="reach-right">
-            <div className="monitor-mockup">
-              <img
-                src="/assets/images/global_reach.png"
-                alt="Real-time Global Reach Map Display"
-                className="monitor-img"
-              />
-              <div className="pulse-dot dot-1"></div>
-              <div className="pulse-dot dot-2"></div>
-              <div className="pulse-dot dot-3"></div>
-              <div className="pulse-dot dot-4"></div>
-              <div className="pulse-dot dot-5"></div>
-              <div className="monitor-overlay">
-                <h4 className="monitor-overlay-title">Real-time Global Reach</h4>
-                <p className="monitor-overlay-desc">Connecting minds across six continents.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Section 4: Call to Action Banner */}
       <section className="cta-banner-section">

@@ -255,7 +255,7 @@ const Docs = ({ onLoginClick }) => {
                 <h3>App Registration QR Code</h3>
                 <p>Provides a quick-scan QR code for parents to download and register on the app.</p>
               </div>
-              <a href="#" download="educrop-qrcode.png" className="main-download-btn qr-btn" style={{ textDecoration: 'none', textAlign: 'center' }} onClick={(e) => { e.preventDefault(); alert('QR code image will be uploaded later!'); }}>
+              <a href="/assets/qr.png" download="educrop-qr.png" className="main-download-btn qr-btn" style={{ textDecoration: 'none', textAlign: 'center' }}>
                 Download QR Code
               </a>
             </div>

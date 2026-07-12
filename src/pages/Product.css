@@ -1191,6 +1191,22 @@
     white-space: normal;
   }
 
+  .product-image-box {
+    margin: 0 auto !important;
+  }
+
+  .ams-features-stack,
+  .receipt-features-stack,
+  .system-features-grid {
+    width: 100%;
+  }
+
+  .ams-card-item,
+  .receipt-card-item,
+  .sys-feature {
+    text-align: left;
+  }
+
   .ams-desc h4,
   .ams-desc p {
     white-space: normal;

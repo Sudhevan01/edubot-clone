@@ -793,7 +793,6 @@
     margin-bottom: 16px;
   }
 
-  .hero-container,
   .who-we-are-container,
   .vision-container,
   .security-container {
@@ -841,22 +840,16 @@
     padding: 0 2rem;
   }
 
-  .hero-container,
+  .hero-container {
+    padding: 3rem 2rem;
+  }
+
   .who-we-are-container,
   .vision-container {
     flex-direction: column;
     padding: 3rem 2rem;
   }
 
-  .hero-content {
-    padding: 0 0 2rem 0;
-    text-align: center;
-    align-items: center;
-  }
-
-  .hero-description {
-    margin: 0 auto;
-  }
 
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -933,6 +926,20 @@
   .hero-container,
   .vision-container {
     padding: 2rem 1rem;
+  }
+
+  .hero-container {
+    flex-direction: column;
+  }
+
+  .hero-content {
+    padding: 0 0 2rem 0;
+    text-align: center;
+    align-items: center;
+  }
+
+  .hero-description {
+    margin: 0 auto;
   }
 
   .features-grid {

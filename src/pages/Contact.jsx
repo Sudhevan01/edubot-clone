@@ -183,7 +183,6 @@ const Contact = ({ onLoginClick }) => {
                     <input
                       type="tel"
                       name="contactNo"
-                      placeholder="9876543210"
                       value={formData.contactNo}
                       onChange={handleInputChange}
                       required
@@ -236,8 +235,11 @@ const Contact = ({ onLoginClick }) => {
                 <div className="info-text">
                   <p className="info-label">Email Address</p>
                   <p className="info-value">
-                    <a href="mailto:Educropblr@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+                    <a href="mailto:Educropblr@gmail.com" style={{ color: 'inherit', textDecoration: 'none', display: 'block', marginBottom: '0.25rem' }}>
                       Educropblr@gmail.com
+                    </a>
+                    <a href="mailto:info@devcreationsblr.com" style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}>
+                      info@devcreationsblr.com
                     </a>
                   </p>
                 </div>

@@ -116,6 +116,9 @@ const Header = ({ onLoginClick }) => {
           <a href="mailto:Educropblr@gmail.com" className="drawer-contact-item">
             <Mail size={14} /> Educropblr@gmail.com
           </a>
+          <a href="mailto:info@devcreationsblr.com" className="drawer-contact-item">
+            <Mail size={14} /> info@devcreationsblr.com
+          </a>
           <a href="tel:+917337840612" className="drawer-contact-item">
             <Phone size={14} /> +91 73378 40612
           </a>
