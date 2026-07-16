@@ -160,7 +160,7 @@
 }
 
 .hero-left {
-  max-width: 650px;
+  max-width: 780px;
   position: relative;
   z-index: 2;
   color: #ffffff;
@@ -376,7 +376,7 @@
   gap: 24px;
   position: relative;
   z-index: 10;
-  max-width: 660px;
+  max-width: 780px;
   color: #ffffff;
 }
 
@@ -453,6 +453,7 @@
   text-shadow: 0 2px 6px rgba(15, 23, 42, 0.4);
   animation: slide-up-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: 0.58s;
+  margin-top: 24px;
 }
 
 .hero-actions {

@@ -33,7 +33,7 @@ const Contact = ({ onLoginClick }) => {
     // Block non-alphabet characters in the contactPerson field
     if (name === 'contactPerson') {
       if (!/^[a-zA-Z\s]*$/.test(newValue)) {
-        return; 
+        return;
       }
     }
 
@@ -130,7 +130,7 @@ const Contact = ({ onLoginClick }) => {
 
           {/* Left Column: Form */}
           <div className="contact-form-card reveal-on-scroll">
-            <h2><Send size={24} /> Send Inquiry</h2>
+            <h2><Send size={24} /> Send Inquiry / Take Demo</h2>
 
             {isSubmitted ? (
               <div className="success-message" style={{ textAlign: 'center', padding: '3rem 1rem' }}>
@@ -231,7 +231,7 @@ const Contact = ({ onLoginClick }) => {
 
             <div className="info-items">
               <div className="info-item">
-                <div className="info-icon"><Mail size={20} /></div>
+                <div className="info-icon" style={{ marginTop: '5px' }}><Mail size={20} /></div>
                 <div className="info-text">
                   <p className="info-label">Email Address</p>
                   <p className="info-value">
