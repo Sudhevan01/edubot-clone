@@ -50,8 +50,8 @@ const Homepage = ({ onLoginClick }) => {
               Smart Education Management Software
             </div>
             <h1 className="hero-title">
-              <span className="hero-title-line">Empowering</span>
-              <span className="hero-title-line">Academic Excellence</span>
+              <span className="hero-title-line line-1">Empowering</span>
+              <span className="hero-title-line line-2">Academic Excellence</span>
             </h1>
             <p className="hero-desc">
               Educrop provides the robust structural foundation and digital orchestration required for modern educational institutions to thrive in an era of rapid digital transformation.

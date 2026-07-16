@@ -133,7 +133,7 @@
   pointer-events: none;
 }
 
-/* Educrop Brand Overlay - Dark Blue Gradient Overlay (55–60% opacity) for excellent text readability */
+/* Educrop Brand Overlay - Dark Blue Gradient Overlay (Slightly refined opacity ~51–82% to reveal more classroom detail while preserving high text contrast) */
 .hero-brand-overlay {
   position: absolute;
   top: 0;
@@ -141,9 +141,9 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg,
-      rgba(15, 23, 42, 0.88) 0%,
-      rgba(10, 37, 92, 0.72) 50%,
-      rgba(15, 23, 42, 0.58) 100%);
+      rgba(15, 23, 42, 0.82) 0%,
+      rgba(10, 37, 92, 0.65) 50%,
+      rgba(15, 23, 42, 0.51) 100%);
   z-index: 1;
 }
 
@@ -166,6 +166,33 @@
   color: #ffffff;
 }
 
+/* ==========================================
+   Hero Section — Staggered Fade Up Animation
+   GPU-accelerated, runs once on page load.
+   ========================================== */
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroButtonFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .hero-badge {
   display: inline-flex;
   background: rgba(255, 255, 255, 0.1);
@@ -179,6 +206,10 @@
   margin-bottom: 24px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  /* Fade up: starts immediately */
+  opacity: 0;
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0ms both;
+  will-change: opacity, transform;
 }
 
 .hero-title {
@@ -193,17 +224,52 @@
   display: block;
 }
 
+/* "Empowering" — starts immediately (0ms) */
+.hero-title-line.line-1 {
+  opacity: 0;
+  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0ms both;
+  will-change: opacity, transform;
+}
+
+/* "Academic Excellence" — starts 200ms after "Empowering" */
+.hero-title-line.line-2 {
+  opacity: 0;
+  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 200ms both;
+  will-change: opacity, transform;
+}
+
 .hero-desc {
   font-size: 20px;
   color: #cbd5e1;
   margin-bottom: 40px;
   line-height: 1.6;
+  /* Starts after heading sequence completes: 0ms + 200ms + 900ms ≈ 1100ms */
+  opacity: 0;
+  animation: heroFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1100ms both;
+  will-change: opacity, transform;
 }
 
 .hero-actions {
   display: flex;
   gap: 16px;
   margin-bottom: 32px;
+  /* Starts after description completes: 1100ms + 800ms ≈ 1900ms */
+  opacity: 0;
+  animation: heroButtonFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1900ms both;
+  will-change: opacity, transform;
+}
+
+/* Accessibility: immediately show all hero elements if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge,
+  .hero-title-line.line-1,
+  .hero-title-line.line-2,
+  .hero-desc,
+  .hero-actions {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }
 
 .btn-explore {
@@ -344,13 +410,40 @@
   color: #ffffff !important;
   letter-spacing: -0.03em;
   text-shadow: 0 4px 20px rgba(15, 23, 42, 0.55);
-  animation: slide-up-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: 0.25s;
 }
 
 .hero-title-line {
   display: block;
   white-space: nowrap;
+}
+
+.hero-title-line.line-1 {
+  animation: hero-line-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.22s;
+}
+
+.hero-title-line.line-2 {
+  animation: hero-line-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.40s;
+}
+
+@keyframes hero-line-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    text-shadow: 0 0 35px rgba(59, 130, 246, 0.55), 0 4px 20px rgba(15, 23, 42, 0.55);
+  }
+
+  60% {
+    opacity: 0.92;
+    text-shadow: 0 0 25px rgba(59, 130, 246, 0.30), 0 4px 20px rgba(15, 23, 42, 0.55);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    text-shadow: 0 4px 20px rgba(15, 23, 42, 0.55);
+  }
 }
 
 .hero-desc {
@@ -359,7 +452,7 @@
   color: rgba(255, 255, 255, 0.88);
   text-shadow: 0 2px 6px rgba(15, 23, 42, 0.4);
   animation: slide-up-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: 0.4s;
+  animation-delay: 0.58s;
 }
 
 .hero-actions {
@@ -369,7 +462,7 @@
   margin-top: 8px;
   width: 100%;
   animation: slide-up-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: 0.55s;
+  animation-delay: 0.75s;
 }
 
 .btn-explore {
@@ -1470,6 +1563,7 @@
     transform: scale(0.95) translateY(0);
     opacity: 0.7;
   }
+
   100% {
     transform: scale(1.1) translateY(-20px);
     opacity: 1;
@@ -1496,6 +1590,7 @@
     opacity: 0.28;
     filter: drop-shadow(0 0 2px rgba(96, 165, 250, 0.3));
   }
+
   100% {
     opacity: 0.45;
     filter: drop-shadow(0 0 7px rgba(96, 165, 250, 0.7));
@@ -1520,16 +1615,66 @@
   animation: cta-float-particle 8s ease-in-out infinite alternate;
 }
 
-.cta-particle.particle-1 { width: 6px; height: 6px; top: 20%; left: 15%; animation-delay: 0s; }
-.cta-particle.particle-2 { width: 8px; height: 8px; top: 70%; left: 80%; animation-delay: 2s; }
-.cta-particle.particle-3 { width: 5px; height: 5px; top: 35%; left: 85%; animation-delay: 4s; }
-.cta-particle.particle-4 { width: 7px; height: 7px; top: 75%; left: 20%; animation-delay: 1s; }
-.cta-particle.particle-5 { width: 5px; height: 5px; top: 25%; left: 3%; animation-delay: 3s; opacity: 0.5; }
-.cta-particle.particle-6 { width: 6px; height: 6px; bottom: 25%; right: 3%; animation-delay: 5s; opacity: 0.5; }
+.cta-particle.particle-1 {
+  width: 6px;
+  height: 6px;
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.cta-particle.particle-2 {
+  width: 8px;
+  height: 8px;
+  top: 70%;
+  left: 80%;
+  animation-delay: 2s;
+}
+
+.cta-particle.particle-3 {
+  width: 5px;
+  height: 5px;
+  top: 35%;
+  left: 85%;
+  animation-delay: 4s;
+}
+
+.cta-particle.particle-4 {
+  width: 7px;
+  height: 7px;
+  top: 75%;
+  left: 20%;
+  animation-delay: 1s;
+}
+
+.cta-particle.particle-5 {
+  width: 5px;
+  height: 5px;
+  top: 25%;
+  left: 3%;
+  animation-delay: 3s;
+  opacity: 0.5;
+}
+
+.cta-particle.particle-6 {
+  width: 6px;
+  height: 6px;
+  bottom: 25%;
+  right: 3%;
+  animation-delay: 5s;
+  opacity: 0.5;
+}
 
 @keyframes cta-float-particle {
-  0% { transform: translateY(0) scale(1); opacity: 0.3; }
-  100% { transform: translateY(-25px) scale(1.3); opacity: 0.8; }
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translateY(-25px) scale(1.3);
+    opacity: 0.8;
+  }
 }
 
 .cta-floating-icon {
@@ -1540,15 +1685,44 @@
   animation: cta-icon-float 7s ease-in-out infinite alternate;
 }
 
-.cta-floating-icon.icon-grad { top: 18%; left: 8%; animation-delay: 0s; }
-.cta-floating-icon.icon-book { bottom: 20%; left: 12%; animation-delay: 1.5s; }
-.cta-floating-icon.icon-globe { top: 15%; right: 10%; animation-delay: 3s; }
-.cta-floating-icon.icon-school { bottom: 18%; right: 12%; animation-delay: 4.5s; }
-.cta-floating-icon.icon-award { top: 50%; left: 4%; animation-delay: 2s; }
+.cta-floating-icon.icon-grad {
+  top: 18%;
+  left: 8%;
+  animation-delay: 0s;
+}
+
+.cta-floating-icon.icon-book {
+  bottom: 20%;
+  left: 12%;
+  animation-delay: 1.5s;
+}
+
+.cta-floating-icon.icon-globe {
+  top: 15%;
+  right: 10%;
+  animation-delay: 3s;
+}
+
+.cta-floating-icon.icon-school {
+  bottom: 18%;
+  right: 12%;
+  animation-delay: 4.5s;
+}
+
+.cta-floating-icon.icon-award {
+  top: 50%;
+  left: 4%;
+  animation-delay: 2s;
+}
 
 @keyframes cta-icon-float {
-  0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(-16px) rotate(4deg); }
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  100% {
+    transform: translateY(-16px) rotate(4deg);
+  }
 }
 
 .cta-banner-section::before {
