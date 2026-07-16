@@ -1,34 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
+import schoolHeroVideo from '../assets/videos/school-hero.mp4';
 import './Homepage.css';
 
 const Homepage = ({ onLoginClick }) => {
   const navigate = useNavigate();
-
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = [
-    '/assets/images/new_slide_1.png',
-    '/assets/images/new_slide_2.png',
-    '/assets/images/vms_dashboard_banner.png'
-  ];
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 6000); // Rotate every 6 seconds
-    return () => clearInterval(interval);
-  }, [slides.length]);
 
   useEffect(() => {
     // Enable standard page scrolling for the landing page
@@ -42,8 +21,6 @@ const Homepage = ({ onLoginClick }) => {
     };
   }, []);
 
-
-
   return (
     <div className="landing-page">
       <Header onLoginClick={onLoginClick} />
@@ -53,41 +30,19 @@ const Homepage = ({ onLoginClick }) => {
         className="landing-hero"
         id="home"
       >
-        {/* Background Slider */}
-        <div
-          className="hero-bg-slider"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {slides.map((slide, index) => (
-            <div
-              key={index}
-              className={`hero-bg-slide slide-img-${index}`}
-              style={{ backgroundImage: `url(${slide})` }}
-            ></div>
-          ))}
-        </div>
+        {/* Background Video */}
+        <video
+          className="hero-bg-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          src={schoolHeroVideo}
+        />
 
-        {/* Educrop Brand Overlay - Solid blue fading to transparent */}
+        {/* Educrop Brand Overlay - Premium dark blue gradient overlay (55-60% opacity) */}
         <div className="hero-brand-overlay"></div>
-
-        {/* Slide Navigation Arrows */}
-        <button className="hero-slide-btn prev" onClick={prevSlide} aria-label="Previous Slide">
-          <ChevronLeft size={36} />
-        </button>
-        <button className="hero-slide-btn next" onClick={nextSlide} aria-label="Next Slide">
-          <ChevronRight size={36} />
-        </button>
-
-        {/* Slide Indicators */}
-        <div className="hero-slide-indicators">
-          {slides.map((_, index) => (
-            <span
-              key={index}
-              className={`slide-dot ${currentSlide === index ? 'active' : ''}`}
-              onClick={() => setCurrentSlide(index)}
-            ></span>
-          ))}
-        </div>
 
         <div className="hero-content-wrapper">
           <div className="hero-left">
@@ -124,7 +79,7 @@ const Homepage = ({ onLoginClick }) => {
           {/* Card 1: Global Scalability */}
           <div className="support-card-3col">
             <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card1.jpeg" alt="Global Scalability" />
+              <img src="/assets/images/card1.png" alt="Global Scalability" />
             </div>
             <div className="support-card-3col-content">
               <h3>Global Scalability</h3>
@@ -135,7 +90,7 @@ const Homepage = ({ onLoginClick }) => {
           {/* Card 2: Pedagogical Excellence */}
           <div className="support-card-3col">
             <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card2.jpeg" alt="Pedagogical Excellence" />
+              <img src="/assets/images/card2.png" alt="Pedagogical Excellence" />
             </div>
             <div className="support-card-3col-content">
               <h3>Pedagogical Excellence</h3>
@@ -146,48 +101,45 @@ const Homepage = ({ onLoginClick }) => {
           {/* Card 3: Administrative Efficiency */}
           <div className="support-card-3col">
             <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card3.jpeg" alt="Administrative Efficiency" />
+              <img src="/assets/images/card3.png" alt="Administrative Efficiency" />
             </div>
             <div className="support-card-3col-content">
               <h3>Administrative Efficiency</h3>
               <p>Streamline complex workflows and reporting with automated administrative dashboards.</p>
             </div>
           </div>
-        </div>
 
-        {/* Second Row: 3-column subgrid */}
-        <div className="support-subgrid">
-          {/* Card 1: AI-Driven Insights */}
-          <div className="support-card subcard">
-            <div className="subcard-icon-box purple-box animated-icon-sparkles">
-              <Sparkles size={20} />
+          {/* Card 4: Collaborative Ecosystem */}
+          <div className="support-card-3col">
+            <div className="support-card-3col-img-wrapper">
+              <img src="/assets/images/card4.png" alt="Collaborative Ecosystem" />
             </div>
-            <h3 className="subcard-title">AI-Driven Insights</h3>
-            <p className="subcard-desc">
-              Predictive analytics to identify students at risk and optimize resource allocation across departments.
-            </p>
+            <div className="support-card-3col-content">
+              <h3>Collaborative Ecosystem</h3>
+              <p>Seamless communication and resource sharing across teachers, students, parents, and administration.</p>
+            </div>
           </div>
 
-          {/* Card 2: Collaborative Tools */}
-          <div className="support-card subcard">
-            <div className="subcard-icon-box grey-box animated-icon-users">
-              <Users size={20} />
+          {/* Card 5: AI-Driven Insights */}
+          <div className="support-card-3col">
+            <div className="support-card-3col-img-wrapper">
+              <img src="/assets/images/card5.png" alt="AI-Driven Insights" />
             </div>
-            <h3 className="subcard-title">Collaborative Tools</h3>
-            <p className="subcard-desc">
-              Seamless integration for research teams and faculty to share resources in a secure, high-speed environment.
-            </p>
+            <div className="support-card-3col-content">
+              <h3>AI-Driven Insights</h3>
+              <p>Predictive analytics to identify student risk factors and optimize institutional decision-making.</p>
+            </div>
           </div>
 
-          {/* Card 3: Global Scalability */}
-          <div className="support-card subcard">
-            <div className="subcard-icon-box blue-box animated-icon-globe">
-              <Globe size={20} />
+          {/* Card 6: Enterprise-Grade Security */}
+          <div className="support-card-3col">
+            <div className="support-card-3col-img-wrapper">
+              <img src="/assets/images/card6.png" alt="Enterprise-Grade Security" />
             </div>
-            <h3 className="subcard-title">Global Scalability</h3>
-            <p className="subcard-desc">
-              Deploy infrastructure across multiple regions with sub-millisecond latency for distance learning.
-            </p>
+            <div className="support-card-3col-content">
+              <h3>Enterprise-Grade Security</h3>
+              <p>Bank-grade encryption, role-based access control, and strict compliance with global data privacy standards.</p>
+            </div>
           </div>
         </div>
       </section>
