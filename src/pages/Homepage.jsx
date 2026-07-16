@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe } from 'lucide-react';
+import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe, GraduationCap, BookOpen, Award, School } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
 import schoolHeroVideo from '../assets/videos/school-hero.mp4';
@@ -147,7 +147,47 @@ const Homepage = ({ onLoginClick }) => {
 
       {/* Section 4: Call to Action Banner */}
       <section className="cta-banner-section">
+        {/* Animated Ambient Glow Mesh */}
+        <div className="cta-ambient-glow"></div>
+
+        {/* World Network Connection SVG with enhanced line visibility & animated nodes */}
+        <svg className="cta-world-network" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.25" stroke="#ffffff" strokeWidth="1.2" strokeDasharray="5 5">
+            <path d="M150 120 Q 300 60 450 140 T 750 100 T 1050 160" />
+            <path d="M100 280 Q 350 200 600 300 T 1100 240" />
+            <path d="M200 320 Q 500 120 800 280 T 1000 80" />
+          </g>
+          <g className="cta-nodes-group" opacity="0.35">
+            <circle cx="150" cy="120" r="4.5" fill="#60a5fa" />
+            <circle cx="450" cy="140" r="5.5" fill="#3b82f6" />
+            <circle cx="750" cy="100" r="4.5" fill="#60a5fa" />
+            <circle cx="1050" cy="160" r="5.5" fill="#3b82f6" />
+            <circle cx="350" cy="200" r="4.5" fill="#93c5fd" />
+            <circle cx="600" cy="300" r="5.5" fill="#60a5fa" />
+            <circle cx="800" cy="280" r="4.5" fill="#3b82f6" />
+          </g>
+        </svg>
+
+        {/* Soft Glowing Particles including Far Left & Far Right Corners */}
+        <div className="cta-particles">
+          <span className="cta-particle particle-1"></span>
+          <span className="cta-particle particle-2"></span>
+          <span className="cta-particle particle-3"></span>
+          <span className="cta-particle particle-4"></span>
+          <span className="cta-particle particle-5"></span>
+          <span className="cta-particle particle-6"></span>
+        </div>
+
+        {/* Floating Education Icons */}
+        <div className="cta-floating-icon icon-grad"><GraduationCap size={28} /></div>
+        <div className="cta-floating-icon icon-book"><BookOpen size={26} /></div>
+        <div className="cta-floating-icon icon-globe"><Globe size={28} /></div>
+        <div className="cta-floating-icon icon-school"><School size={26} /></div>
+        <div className="cta-floating-icon icon-award"><Award size={26} /></div>
+
         <div className="cta-content">
+          {/* Soft Heading Glow */}
+          <div className="cta-heading-glow"></div>
           <h2 className="cta-title">Ready to modernize your institution?</h2>
           <p className="cta-desc">
             Join the leading educational facilities worldwide that rely on Educrop for their mission-critical academic infrastructure.
