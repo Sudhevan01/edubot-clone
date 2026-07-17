@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Workflow, Plug, Users, Sliders, Rocket, Globe, Leaf, Menu, X, CheckCircle, ShieldCheck, Lock, UserCheck, Cloud, Monitor, Code } from 'lucide-react';
+import { Shield, Workflow, Plug, Users, Sliders, Rocket, Globe, Leaf, Menu, X, CheckCircle, ShieldCheck, Lock, UserCheck, Cloud, Monitor, Code, ArrowRight } from 'lucide-react';
 import './About.css';
 import whoWeAre from '../assets/images/who we are.png';
 import visionImage from '../assets/images/vision_image.png';
@@ -81,38 +81,41 @@ const About = ({ onLoginClick }) => {
 
       {/* Hero Section */}
       <section className="hero-section">
-        {/* Decorative: dot grid top-left */}
-        <div className="hero-dot-grid" aria-hidden="true" />
-        {/* Decorative: glowing orb top-center */}
-        <div className="hero-orb hero-orb--top" aria-hidden="true" />
-        {/* Decorative: glowing orb bottom-right */}
-        <div className="hero-orb hero-orb--bottom" aria-hidden="true" />
-        {/* Decorative: flowing abstract wave lines */}
-        <svg className="hero-waves" aria-hidden="true" viewBox="0 0 1400 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M-100,420 C150,380 250,460 450,390 C650,320 700,420 900,360 C1100,300 1200,380 1500,310" stroke="rgba(78,163,255,0.18)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <path d="M-100,460 C200,420 300,490 500,430 C700,370 780,450 980,400 C1150,355 1300,420 1500,360" stroke="rgba(78,163,255,0.11)" strokeWidth="2" fill="none" strokeLinecap="round" />
-          <path d="M-100,380 C100,350 220,410 400,355 C600,300 680,380 880,330 C1080,280 1200,350 1500,280" stroke="rgba(21,101,245,0.14)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-          <circle cx="130" cy="140" r="5" fill="rgba(78,163,255,0.35)" />
-          <circle cx="95" cy="200" r="3" fill="rgba(78,163,255,0.25)" />
-          <circle cx="180" cy="180" r="4" fill="rgba(78,163,255,0.2)" />
-        </svg>
-
         <div className="hero-container">
-          <div className="hero-content">
-            <h4 className="mission-title reveal-on-scroll">OUR MISSION</h4>
-            <h1 className="hero-heading reveal-on-scroll stagger-1">
-              Empowering Institutions Through Digital Precision.
-            </h1>
-            <p className="hero-description reveal-on-scroll stagger-2">
-              Educrop provides the rigorous infrastructure needed for modern academic management, balancing administrative complexity with intuitive design.
-            </p>
-          </div>
-          <div className="hero-image-wrapper reveal-on-scroll stagger-3">
+          <div className="hero-card reveal-on-scroll">
             <img
               src={heroSchoolImg}
-              alt="Education Network"
-              className="hero-image"
+              alt="School Campus"
+              className="hero-bg-image"
             />
+            <div className="hero-glass-panel">
+              <div className="mission-badge stagger-1">
+                <span className="mission-dot"></span>
+                OUR MISSION
+              </div>
+
+              <h1 className="hero-heading stagger-2">
+                Empowering Institutions <br className="hero-br" />
+                Through <span className="hero-highlight">Digital Precision.</span>
+              </h1>
+
+              <p className="hero-description stagger-3">
+                Educrop provides the rigorous infrastructure needed for modern academic management, balancing administrative complexity with intuitive design.
+              </p>
+
+              <div className="hero-button-group stagger-3">
+                <button className="btn-learn-more">
+                  Learn More About Us <ArrowRight size={18} />
+                </button>
+              </div>
+
+              {/* Decorative dots inside the glass panel */}
+              <div className="glass-dots">
+                {[...Array(24)].map((_, i) => (
+                  <span key={i} className="glass-dot"></span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

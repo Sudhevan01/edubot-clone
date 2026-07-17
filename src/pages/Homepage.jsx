@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe, GraduationCap, BookOpen, Award, School } from 'lucide-react';
+import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe, GraduationCap, BookOpen, Award, School, Brain } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
 import schoolHeroVideo from '../assets/videos/school-hero.mp4';
@@ -78,67 +78,91 @@ const Homepage = ({ onLoginClick }) => {
         <div className="support-grid-3col">
           {/* Card 1: Global Scalability */}
           <div className="support-card-3col">
-            <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card1.png" alt="Global Scalability" />
-            </div>
-            <div className="support-card-3col-content">
-              <h3>Global Scalability</h3>
-              <p>Infrastructure designed to support millions of users across diverse geographical regions without latency.</p>
+            <img src="/assets/images/card1.png" alt="Global Scalability" className="support-card-img" />
+            <div className="support-card-overlay"></div>
+            <div className="support-card-content">
+              <div className="support-card-icon" style={{ color: '#2563EB' }}>
+                <Globe size={22} />
+              </div>
+              <div className="support-card-text">
+                <h3>Global Scalability</h3>
+                <p>Infrastructure designed to support millions of users across diverse geographical regions without latency.</p>
+              </div>
             </div>
           </div>
 
           {/* Card 2: Pedagogical Excellence */}
           <div className="support-card-3col">
-            <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card2.png" alt="Pedagogical Excellence" />
-            </div>
-            <div className="support-card-3col-content">
-              <h3>Pedagogical Excellence</h3>
-              <p>Tools crafted in collaboration with leading educators to enhance learning outcomes and engagement.</p>
+            <img src="/assets/images/card2.png" alt="Pedagogical Excellence" className="support-card-img" />
+            <div className="support-card-overlay"></div>
+            <div className="support-card-content">
+              <div className="support-card-icon" style={{ color: '#9333EA' }}>
+                <GraduationCap size={22} />
+              </div>
+              <div className="support-card-text">
+                <h3>Pedagogical Excellence</h3>
+                <p>Tools crafted in collaboration with leading educators to enhance learning outcomes and engagement.</p>
+              </div>
             </div>
           </div>
 
           {/* Card 3: Administrative Efficiency */}
           <div className="support-card-3col">
-            <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card3.png" alt="Administrative Efficiency" />
-            </div>
-            <div className="support-card-3col-content">
-              <h3>Administrative Efficiency</h3>
-              <p>Streamline complex workflows and reporting with automated administrative dashboards.</p>
+            <img src="/assets/images/card3.png" alt="Administrative Efficiency" className="support-card-img" />
+            <div className="support-card-overlay"></div>
+            <div className="support-card-content">
+              <div className="support-card-icon" style={{ color: '#10B981' }}>
+                <BarChart3 size={22} />
+              </div>
+              <div className="support-card-text">
+                <h3>Administrative Efficiency</h3>
+                <p>Streamline complex workflows and reporting with automated administrative dashboards.</p>
+              </div>
             </div>
           </div>
 
           {/* Card 4: Collaborative Ecosystem */}
           <div className="support-card-3col">
-            <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card4.png" alt="Collaborative Ecosystem" />
-            </div>
-            <div className="support-card-3col-content">
-              <h3>Collaborative Ecosystem</h3>
-              <p>Seamless communication and resource sharing across teachers, students, parents, and administration.</p>
+            <img src="/assets/images/card4.png" alt="Collaborative Ecosystem" className="support-card-img" />
+            <div className="support-card-overlay"></div>
+            <div className="support-card-content">
+              <div className="support-card-icon" style={{ color: '#F59E0B' }}>
+                <Users size={22} />
+              </div>
+              <div className="support-card-text">
+                <h3>Collaborative Ecosystem</h3>
+                <p>Seamless communication and resource sharing across teachers, students, parents, and administration.</p>
+              </div>
             </div>
           </div>
 
           {/* Card 5: AI-Driven Insights */}
           <div className="support-card-3col">
-            <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card5.png" alt="AI-Driven Insights" />
-            </div>
-            <div className="support-card-3col-content">
-              <h3>AI-Driven Insights</h3>
-              <p>Predictive analytics to identify student risk factors and optimize institutional decision-making.</p>
+            <img src="/assets/images/card5.png" alt="AI-Driven Insights" className="support-card-img" />
+            <div className="support-card-overlay"></div>
+            <div className="support-card-content">
+              <div className="support-card-icon" style={{ color: '#E11D48' }}>
+                <Brain size={22} />
+              </div>
+              <div className="support-card-text">
+                <h3>AI-Driven Insights</h3>
+                <p>Predictive analytics to identify student risk factors and optimize institutional decision-making.</p>
+              </div>
             </div>
           </div>
 
           {/* Card 6: Enterprise-Grade Security */}
           <div className="support-card-3col">
-            <div className="support-card-3col-img-wrapper">
-              <img src="/assets/images/card6.png" alt="Enterprise-Grade Security" />
-            </div>
-            <div className="support-card-3col-content">
-              <h3>Enterprise-Grade Security</h3>
-              <p>Bank-grade encryption, role-based access control, and strict compliance with global data privacy standards.</p>
+            <img src="/assets/images/card6.png" alt="Enterprise-Grade Security" className="support-card-img" />
+            <div className="support-card-overlay"></div>
+            <div className="support-card-content">
+              <div className="support-card-icon" style={{ color: '#3B82F6' }}>
+                <Shield size={22} />
+              </div>
+              <div className="support-card-text">
+                <h3>Enterprise-Grade Security</h3>
+                <p>Bank-grade encryption, role-based access control, and strict compliance with global data privacy standards.</p>
+              </div>
             </div>
           </div>
         </div>
