@@ -5,6 +5,8 @@ import './About.css';
 import whoWeAre from '../assets/images/who we are.png';
 import visionImage from '../assets/images/vision_image.png';
 import missionImage from '../assets/images/mission_image.png';
+import visionCampus from '../assets/images/vision_campus.png';
+import heroSchoolImg from '../assets/images/about_hero_school.png';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
@@ -21,7 +23,7 @@ const AnimatedNumber = ({ end, duration = 2000, suffix = "" }) => {
     const updateCount = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const progress = timestamp - startTime;
-      
+
       if (progress < duration) {
         setCount(Math.floor(end * (progress / duration)));
         animationFrame = requestAnimationFrame(updateCount);
@@ -39,7 +41,7 @@ const AnimatedNumber = ({ end, duration = 2000, suffix = "" }) => {
     };
 
     observer = new IntersectionObserver(handleIntersect, { threshold: 0.1 });
-    
+
     if (nodeRef.current) {
       observer.observe(nodeRef.current);
     }
@@ -79,6 +81,22 @@ const About = ({ onLoginClick }) => {
 
       {/* Hero Section */}
       <section className="hero-section">
+        {/* Decorative: dot grid top-left */}
+        <div className="hero-dot-grid" aria-hidden="true" />
+        {/* Decorative: glowing orb top-center */}
+        <div className="hero-orb hero-orb--top" aria-hidden="true" />
+        {/* Decorative: glowing orb bottom-right */}
+        <div className="hero-orb hero-orb--bottom" aria-hidden="true" />
+        {/* Decorative: flowing abstract wave lines */}
+        <svg className="hero-waves" aria-hidden="true" viewBox="0 0 1400 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M-100,420 C150,380 250,460 450,390 C650,320 700,420 900,360 C1100,300 1200,380 1500,310" stroke="rgba(78,163,255,0.18)" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+          <path d="M-100,460 C200,420 300,490 500,430 C700,370 780,450 980,400 C1150,355 1300,420 1500,360" stroke="rgba(78,163,255,0.11)" strokeWidth="2" fill="none" strokeLinecap="round" />
+          <path d="M-100,380 C100,350 220,410 400,355 C600,300 680,380 880,330 C1080,280 1200,350 1500,280" stroke="rgba(21,101,245,0.14)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+          <circle cx="130" cy="140" r="5" fill="rgba(78,163,255,0.35)" />
+          <circle cx="95" cy="200" r="3" fill="rgba(78,163,255,0.25)" />
+          <circle cx="180" cy="180" r="4" fill="rgba(78,163,255,0.2)" />
+        </svg>
+
         <div className="hero-container">
           <div className="hero-content">
             <h4 className="mission-title reveal-on-scroll">OUR MISSION</h4>
@@ -90,9 +108,9 @@ const About = ({ onLoginClick }) => {
             </p>
           </div>
           <div className="hero-image-wrapper reveal-on-scroll stagger-3">
-            <img 
-              src={missionImage} 
-              alt="Education Network" 
+            <img
+              src={heroSchoolImg}
+              alt="Education Network"
               className="hero-image"
             />
           </div>
@@ -110,7 +128,7 @@ const About = ({ onLoginClick }) => {
             <p className="reveal-on-scroll stagger-2" style={{ textAlign: 'justify' }}>
               We are the proud parent company behind <strong>EduCrop</strong>, which is our flagship product. EduCrop is a powerful educational software designed specifically to help schools and colleges manage everything digitally.
             </p>
-            
+
             <div className="stats-row reveal-on-scroll stagger-3">
               <div className="about-stat-card">
                 <h3><AnimatedNumber end={45} suffix="+" /></h3>
@@ -130,7 +148,7 @@ const About = ({ onLoginClick }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="who-we-are-image-wrapper reveal-on-scroll stagger-2">
             <img src={whoWeAre} alt="Who We Are" className="who-we-are-main-img" />
           </div>
@@ -141,51 +159,51 @@ const About = ({ onLoginClick }) => {
       <section className="security-section">
         <div className="security-container-modern">
           <div className="security-content-wrapper">
-             <div className="security-text-content reveal-on-scroll">
-                <h2>HOW IS YOUR DATA SECURE WITH <span className="highlight-text">EDUCROP?</span></h2>
-                <p>At Educrop, the security and privacy of school data is our top priority. We follow industry best practices, legal agreements and use world-class cloud infrastructure to ensure your data is safe, secure and always protected.</p>
-                <div className="security-trust-badge">
-                   <ShieldCheck size={36} className="trust-icon" />
-                   <div>
-                     <strong>100% Secure & Compliant</strong>
-                     <span>Your data is handled strictly as per agreement.</span>
-                   </div>
+            <div className="security-text-content reveal-on-scroll">
+              <h2>HOW IS YOUR DATA SECURE WITH <span className="highlight-text">EDUCROP?</span></h2>
+              <p>At Educrop, the security and privacy of school data is our top priority. We follow industry best practices, legal agreements and use world-class cloud infrastructure to ensure your data is safe, secure and always protected.</p>
+              <div className="security-trust-badge">
+                <ShieldCheck size={36} className="trust-icon" />
+                <div>
+                  <strong>100% Secure & Compliant</strong>
+                  <span>Your data is handled strictly as per agreement.</span>
                 </div>
-             </div>
+              </div>
+            </div>
 
-             <div className="security-features-stack">
-                <div className="security-feature-row reveal-on-scroll stagger-1">
-                   <div className="feature-icon-box"><ShieldCheck size={20} /></div>
-                   <div className="feature-text-box">
-                      <h4>Legal & Compliance</h4>
-                      <p>Strict MOUs and comprehensive privacy policies ensure total legal protection.</p>
-                   </div>
+            <div className="security-features-stack">
+              <div className="security-feature-row reveal-on-scroll stagger-1">
+                <div className="feature-icon-box"><ShieldCheck size={20} /></div>
+                <div className="feature-text-box">
+                  <h4>Legal & Compliance</h4>
+                  <p>Strict MOUs and comprehensive privacy policies ensure total legal protection.</p>
                 </div>
+              </div>
 
-                <div className="security-feature-row reveal-on-scroll stagger-2">
-                   <div className="feature-icon-box"><Cloud size={20} /></div>
-                   <div className="feature-text-box">
-                      <h4>Cloud Infrastructure</h4>
-                      <p>Powered by enterprise-grade AWS, Google Cloud, and MongoDB servers.</p>
-                   </div>
+              <div className="security-feature-row reveal-on-scroll stagger-2">
+                <div className="feature-icon-box"><Cloud size={20} /></div>
+                <div className="feature-text-box">
+                  <h4>Cloud Infrastructure</h4>
+                  <p>Powered by enterprise-grade AWS, Google Cloud, and MongoDB servers.</p>
                 </div>
+              </div>
 
-                <div className="security-feature-row reveal-on-scroll stagger-3">
-                   <div className="feature-icon-box"><Lock size={20} /></div>
-                   <div className="feature-text-box">
-                      <h4>Data Encryption</h4>
-                      <p>Bank-grade encryption safeguards your information in transit and at rest.</p>
-                   </div>
+              <div className="security-feature-row reveal-on-scroll stagger-3">
+                <div className="feature-icon-box"><Lock size={20} /></div>
+                <div className="feature-text-box">
+                  <h4>Data Encryption</h4>
+                  <p>Bank-grade encryption safeguards your information in transit and at rest.</p>
                 </div>
+              </div>
 
-                <div className="security-feature-row reveal-on-scroll stagger-4">
-                   <div className="feature-icon-box"><Monitor size={20} /></div>
-                   <div className="feature-text-box">
-                      <h4>24/7 Monitoring</h4>
-                      <p>Continuous threat detection and automated disaster recovery backups.</p>
-                   </div>
+              <div className="security-feature-row reveal-on-scroll stagger-4">
+                <div className="feature-icon-box"><Monitor size={20} /></div>
+                <div className="feature-text-box">
+                  <h4>24/7 Monitoring</h4>
+                  <p>Continuous threat detection and automated disaster recovery backups.</p>
                 </div>
-             </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -196,7 +214,7 @@ const About = ({ onLoginClick }) => {
           <h2>Why <span className="highlight-text">We Are</span></h2>
           <p>A multidisciplinary creative technology studio helping businesses grow through immersive branding, modern ERP systems, and premium digital experiences.</p>
         </div>
-        
+
         <div className="features-grid">
           <div className="reveal-on-scroll">
             <div className="feature-card">
@@ -207,7 +225,7 @@ const About = ({ onLoginClick }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="reveal-on-scroll stagger-1">
             <div className="feature-card">
               <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=600" alt="Business Focused" className="feature-img" />
@@ -217,7 +235,7 @@ const About = ({ onLoginClick }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="reveal-on-scroll stagger-2">
             <div className="feature-card">
               <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=600" alt="Premium Execution" className="feature-img" />
@@ -231,40 +249,107 @@ const About = ({ onLoginClick }) => {
       </section>
 
       {/* Our Vision Section */}
-      <section className="vision-section">
-        <div className="vision-container">
-          <div className="vision-content">
-            <h2 className="reveal-on-scroll">Our Vision</h2>
-            
-            <div className="vision-item reveal-on-scroll stagger-1">
-              <Rocket className="vision-icon" size={28} />
-              <div className="vision-text">
-                <h3>The Autonomous Campus</h3>
-                <p>We envision a future where administrative tasks are invisible, powered by ethical AI that predicts needs before they become hurdles.</p>
-              </div>
+      <section className="vs-section">
+        {/* Background blobs */}
+        <div className="vs-blob vs-blob--l" aria-hidden="true" />
+        <div className="vs-blob vs-blob--r" aria-hidden="true" />
+
+        <div className="vs-card reveal-on-scroll">
+
+          {/* ───── LEFT COLUMN ───── */}
+          <div className="vs-left">
+
+            {/* Badge */}
+            <div className="vs-badge">
+              <span className="vs-badge-star">✦</span>
+              OUR VISION
             </div>
-            
-            <div className="vision-item reveal-on-scroll stagger-2">
-              <Globe className="vision-icon" size={28} />
-              <div className="vision-text">
-                <h3>Global Standards</h3>
-                <p>Setting the benchmark for how educational data is stored and shared globally, ensuring student mobility is never hindered by red tape.</p>
+
+            {/* Heading + underline */}
+            <h2 className="vs-heading">Our Vision</h2>
+            <div className="vs-underline" aria-hidden="true" />
+
+            {/* Feature cards */}
+            <div className="vs-stack">
+
+              <div className="vs-feature reveal-on-scroll stagger-1">
+                <div className="vs-icon-circle">
+                  <Rocket size={20} />
+                </div>
+                <div className="vs-feature-body">
+                  <h3>The Autonomous Campus</h3>
+                  <p>We envision a future where administrative tasks are invisible, powered by ethical AI that predicts needs before they become hurdles.</p>
+                </div>
               </div>
-            </div>
-            
-            <div className="vision-item reveal-on-scroll stagger-3">
-              <Leaf className="vision-icon" size={28} />
-              <div className="vision-text">
-                <h3>Sustainability through Efficiency</h3>
-                <p>Reducing the physical footprint of institutions by digitizing every legacy paper trail, from visitor logs to academic transcripts.</p>
+
+              <div className="vs-feature reveal-on-scroll stagger-2">
+                <div className="vs-icon-circle">
+                  <Globe size={20} />
+                </div>
+                <div className="vs-feature-body">
+                  <h3>Global Standards</h3>
+                  <p>Setting the benchmark for how educational data is stored and shared globally, ensuring student mobility is never hindered by red tape.</p>
+                </div>
               </div>
+
+              <div className="vs-feature reveal-on-scroll stagger-3">
+                <div className="vs-icon-circle">
+                  <Leaf size={20} />
+                </div>
+                <div className="vs-feature-body">
+                  <h3>Sustainability through Efficiency</h3>
+                  <p>Reducing the physical footprint of institutions by digitizing every legacy paper trail, from visitor logs to academic transcripts.</p>
+                </div>
+              </div>
+
             </div>
           </div>
-          <div className="vision-image-wrapper reveal-on-scroll stagger-2">
-            <img src={visionImage} alt="Building Safer Schools" className="vision-img" />
+
+          {/* ───── RIGHT COLUMN ───── */}
+          <div className="vs-right reveal-on-scroll stagger-2">
+            <div className="vs-img-wrap">
+
+              {/* Campus photo */}
+              <img
+                src={visionCampus}
+                alt="Modern school campus with students and teacher"
+                className="vs-img"
+              />
+
+              {/* Blue gradient overlay — matches reference color grade */}
+              <div className="vs-img-tint" aria-hidden="true" />
+
+              {/* Floating glass stat cards — stacked on right edge */}
+              <div className="vs-stat vs-stat--1">
+                <div className="vs-stat-icon">📊</div>
+                <div className="vs-stat-body">
+                  <strong>98%</strong>
+                  <span>Administrative<br />Automation</span>
+                </div>
+              </div>
+
+              <div className="vs-stat vs-stat--2">
+                <div className="vs-stat-icon">🤖</div>
+                <div className="vs-stat-body">
+                  <strong>AI Driven</strong>
+                  <span>Campus</span>
+                </div>
+              </div>
+
+              <div className="vs-stat vs-stat--3">
+                <div className="vs-stat-icon">🌍</div>
+                <div className="vs-stat-body">
+                  <strong>Global Education</strong>
+                  <span>Network</span>
+                </div>
+              </div>
+
+            </div>
           </div>
+
         </div>
       </section>
+
 
       {/* Call to Action Section */}
       <section className="cta-section reveal-on-scroll">
