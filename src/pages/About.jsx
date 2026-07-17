@@ -96,7 +96,7 @@ const About = ({ onLoginClick }) => {
 
               <h1 className="hero-heading stagger-2">
                 Empowering Institutions <br className="hero-br" />
-                Through <span className="hero-highlight">Digital Precision.</span>
+                Through <span className="hero-highlight">Digital Precision</span>
               </h1>
 
               <p className="hero-description stagger-3">
@@ -104,7 +104,15 @@ const About = ({ onLoginClick }) => {
               </p>
 
               <div className="hero-button-group stagger-3">
-                <button className="btn-learn-more">
+                <button
+                  className="btn-learn-more"
+                  onClick={() => {
+                    const section = document.querySelector('.who-we-are-section');
+                    if (section) {
+                      section.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                >
                   Learn More About Us <ArrowRight size={18} />
                 </button>
               </div>
