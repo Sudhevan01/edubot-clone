@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Check, Network, Sparkles, Database, Cpu, Smartphone, Cloud, ArrowUpRight, Menu, X, Receipt, Building, Calendar, GraduationCap, ClipboardList, Award, TrendingUp, CalendarCheck, CalendarX, Bell, Users, BookOpen } from 'lucide-react';
+import { ArrowRight, Shield, Check, Network, Sparkles, Database, Cpu, Smartphone, Cloud, ArrowUpRight, Menu, X, Receipt, Building, Calendar, GraduationCap, ClipboardList, Award, TrendingUp, CalendarCheck, CalendarX, Bell, Users, BookOpen, Bus, MapPin, Route, UserCheck } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
 import './Product.css';
@@ -65,7 +65,7 @@ const Product = ({ onLoginClick }) => {
               <span className="badge-tag-new">ENTERPRISE ACADEMIC SUITE</span>
               <h1 className="product-hero-title-new">
                 Precision Infrastructure <br className="hidden-mobile" />
-                for <span className="text-blue">Modern Institutions.</span>
+                for <span className="text-blue">Modern Institutions</span>
               </h1>
               <p className="product-hero-subtitle-new">
                 Streamline your academic ecosystem with our<br />
@@ -245,6 +245,74 @@ const Product = ({ onLoginClick }) => {
                 <img
                   src="/assets/images/vms_kiosk.png"
                   alt="VMS Visitor Tablet Kiosk"
+                  className="product-system-img"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* TMS: Transport Management System */}
+        <div className="system-row light-bg" id="tms">
+          <div className="system-row-container">
+            <div className="system-text-col reveal-on-scroll">
+              <div className="system-icon-box rms-green-box">
+                <Bus size={24} />
+              </div>
+              <h2 className="system-title">TMS: Transport Management System</h2>
+              <p className="system-subtitle">
+                Simplify transport operations with live tracking, route planning, and fleet monitoring for safer and more efficient journeys.
+              </p>
+              <div className="system-features-grid">
+                <div className="sys-feature reveal-on-scroll stagger-1">
+                  <span className="bullet-icon"><MapPin size={16} strokeWidth={3} /></span>
+                  <div>
+                    <h4>Real-Time Tracking</h4>
+                    <p>Track vehicles live with location, status, and ETA updates.</p>
+                  </div>
+                </div>
+                <div className="sys-feature reveal-on-scroll stagger-2">
+                  <span className="bullet-icon"><Route size={16} strokeWidth={3} /></span>
+                  <div>
+                    <h4>Route Optimization</h4>
+                    <p>Plan efficient routes to reduce delays and travel time.</p>
+                  </div>
+                </div>
+                <div className="sys-feature reveal-on-scroll stagger-3">
+                  <span className="bullet-icon"><Users size={16} strokeWidth={3} /></span>
+                  <div>
+                    <h4>Transport Attendance</h4>
+                    <p>Record passenger check-ins and trip attendance seamlessly.</p>
+                  </div>
+                </div>
+                <div className="sys-feature reveal-on-scroll stagger-4">
+                  <span className="bullet-icon"><Bell size={16} strokeWidth={3} /></span>
+                  <div>
+                    <h4>Instant Notifications</h4>
+                    <p>Send alerts for arrivals, delays, and route changes.</p>
+                  </div>
+                </div>
+                <div className="sys-feature reveal-on-scroll stagger-5">
+                  <span className="bullet-icon"><UserCheck size={16} strokeWidth={3} /></span>
+                  <div>
+                    <h4>Driver Management</h4>
+                    <p>Manage drivers, licenses, and transport assignments.</p>
+                  </div>
+                </div>
+                <div className="sys-feature reveal-on-scroll stagger-6">
+                  <span className="bullet-icon"><TrendingUp size={16} strokeWidth={3} /></span>
+                  <div>
+                    <h4>Reports & Analytics</h4>
+                    <p>Monitor performance with transport insights and reports.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="system-image-col reveal-on-scroll">
+              <div className="product-image-box">
+                <img
+                  src="/assets/images/image.png"
+                  alt="TMS Transport Management System Dashboard"
                   className="product-system-img"
                 />
               </div>
