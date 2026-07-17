@@ -53,6 +53,7 @@ const Homepage = ({ onLoginClick }) => {
               <span className="hero-title-line line-1">Empowering</span>
               <span className="hero-title-line line-2">Academic Excellence</span>
             </h1>
+            <div className="hero-accent-line hidden-except-tablet"></div>
             <p className="hero-desc">
               Educrop provides the robust structural foundation and digital orchestration required for modern educational institutions to thrive in an era of rapid digital transformation.
             </p>
