@@ -231,7 +231,7 @@ const Contact = ({ onLoginClick }) => {
 
             <div className="info-items">
               <div className="info-item">
-                <div className="info-icon" style={{ marginTop: '5px' }}><Mail size={20} /></div>
+                <div className="info-icon" style={{ marginTop: '12px' }}><Mail size={20} /></div>
                 <div className="info-text">
                   <p className="info-label">Email Address</p>
                   <p className="info-value">

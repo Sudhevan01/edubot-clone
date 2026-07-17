@@ -1633,7 +1633,10 @@
 }
 
 /* Tablet Landscape / Small Desktop Responsiveness for Hero */
-@media (min-width: 1025px) and (max-width: 1200px) {
+@media (min-width: 1025px) and (max-width: 1200px),
+(min-width: 1024px) and (max-width: 1366px),
+(min-width: 820px) and (max-width: 1180px),
+(min-width: 768px) and (max-width: 1024px) {
   .product-hero-left-content {
     max-width: 55%;
   }
