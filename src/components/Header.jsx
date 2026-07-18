@@ -15,7 +15,8 @@ const Header = ({ onLoginClick }) => {
     { name: 'Product', path: '/product' },
     { name: 'Docs', path: '/docs' },
     { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Contact', path: '/contact' },
+    { name: 'Benefits', path: '/benefits' }
   ];
 
   const handleNavClick = (e, path) => {

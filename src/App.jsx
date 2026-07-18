@@ -8,6 +8,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
 import Docs from './pages/Docs';
+import Benefits from './pages/Benefits';
 import './styles/global.css';
 
 const ScrollToTop = () => {
@@ -53,6 +54,7 @@ function App() {
         <Route path="/product" element={<Product onLoginClick={handleLoginClick} />} />
         <Route path="/about" element={<About onLoginClick={handleLoginClick} />} />
         <Route path="/contact" element={<Contact onLoginClick={handleLoginClick} />} />
+        <Route path="/benefits" element={<Benefits onLoginClick={handleLoginClick} />} />
         <Route path="/privacy" element={<Privacy onLoginClick={handleLoginClick} />} />
         <Route path="/terms" element={<Terms onLoginClick={handleLoginClick} />} />
         <Route path="/accessibility" element={<Accessibility onLoginClick={handleLoginClick} />} />
