@@ -781,50 +781,6 @@ const Benefits = ({ onLoginClick }) => {
         </div>
       </section>
 
-      {/* 7. TESTIMONIALS */}
-      <section className="ben-testimonials-section">
-        <h2 className="ben-section-title reveal-on-scroll">What Institutions Say About Educrop</h2>
-        <div className="ben-testimonials-grid">
-
-          <div className="ben-testimonial-card reveal-on-scroll">
-            <p className="ben-quote">"Educrop has completely transformed the way we manage our institution. It's easy to use, reliable and has improved communication between teachers and parents."</p>
-            <div className="ben-stars">★★★★★</div>
-            <div className="ben-author">
-              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=100&auto=format&fit=crop" alt="Principal" className="ben-author-img" />
-              <div className="ben-author-info">
-                <h4>Greenfield International School</h4>
-                <p>Principal</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="ben-testimonial-card reveal-on-scroll stagger-1">
-            <p className="ben-quote">"The automation and real-time reports have saved us countless hours. Fee management and attendance tracking are now so seamless."</p>
-            <div className="ben-stars">★★★★★</div>
-            <div className="ben-author">
-              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=100&auto=format&fit=crop" alt="Admin" className="ben-author-img" />
-              <div className="ben-author-info">
-                <h4>St. Mary's Convent School</h4>
-                <p>Administrator</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="ben-testimonial-card reveal-on-scroll stagger-2">
-            <p className="ben-quote">"Parents love the portal! They can check everything in real-time which has increased transparency and trust."</p>
-            <div className="ben-stars">★★★★★</div>
-            <div className="ben-author">
-              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=100&auto=format&fit=crop" alt="Director" className="ben-author-img" />
-              <div className="ben-author-info">
-                <h4>Bright Future Academy</h4>
-                <p>Managing Director</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
       {/* 8. FAQ */}
       <section className="ben-faq-section">
         {/* Decorative background elements */}

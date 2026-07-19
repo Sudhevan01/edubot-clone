@@ -1551,70 +1551,6 @@
 }
 
 /* ============================================================
-   7. TESTIMONIALS
-   ============================================================ */
-.ben-testimonials-section {
-  padding: 6rem 5% 2.5rem;
-  background: #f8fafc;
-}
-
-.ben-testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.ben-testimonial-card {
-  background: #ffffff;
-  padding: 2.5rem;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-}
-
-.ben-quote {
-  font-size: 1rem;
-  color: #475569;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-  font-style: italic;
-}
-
-.ben-stars {
-  color: #fbbf24;
-  margin-bottom: 1.5rem;
-  display: flex;
-  gap: 0.25rem;
-}
-
-.ben-author {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.ben-author-img {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #e2e8f0;
-  object-fit: cover;
-}
-
-.ben-author-info h4 {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.ben-author-info p {
-  font-size: 0.8rem;
-  color: #64748b;
-}
-
-/* ============================================================
    8. FAQ — Premium Design
    ============================================================ */
 
@@ -1984,6 +1920,7 @@
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1200px) {
+
   .ben-final-btn-primary,
   .ben-final-btn-secondary {
     width: 190px;
@@ -2059,9 +1996,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .ben-testimonials-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+
 
   .ben-workflow-container {
     flex-direction: column;
@@ -2114,9 +2049,7 @@
     font-size: 2.2rem;
   }
 
-  .ben-testimonials-grid {
-    grid-template-columns: 1fr;
-  }
+
 
   .ben-users-grid {
     grid-template-columns: 1fr;
@@ -2242,7 +2175,7 @@
     flex-direction: column;
     transform: none !important;
     animation: none;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   }
 
   .dash-sidebar {
