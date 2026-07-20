@@ -45,7 +45,7 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  padding: 8rem 5% 8rem;
+  padding: 8rem 5% 5rem;
 }
 
 /* Background Effects */
@@ -517,65 +517,7 @@
   }
 }
 
-/* Trust Bar */
-.hero-trust-bar {
-  position: absolute;
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 1.5rem 3rem;
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-  width: 90%;
-  max-width: 1200px;
-  justify-content: space-between;
-}
 
-.trust-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.trust-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(37, 99, 235, 0.2);
-  color: #60a5fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.trust-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.trust-text strong {
-  color: #ffffff;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.trust-text span {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.75rem;
-}
-
-.trust-divider {
-  width: 1px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.15);
-}
 
 /* ============================================================
    2. POWERFUL BENEFITS
@@ -597,7 +539,8 @@
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(226, 232, 240, 0.7);
   border-radius: 24px;
-  padding: 2.5rem 2rem 2rem;
+  padding: 2.5rem 2rem;
+  justify-content: center;
   text-align: center;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(37, 99, 235, 0.02);
@@ -678,52 +621,8 @@
   font-size: 0.9rem;
   color: #64748b;
   line-height: 1.6;
-  margin-bottom: 1.5rem;
-  flex: 1;
 }
 
-.ben-card-bottom {
-  margin-top: auto;
-  padding-top: 1rem;
-}
-
-.ben-card-divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(226, 232, 240, 0.7), transparent);
-  margin-bottom: 1rem;
-}
-
-.ben-card-learn-more {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #64748b;
-  transition: color 0.3s ease;
-}
-
-.ben-card-arrow-wrap {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #f1f5f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #94a3b8;
-  transition: all 0.3s ease;
-}
-
-.ben-benefit-card:hover .ben-card-learn-more {
-  color: #2563eb;
-}
-
-.ben-benefit-card:hover .ben-card-arrow-wrap {
-  background: #2563eb;
-  color: #ffffff;
-  transform: translateX(4px);
-}
 
 /* ============================================================
    3. CONNECTED ECOSYSTEM — Reference Design
@@ -731,34 +630,20 @@
 
 .ben-ecosystem-section {
   padding: 5rem 0 2.5rem;
-  background: linear-gradient(160deg, #f4f8ff 0%, #ffffff 45%, #f8fbff 100%);
+  background: 
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.85) 0%, transparent 55%),
+    radial-gradient(circle at bottom center, rgba(237, 243, 255, 0.8) 0%, transparent 60%),
+    radial-gradient(circle at bottom left, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.015) 100%),
+    linear-gradient(160deg, #F4F7FC 0%, #EDF3FF 50%, #F4F7FC 100%);
   position: relative;
   overflow: hidden;
 }
 
-/* Corner blobs */
+/* Corner blobs hidden in favor of multi-layered background */
 .eco-bg-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.eco-bg-blob--tl {
-  width: 340px;
-  height: 340px;
-  background: rgba(37, 99, 235, 0.07);
-  top: -100px;
-  left: -100px;
-}
-
-.eco-bg-blob--tr {
-  width: 280px;
-  height: 280px;
-  background: rgba(99, 102, 241, 0.06);
-  top: -70px;
-  right: -70px;
+  display: none;
 }
 
 /* Main wrapper */
@@ -849,7 +734,7 @@
   border-radius: 20px;
   padding: 1.1rem 1rem;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.9rem;
   box-shadow: 0 2px 10px rgba(37, 99, 235, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
   transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
@@ -909,28 +794,6 @@
   margin: 0;
 }
 
-.eco-feat-btn {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
-  color: #94a3b8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.22s ease;
-  align-self: center;
-}
-
-.eco-feat-card:hover .eco-feat-btn {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
-  transform: translateX(2px);
-}
 
 /* ── Dashboard wrapper ── */
 .eco-dash-wrap {
@@ -1362,13 +1225,14 @@
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 2.5rem 1.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ben-user-card:hover {
   background: #ffffff;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 24px 48px rgba(37, 99, 235, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
   border-color: #cbd5e1;
+  transform: translateY(-8px) scale(1.02);
 }
 
 .ben-user-icon {
@@ -1381,6 +1245,25 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ben-user-card:hover .ben-user-icon {
+  transform: scale(1.1) rotate(-4deg);
+  background: #e0f2fe;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ben-user-card,
+  .ben-user-icon {
+    transition: none !important;
+  }
+  .ben-user-card:hover {
+    transform: none !important;
+  }
+  .ben-user-card:hover .ben-user-icon {
+    transform: none !important;
+  }
 }
 
 .ben-user-card h3 {
@@ -1945,20 +1828,7 @@
     margin: 0 auto;
   }
 
-  .hero-trust-bar {
-    position: relative;
-    bottom: 0;
-    transform: none;
-    left: 0;
-    margin: 4rem auto 0;
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
 
-  .trust-divider {
-    display: none;
-  }
 
   .ben-benefits-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -2056,6 +1926,142 @@
   }
 }
 
+@media (max-width: 768px) {
+
+  /* ---- HERO V2 MOBILE OPTIMIZATIONS ---- */
+  .ben-hero-v2 {
+    min-height: auto;
+    padding: 100px 20px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .ben-hero-v2-container {
+    gap: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ben-hero-v2-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ben-hero-v2-badge {
+    margin: 0 auto 1.5rem;
+    display: inline-flex;
+    justify-content: center;
+  }
+
+  .ben-hero-v2-title {
+    font-size: 2.375rem;
+    /* 38px */
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: normal;
+    margin: 0 auto 1.25rem;
+    word-break: normal;
+    text-align: center;
+    width: 100%;
+  }
+
+  .ben-hero-v2-subtitle {
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 100%;
+    margin: 0 auto 2.5rem;
+    text-align: center;
+    padding: 0;
+  }
+
+  .ben-hero-v2-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ben-hero-v2-btn-primary,
+  .ben-hero-v2-btn-secondary {
+    width: 100%;
+    justify-content: center;
+    height: 56px;
+    border-radius: 14px;
+    padding: 0 1rem;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .ben-hero-v2-visual {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .ben-hero-v2-dashboard {
+    height: auto;
+    width: 100%;
+    flex-direction: column;
+    transform: none !important;
+    animation: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    margin: 0 auto;
+  }
+
+  .dash-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .dash-nav {
+    flex-direction: row;
+  }
+
+  .dash-charts {
+    grid-template-columns: 1fr;
+  }
+
+
+
+  .hero-kpi-card {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: 1rem auto 0;
+    width: 100%;
+    max-width: 280px;
+    animation: none;
+    box-sizing: border-box;
+  }
+}
+
 @media (max-width: 540px) {
   .eco-heading {
     font-size: 1.75rem;
@@ -2105,112 +2111,7 @@
     height: 56px;
   }
 
-  /* ---- HERO V2 MOBILE OPTIMIZATIONS ---- */
-  .ben-hero-v2 {
-    min-height: auto;
-    padding: 100px 20px 80px;
-  }
 
-  .ben-hero-v2-container {
-    gap: 3rem;
-  }
-
-  .ben-hero-v2-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .ben-hero-v2-badge {
-    margin: 0 auto 1.5rem;
-  }
-
-  .ben-hero-v2-title {
-    font-size: 38px;
-    font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: normal;
-    margin-bottom: 1.25rem;
-    word-break: normal;
-  }
-
-  .ben-hero-v2-subtitle {
-    font-size: 16px;
-    line-height: 1.7;
-    max-width: 100%;
-    margin: 0 auto 2.5rem;
-  }
-
-  .ben-hero-v2-cta {
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-    align-items: center;
-  }
-
-  .ben-hero-v2-btn-primary,
-  .ben-hero-v2-btn-secondary {
-    width: 100%;
-    justify-content: center;
-    height: 56px;
-    border-radius: 14px;
-    padding: 0 1rem;
-  }
-
-  .ben-hero-v2-visual {
-    width: 100%;
-    max-width: 340px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .ben-hero-v2-dashboard {
-    height: auto;
-    width: 100%;
-    flex-direction: column;
-    transform: none !important;
-    animation: none;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  }
-
-  .dash-sidebar {
-    width: 100%;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 1rem;
-  }
-
-  .dash-nav {
-    flex-direction: row;
-  }
-
-  .dash-charts {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-trust-bar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem;
-  }
-
-  .hero-kpi-card {
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    margin: 1rem auto 0;
-    width: 100%;
-    max-width: 280px;
-    animation: none;
-  }
 
   /* ------------------------------------ */
 

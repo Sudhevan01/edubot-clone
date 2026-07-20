@@ -233,44 +233,7 @@ const Benefits = ({ onLoginClick }) => {
             </div>
           </div>
         </div>
-
-        {/* Floating Trust Bar */}
-        <div className="hero-trust-bar">
-          <div className="trust-item">
-            <div className="trust-icon"><Users size={20} /></div>
-            <div className="trust-text">
-              <strong>150+</strong>
-              <span>Institutions Trust Us</span>
-            </div>
-          </div>
-          <div className="trust-divider"></div>
-          <div className="trust-item">
-            <div className="trust-icon"><ShieldCheck size={20} /></div>
-            <div className="trust-text">
-              <strong>99.9%</strong>
-              <span>System Uptime</span>
-            </div>
-          </div>
-          <div className="trust-divider"></div>
-          <div className="trust-item">
-            <div className="trust-icon"><Headphones size={20} /></div>
-            <div className="trust-text">
-              <strong>24/7</strong>
-              <span>Customer Support</span>
-            </div>
-          </div>
-          <div className="trust-divider"></div>
-          <div className="trust-item">
-            <div className="trust-icon"><Lock size={20} /></div>
-            <div className="trust-text">
-              <strong>Secure</strong>
-              <span>Data & Privacy</span>
-            </div>
-          </div>
-        </div>
       </section>
-
-
       {/* 2. POWERFUL BENEFITS */}
       <section className="ben-benefits-section">
         <h2 className="ben-section-title reveal-on-scroll">Powerful Benefits for Modern Institutions</h2>
@@ -282,13 +245,7 @@ const Benefits = ({ onLoginClick }) => {
             </div>
             <h3>Academic Excellence</h3>
             <p>Streamline academic operations and improve student performance with smart tools.</p>
-            <div className="ben-card-bottom">
-              <div className="ben-card-divider"></div>
-              <div className="ben-card-learn-more">
-                <span>Learn More</span>
-                <div className="ben-card-arrow-wrap"><ArrowRight size={12} strokeWidth={2.5} /></div>
-              </div>
-            </div>
+
           </div>
           <div className="ben-benefit-card reveal-on-scroll stagger-1">
             <div className="ben-card-accent"></div>
@@ -297,13 +254,7 @@ const Benefits = ({ onLoginClick }) => {
             </div>
             <h3>Complete Automation</h3>
             <p>Automate repetitive tasks and reduce manual work across all departments.</p>
-            <div className="ben-card-bottom">
-              <div className="ben-card-divider"></div>
-              <div className="ben-card-learn-more">
-                <span>Learn More</span>
-                <div className="ben-card-arrow-wrap"><ArrowRight size={12} strokeWidth={2.5} /></div>
-              </div>
-            </div>
+
           </div>
           <div className="ben-benefit-card reveal-on-scroll stagger-2">
             <div className="ben-card-accent"></div>
@@ -312,13 +263,7 @@ const Benefits = ({ onLoginClick }) => {
             </div>
             <h3>Secure Cloud Infrastructure</h3>
             <p>Enterprise-grade security with encrypted data and regular backups.</p>
-            <div className="ben-card-bottom">
-              <div className="ben-card-divider"></div>
-              <div className="ben-card-learn-more">
-                <span>Learn More</span>
-                <div className="ben-card-arrow-wrap"><ArrowRight size={12} strokeWidth={2.5} /></div>
-              </div>
-            </div>
+
           </div>
           <div className="ben-benefit-card reveal-on-scroll stagger-3">
             <div className="ben-card-accent"></div>
@@ -327,13 +272,7 @@ const Benefits = ({ onLoginClick }) => {
             </div>
             <h3>Faster Administration</h3>
             <p>Manage everything faster with a centralized dashboard and easy access.</p>
-            <div className="ben-card-bottom">
-              <div className="ben-card-divider"></div>
-              <div className="ben-card-learn-more">
-                <span>Learn More</span>
-                <div className="ben-card-arrow-wrap"><ArrowRight size={12} strokeWidth={2.5} /></div>
-              </div>
-            </div>
+
           </div>
           <div className="ben-benefit-card reveal-on-scroll stagger-4">
             <div className="ben-card-accent"></div>
@@ -342,13 +281,7 @@ const Benefits = ({ onLoginClick }) => {
             </div>
             <h3>Parent Engagement</h3>
             <p>Keep parents informed and involved in their child's academic journey.</p>
-            <div className="ben-card-bottom">
-              <div className="ben-card-divider"></div>
-              <div className="ben-card-learn-more">
-                <span>Learn More</span>
-                <div className="ben-card-arrow-wrap"><ArrowRight size={12} strokeWidth={2.5} /></div>
-              </div>
-            </div>
+
           </div>
           <div className="ben-benefit-card reveal-on-scroll stagger-5">
             <div className="ben-card-accent"></div>
@@ -357,13 +290,7 @@ const Benefits = ({ onLoginClick }) => {
             </div>
             <h3>Powerful Analytics</h3>
             <p>Make data-driven decisions with real-time reports and smart insights.</p>
-            <div className="ben-card-bottom">
-              <div className="ben-card-divider"></div>
-              <div className="ben-card-learn-more">
-                <span>Learn More</span>
-                <div className="ben-card-arrow-wrap"><ArrowRight size={12} strokeWidth={2.5} /></div>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
@@ -406,7 +333,7 @@ const Benefits = ({ onLoginClick }) => {
                   <h4>Student Management</h4>
                   <p>Manage student data, admissions, attendance, and performance in one place.</p>
                 </div>
-                <button className="eco-feat-btn" aria-label="Student Management"><ArrowRight size={14} /></button>
+
               </div>
 
               <div className="eco-feat-card">
@@ -417,7 +344,7 @@ const Benefits = ({ onLoginClick }) => {
                   <h4>Attendance Management</h4>
                   <p>Track attendance in real-time with automated reports and smart analytics.</p>
                 </div>
-                <button className="eco-feat-btn" aria-label="Attendance Management"><ArrowRight size={14} /></button>
+
               </div>
 
               <div className="eco-feat-card">
@@ -428,7 +355,7 @@ const Benefits = ({ onLoginClick }) => {
                   <h4>Fee Management</h4>
                   <p>Automate fee collection, invoices, reminders and financial tracking.</p>
                 </div>
-                <button className="eco-feat-btn" aria-label="Fee Management"><ArrowRight size={14} /></button>
+
               </div>
 
               <div className="eco-feat-card">
@@ -439,7 +366,7 @@ const Benefits = ({ onLoginClick }) => {
                   <h4>Library Management</h4>
                   <p>Digitize library operations and manage books, issues and returns easily.</p>
                 </div>
-                <button className="eco-feat-btn" aria-label="Library Management"><ArrowRight size={14} /></button>
+
               </div>
             </div>
 
@@ -567,7 +494,7 @@ const Benefits = ({ onLoginClick }) => {
                   <h4>Staff Management</h4>
                   <p>Manage staff information, roles, leaves, and performance efficiently.</p>
                 </div>
-                <button className="eco-feat-btn" aria-label="Staff Management"><ArrowRight size={14} /></button>
+
               </div>
 
               <div className="eco-feat-card">
@@ -578,7 +505,7 @@ const Benefits = ({ onLoginClick }) => {
                   <h4>Communication</h4>
                   <p>Connect with students, parents and staff through announcements and messages.</p>
                 </div>
-                <button className="eco-feat-btn" aria-label="Communication"><ArrowRight size={14} /></button>
+
               </div>
 
               <div className="eco-feat-card">
@@ -589,7 +516,7 @@ const Benefits = ({ onLoginClick }) => {
                   <h4>Reports & Analytics</h4>
                   <p>Get real-time insights with powerful reports and advanced analytics.</p>
                 </div>
-                <button className="eco-feat-btn" aria-label="Reports and Analytics"><ArrowRight size={14} /></button>
+
               </div>
 
               <div className="eco-feat-card">
@@ -600,7 +527,7 @@ const Benefits = ({ onLoginClick }) => {
                   <h4>Parent Portal</h4>
                   <p>Keep parents informed and engaged with real-time updates and communication.</p>
                 </div>
-                <button className="eco-feat-btn" aria-label="Parent Portal"><ArrowRight size={14} /></button>
+
               </div>
             </div>
 
