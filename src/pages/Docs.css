@@ -71,6 +71,7 @@
 /* Glassmorphism Sticky Sidebar */
 .docs-sidebar {
   position: relative;
+  max-height: calc(100vh - 120px);
 }
 
 .sidebar-sticky-box {
@@ -84,7 +85,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
   border: 1px solid rgba(226, 232, 240, 0.7);
   animation: fadeInLeft 0.6s ease-out;
-  max-height: calc(100vh - 120px);
+  height: 100%;
   overflow-y: auto;
 }
 
@@ -178,6 +179,7 @@
 /* Documentation Content Panel */
 .docs-body {
   min-width: 0;
+  max-height: calc(100vh - 120px);
 }
 
 .docs-content-card {
@@ -186,7 +188,24 @@
   padding: 3rem;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.02);
   border: 1px solid rgba(226, 232, 240, 0.6);
-  min-height: 500px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Custom slim scrollbar for the content card */
+.docs-content-card::-webkit-scrollbar {
+  width: 6px;
+}
+.docs-content-card::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+.docs-content-card::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 10px;
+}
+.docs-content-card::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
 }
 
 /* Dynamic Tab transition */
@@ -946,9 +965,14 @@
     padding: 2.5rem 1.5rem;
   }
 
+  .docs-sidebar, .docs-body {
+    max-height: none;
+  }
+
   .sidebar-sticky-box {
     position: relative;
     top: 0;
+    height: auto;
   }
 
   .docs-hero h1 {
@@ -957,5 +981,7 @@
 
   .docs-content-card {
     padding: 2rem;
+    height: auto;
+    overflow-y: visible;
   }
 }
