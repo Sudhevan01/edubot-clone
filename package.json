@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "dayjs": "^1.11.21",
+    "h264-mp4-encoder": "^1.0.12",
     "html2canvas": "^1.4.1",
     "html5-qrcode": "^2.3.8",
+    "jimp": "^1.6.1",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.17.0",
     "react": "^19.2.5",

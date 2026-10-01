@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe, GraduationCap, BookOpen, Award, School, Brain } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
-import schoolHeroVideo from '../assets/videos/school-hero.mp4';
+import schoolHeroImg from '../assets/images/school-hero-indian.png';
 import './Homepage.css';
 
 const Homepage = ({ onLoginClick }) => {
@@ -30,15 +30,11 @@ const Homepage = ({ onLoginClick }) => {
         className="landing-hero"
         id="home"
       >
-        {/* Background Video */}
-        <video
+        {/* Background Image */}
+        <img
           className="hero-bg-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          src={schoolHeroVideo}
+          src={schoolHeroImg}
+          alt="Indian Classroom Education"
         />
 
         {/* Educrop Brand Overlay - Premium dark blue gradient overlay (55-60% opacity) */}

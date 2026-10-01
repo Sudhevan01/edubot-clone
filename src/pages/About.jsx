@@ -7,6 +7,9 @@ import visionImage from '../assets/images/vision_image.png';
 import missionImage from '../assets/images/mission_image.png';
 import visionCampus from '../assets/images/vision_campus.png';
 import heroSchoolImg from '../assets/images/about_hero_school.png';
+import whyCreativeInnovation from '../assets/images/why_creative_innovation.png';
+import whyBusinessFocused from '../assets/images/why_business_focused.png';
+import whyPremiumExecution from '../assets/images/why_premium_execution.png';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
@@ -229,7 +232,7 @@ const About = ({ onLoginClick }) => {
         <div className="features-grid">
           <div className="reveal-on-scroll">
             <div className="feature-card">
-              <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=600" alt="Creative Innovation" className="feature-img" />
+              <img src={whyCreativeInnovation} alt="Creative Innovation" className="feature-img" />
               <div className="feature-content">
                 <h3>Creative Innovation</h3>
                 <p>We blend storytelling, UI/UX, branding, and enterprise systems into powerful business ecosystems.</p>
@@ -239,7 +242,7 @@ const About = ({ onLoginClick }) => {
 
           <div className="reveal-on-scroll stagger-1">
             <div className="feature-card">
-              <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=600" alt="Business Focused" className="feature-img" />
+              <img src={whyBusinessFocused} alt="Business Focused" className="feature-img" />
               <div className="feature-content">
                 <h3>Business Focused</h3>
                 <p>Every solution is designed to improve growth, operations, customer experience, and scalability.</p>
@@ -249,7 +252,7 @@ const About = ({ onLoginClick }) => {
 
           <div className="reveal-on-scroll stagger-2">
             <div className="feature-card">
-              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=600" alt="Premium Execution" className="feature-img" />
+              <img src={whyPremiumExecution} alt="Premium Execution" className="feature-img" />
               <div className="feature-content">
                 <h3>Premium Execution</h3>
                 <p>From printing to ERP systems, we maintain premium quality across every project we deliver.</p>
