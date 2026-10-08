@@ -1,0 +1,32 @@
+[
+  {
+    "key": "home",
+    "label": "Home",
+    "url": "/"
+  },
+  {
+    "key": "product",
+    "label": "Product",
+    "url": "/product"
+  },
+  {
+    "key": "docs",
+    "label": "Docs",
+    "url": "/docs"
+  },
+  {
+    "key": "about",
+    "label": "About",
+    "url": "/about"
+  },
+  {
+    "key": "contact",
+    "label": "Contact",
+    "url": "/contact"
+  },
+  {
+    "key": "benefits",
+    "label": "Benefits",
+    "url": "/benefits"
+  }
+]
