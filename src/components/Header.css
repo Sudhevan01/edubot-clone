@@ -298,7 +298,44 @@
     height: 38px !important;
   }
 
+
   .mobile-drawer {
     width: 85%;
   }
 }
+
+/* ── EduBot highlight nav link ── */
+.nav-link--highlight {
+  background: linear-gradient(135deg, hsl(268, 90%, 60%), hsl(186, 100%, 55%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600 !important;
+  position: relative;
+}
+
+.nav-link--highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, hsl(268, 90%, 65%), hsl(186, 100%, 60%));
+  border-radius: 2px;
+  opacity: 0.7;
+  animation: edubot-link-pulse 2s ease-in-out infinite;
+}
+
+@keyframes edubot-link-pulse {
+  0%, 100% { opacity: 0.5; transform: scaleX(0.8); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+
+.drawer-nav-link--highlight {
+  background: linear-gradient(135deg, hsl(268, 90%, 70%), hsl(186, 100%, 65%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600 !important;
+}

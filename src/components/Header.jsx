@@ -54,7 +54,7 @@ const Header = ({ onLoginClick }) => {
             <a
               key={link.name}
               href={link.path}
-              className={`nav-link ${isActive(link.path) ? 'active' : ''}`}
+              className={`nav-link ${isActive(link.path) ? 'active' : ''} ${link.highlight ? 'nav-link--highlight' : ''}`}
               onClick={(e) => handleNavClick(e, link.path)}
             >
               {link.name}
@@ -94,7 +94,7 @@ const Header = ({ onLoginClick }) => {
             <a
               key={link.name}
               href={link.path}
-              className={`drawer-nav-link ${isActive(link.path) ? 'active' : ''}`}
+              className={`drawer-nav-link ${isActive(link.path) ? 'active' : ''} ${link.highlight ? 'drawer-nav-link--highlight' : ''}`}
               onClick={(e) => handleNavClick(e, link.path)}
             >
               {link.name}

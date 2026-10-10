@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Homepage from './pages/Homepage';
 import Product from './pages/Product';
@@ -9,6 +9,7 @@ import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
 import Docs from './pages/Docs';
 import Benefits from './pages/Benefits';
+import ChatBot from './components/ChatBot/ChatBot';
 import './styles/global.css';
 
 const ScrollToTop = () => {
@@ -19,6 +20,10 @@ const ScrollToTop = () => {
   }, [pathname]);
 
   return null;
+};
+// Renders the floating widget on all pages
+const FloatingChatWidget = () => {
+  return <ChatBot />;
 };
 
 function App() {
@@ -61,6 +66,8 @@ function App() {
         <Route path="/docs" element={<Docs onLoginClick={handleLoginClick} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      {/* Floating EduBot widget */}
+      <FloatingChatWidget />
     </BrowserRouter>
   );
 }
