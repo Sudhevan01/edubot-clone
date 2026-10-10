@@ -30,12 +30,18 @@ def validate_input(text: str) -> str:
     Returns:
         Sanitized message string.
     """
+    if not text or not text.strip():
+        raise InputValidationError(
+            code="empty",
+            message="Message must not be empty.",
+        )
+
     sanitized = sanitize_input(text)
 
     if not sanitized:
         raise InputValidationError(
-            code="too_long",
-            message="Message cannot be empty.",
+            code="empty",
+            message="Message must not be empty.",
         )
 
     if len(sanitized) > 500:
@@ -45,3 +51,17 @@ def validate_input(text: str) -> str:
         )
 
     return sanitized
+
+
+def clean_voice_input(text: str) -> str:
+    """Perform light cleanup on voice transcripts: trim, collapse spaces, remove leading filler words."""
+    if not text:
+        return ""
+    cleaned = re.sub(r"\s+", " ", text.strip())
+    while True:
+        new_cleaned = re.sub(r"^(?:um|uh|hmm|er|ah)\b[\s,.]*", "", cleaned, flags=re.IGNORECASE)
+        if new_cleaned == cleaned:
+            break
+        cleaned = new_cleaned
+    return cleaned.strip()
+

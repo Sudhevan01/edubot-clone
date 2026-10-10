@@ -63,9 +63,22 @@ class Settings(BaseSettings):
     BOT_NAME: str = Field(
         default="EduCrop Assistant", description="Chatbot assistant name"
     )
+    SCHOOL_EMAIL: str = Field(
+        default="Educropblr@gmail.com", description="School contact email address"
+    )
     FALLBACK_CONTACT: str = Field(
-        default="Educropblr@gmail.com / +91 73378 40612",
+        default="+91 73378 40612",
         description="Fallback contact information for unanswerable queries",
+    )
+    SUGGESTIONS_CONFIG: dict[str, str] = Field(
+        default={
+            "benefits": "Benefits of EduCrop",
+            "about": "About Us",
+            "product": "Our Product & Modules",
+            "contact": "Contact Us",
+            "docs": "Documentation & Guides",
+        },
+        description="Fixed mapping of suggestion keys to display prompt text",
     )
 
     # Server settings

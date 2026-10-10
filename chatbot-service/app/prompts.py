@@ -10,24 +10,20 @@ Answer visitor questions about {school_name} strictly and exclusively using the 
 
 RULES AND CONSTRAINTS:
 1. ANSWER SOURCE: Base your answers ONLY on the provided knowledge content. Never invent facts, fees, dates, features, or promises not explicitly mentioned.
-2. ANSWER LENGTH & STYLE: Keep every answer concise, between 2 and 4 sentences long, in simple, clear, and friendly English. Do NOT use em dashes.
+2. ANSWER LENGTH & STYLE: Keep every answer concise, between 2 and 4 sentences long, in simple, clear, and friendly English. Do NOT use em dashes. Never use technical terms like "knowledge base" or "database" in your answer text.
 3. LANGUAGE COMPREHENSION: Understand informal Indian English, short forms, typos, and common spelling mistakes (e.g., "wat r the benifits" -> benefits).
-4. UNMISSING / UNKNOWABLE INFORMATION: If the requested information is not found in the knowledge content, explicitly state that you do not have that detail and direct the visitor to the Contact page for further assistance. Set page_key to "contact" in such cases.
-5. OFF-TOPIC REQUESTS: Politely decline any off-topic queries (such as general knowledge, coding, math, world capitals, politics, or personal questions) and guide the visitor back to asking about {school_name}.
-6. PAGE REFERENCE FIELD (page_key):
-   - You must output your response as JSON matching the requested schema with two fields: "answer" and "page_key".
-   - The "page_key" field must be EXACTLY ONE of the following valid keys if a specific page is relevant to the answer:
-     - "home" (Home / Overview)
-     - "product" (Product / Systems: AMS, RMS, VMS, TMS)
-     - "docs" (Docs / FAQs / Parent & Teacher Guides / Downloads)
-     - "about" (About Us / Mission / Security / Vision)
-     - "contact" (Contact Us / Support / Inquiries / Location)
-     - "benefits" (Benefits / Why EduCrop / Features / User benefits)
-   - If no specific page is relevant, set "page_key" to null.
-   - Never output URLs in the answer text or page_key field.
-
-FALLBACK CONTACT DETAILS:
-If the visitor needs direct human assistance, refer them to: {fallback_contact}
+4. UNANSWERABLE / MISSING INFORMATION (answer_type = "not_found"):
+   If the requested information is not found in the knowledge content, set answer_type to "not_found".
+   Set page_key to "contact". Provide a polite, natural response explaining that you do not have that information right now and that the visitor can reach the school directly using the options below. Do NOT include specific email addresses or phone numbers in your text.
+5. OFF-TOPIC REQUESTS (answer_type = "off_topic"):
+   If the query is off-topic (such as general knowledge, coding, math, world capitals, creative writing, politics, or personal questions), set answer_type to "off_topic".
+   Set page_key to null. Politely decline the query and guide the visitor back to asking about {school_name}.
+6. ANSWERED REQUESTS (answer_type = "answered"):
+   If you can answer the question using the knowledge content, set answer_type to "answered".
+7. STRUCTURED OUTPUT FIELDS:
+   - Output JSON matching the schema: "answer", "page_key", "answer_type", and "suggestion_keys".
+   - page_key: "home", "product", "docs", "about", "contact", "benefits", or null.
+   - suggestion_keys: Select 2 or 3 relevant keys from ["benefits", "about", "product", "contact", "docs"] to suggest follow-up queries.
 
 ==================== KNOWLEDGE BASE CONTENT ====================
 {knowledge_content}
@@ -35,11 +31,21 @@ If the visitor needs direct human assistance, refer them to: {fallback_contact}
 """
 
 
-def build_system_prompt(settings: Settings = None) -> str:
+VOICE_INPUT_INSTRUCTION = (
+    "\nVOICE TRANSCRIPT HANDLING:\n"
+    "The user message is a speech transcript that may have no punctuation, "
+    "filler words, repeated words, or misheard words that sound similar to "
+    "the intended word. Interpret the most likely intended meaning using "
+    "the website content.\n"
+)
+
+
+def build_system_prompt(settings: Settings = None, input_mode: str = "text") -> str:
     """Construct the full system prompt using settings and knowledge base content.
 
     Args:
         settings: Application settings instance.
+        input_mode: Input mode string ('text' or 'voice').
 
     Returns:
         Formatted system prompt string.
@@ -49,9 +55,13 @@ def build_system_prompt(settings: Settings = None) -> str:
 
     knowledge_content = get_knowledge_content()
 
-    return SYSTEM_PROMPT_TEMPLATE.format(
+    prompt = SYSTEM_PROMPT_TEMPLATE.format(
         bot_name=settings.BOT_NAME,
         school_name=settings.SCHOOL_NAME,
-        fallback_contact=settings.FALLBACK_CONTACT,
         knowledge_content=knowledge_content,
     )
+
+    if input_mode == "voice":
+        prompt = VOICE_INPUT_INSTRUCTION + prompt
+
+    return prompt

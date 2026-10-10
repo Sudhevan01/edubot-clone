@@ -5,10 +5,20 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import JSONResponse
 
-from app.api.schemas import ChatRequest, ChatResponse, ErrorResponse, PageResponse
+from app.api.schemas import (
+    ActionItem,
+    ChatRequest,
+    ChatResponse,
+    ErrorResponse,
+    PageResponse,
+)
 from app.config import Settings, get_settings
 from app.guards.cost_tracker import CostTracker, SpendCapExceeded, default_cost_tracker
-from app.guards.input_guard import InputValidationError, validate_input
+from app.guards.input_guard import (
+    InputValidationError,
+    clean_voice_input,
+    validate_input,
+)
 from app.guards.rate_limiter import (
     RateLimitExceeded,
     RateLimiter,
@@ -82,13 +92,27 @@ chat_openapi_responses = {
     },
     400: {
         "model": ErrorResponse,
-        "description": "Bad Request - Message empty or exceeds 500 characters limit.",
+        "description": "Bad Request - Message exceeds 500 characters limit.",
         "content": {
             "application/json": {
                 "example": {
                     "error": {
                         "code": "too_long",
                         "message": "Message is too long. Please limit your message to 500 characters.",
+                    }
+                }
+            }
+        },
+    },
+    422: {
+        "model": ErrorResponse,
+        "description": "Unprocessable Entity - Message is empty.",
+        "content": {
+            "application/json": {
+                "example": {
+                    "error": {
+                        "code": "empty",
+                        "message": "Message must not be empty.",
                     }
                 }
             }
@@ -165,9 +189,21 @@ async def chat_endpoint(
     # 1. Input Sanitization & Length Validation
     try:
         clean_message = validate_input(request.message)
+        if request.input_mode == "voice":
+            clean_message = clean_voice_input(clean_message)
+            if not clean_message:
+                raise InputValidationError(
+                    code="empty",
+                    message="Message must not be empty.",
+                )
     except InputValidationError as err:
+        status_code = (
+            status.HTTP_422_UNPROCESSABLE_ENTITY
+            if err.code == "empty"
+            else status.HTTP_400_BAD_REQUEST
+        )
         return JSONResponse(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status_code,
             content={
                 "error": {
                     "code": err.code,
@@ -208,7 +244,7 @@ async def chat_endpoint(
 
     try:
         # 4. Build system prompt and load history
-        system_prompt = build_system_prompt(settings)
+        system_prompt = build_system_prompt(settings, input_mode=request.input_mode)
         history = await history_store.get_history(request.session_id)
 
         # 5. Call LLM Client
@@ -223,12 +259,74 @@ async def chat_endpoint(
             llm_resp.input_tokens, llm_resp.output_tokens, settings
         )
 
-        # 7. Map page_key to Page object from pages.json (ignore unknown keys)
+        # 7. Determine answer_type and map page_key / actions / suggestions
+        answer_type = (
+            llm_resp.answer_type
+            if llm_resp.answer_type in ("answered", "not_found", "off_topic")
+            else "answered"
+        )
+
         page_obj: Optional[PageResponse] = None
-        if llm_resp.page_key:
+        if answer_type == "not_found":
+            contact_page = get_page_by_key("contact")
+            if contact_page:
+                page_obj = PageResponse(
+                    key=contact_page.key,
+                    label=contact_page.label,
+                    url=contact_page.url,
+                )
+        elif answer_type == "answered" and llm_resp.page_key:
             page = get_page_by_key(llm_resp.page_key)
             if page:
                 page_obj = PageResponse(key=page.key, label=page.label, url=page.url)
+
+        actions: List[ActionItem] = []
+        if answer_type == "answered":
+            if page_obj:
+                actions.append(
+                    ActionItem(
+                        type="navigate",
+                        label=f"View {page_obj.label}",
+                        url=page_obj.url,
+                    )
+                )
+        elif answer_type == "not_found":
+            actions.append(
+                ActionItem(
+                    type="navigate",
+                    label="View Contact",
+                    url="/contact",
+                )
+            )
+            actions.append(
+                ActionItem(
+                    type="email",
+                    label="Email the school",
+                    value=settings.SCHOOL_EMAIL,
+                    subject="Question from website",
+                )
+            )
+        elif answer_type == "off_topic":
+            actions = []
+
+        suggestions: List[str] = []
+        sug_config = settings.SUGGESTIONS_CONFIG
+        if llm_resp.suggestion_keys:
+            for k in llm_resp.suggestion_keys:
+                if k in sug_config and sug_config[k] not in suggestions:
+                    suggestions.append(sug_config[k])
+                    if len(suggestions) == 3:
+                        break
+
+        if answer_type in ("not_found", "off_topic") and len(suggestions) < 2:
+            defaults = ["benefits", "about", "product"]
+            for k in defaults:
+                if k in sug_config:
+                    text = sug_config[k]
+                    if text not in suggestions:
+                        suggestions.append(text)
+                    if len(suggestions) >= 3:
+                        break
 
         # 8. Save turn to history
         await history_store.add_turn(
@@ -240,15 +338,18 @@ async def chat_endpoint(
         # 9. Calculate latency and log metrics (DO NOT log full message text at INFO level)
         latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
         logger.info(
-            f"Chat processed: question_len={len(clean_message)} "
-            f"page_key={llm_resp.page_key} latency_ms={latency_ms} "
-            f"input_tokens={llm_resp.input_tokens} output_tokens={llm_resp.output_tokens} "
-            f"cost_usd=${turn_cost:.6f}"
+            f"Chat processed: input_mode={request.input_mode} answer_type={answer_type} "
+            f"question_len={len(clean_message)} page_key={llm_resp.page_key} "
+            f"latency_ms={latency_ms} input_tokens={llm_resp.input_tokens} "
+            f"output_tokens={llm_resp.output_tokens} cost_usd=${turn_cost:.6f}"
         )
 
         return ChatResponse(
             answer=llm_resp.answer,
             page=page_obj,
+            answer_type=answer_type,
+            actions=actions,
+            suggestions=suggestions,
         )
 
     except Exception as exc:

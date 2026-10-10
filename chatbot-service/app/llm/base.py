@@ -19,6 +19,8 @@ class LLMResponse:
 
     answer: str
     page_key: Optional[str]
+    answer_type: str = "answered"
+    suggestion_keys: Optional[List[str]] = None
     input_tokens: int = 0
     output_tokens: int = 0
 

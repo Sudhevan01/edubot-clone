@@ -1,6 +1,6 @@
 """Pydantic schemas matching the API contract."""
 
-from typing import Literal, Optional
+from typing import List, Literal, Optional
 from pydantic import BaseModel, Field
 
 
@@ -17,6 +17,11 @@ class ChatRequest(BaseModel):
         description="User message text",
         json_schema_extra={"example": "What features does AMS provide?"},
     )
+    input_mode: Literal["text", "voice"] = Field(
+        default="text",
+        description="Input mode indicator (text or voice transcript)",
+        json_schema_extra={"example": "text"},
+    )
 
 
 class PageResponse(BaseModel):
@@ -25,6 +30,18 @@ class PageResponse(BaseModel):
     key: str = Field(..., description="Page identifier key", json_schema_extra={"example": "benefits"})
     label: str = Field(..., description="Display label", json_schema_extra={"example": "Benefits"})
     url: str = Field(..., description="Route URL path", json_schema_extra={"example": "/benefits"})
+
+
+class ActionItem(BaseModel):
+    """Action item schema for chat responses."""
+
+    type: Literal["navigate", "email"] = Field(
+        ..., description="Action type: navigate or email"
+    )
+    label: str = Field(..., description="Display label for action button or link")
+    url: Optional[str] = Field(default=None, description="Route URL for navigate action")
+    value: Optional[str] = Field(default=None, description="Email address for email action")
+    subject: Optional[str] = Field(default=None, description="Subject line for email action")
 
 
 class ChatResponse(BaseModel):
@@ -41,12 +58,24 @@ class ChatResponse(BaseModel):
         default=None,
         description="Optional referenced landing page details",
     )
+    answer_type: Literal["answered", "not_found", "off_topic"] = Field(
+        default="answered",
+        description="Categorized answer status: answered, not_found, or off_topic",
+    )
+    actions: List[ActionItem] = Field(
+        default_factory=list,
+        description="List of action objects for navigation or emailing",
+    )
+    suggestions: List[str] = Field(
+        default_factory=list,
+        description="List of follow-up prompt suggestion strings",
+    )
 
 
 class ErrorDetail(BaseModel):
     """Structured error detail schema."""
 
-    code: Literal["rate_limited", "too_long", "unavailable"] = Field(
+    code: Literal["empty", "rate_limited", "too_long", "unavailable"] = Field(
         ..., description="Standardized error code string"
     )
     message: str = Field(..., description="User-safe error message text")

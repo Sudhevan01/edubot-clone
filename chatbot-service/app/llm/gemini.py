@@ -16,12 +16,16 @@ class GeminiResponseSchema(BaseModel):
     """Pydantic schema for structured output from Gemini model."""
 
     answer: str = Field(
-        ...,
         description="2 to 4 sentence clear, friendly answer based only on knowledge.md",
     )
     page_key: Optional[str] = Field(
-        default=None,
         description="Page key from: home, product, docs, about, contact, benefits, or null if no page is relevant",
+    )
+    answer_type: str = Field(
+        description="One of: answered, not_found, off_topic",
+    )
+    suggestion_keys: Optional[List[str]] = Field(
+        description="List of up to 3 keys chosen from: benefits, about, product, contact, docs",
     )
 
 
@@ -133,6 +137,8 @@ class GeminiLLMClient(LLMClient):
                 raw_text = response.text or ""
                 answer_text = ""
                 page_key: Optional[str] = None
+                answer_type: str = "answered"
+                suggestion_keys: Optional[List[str]] = None
 
                 try:
                     data = json.loads(raw_text)
@@ -141,6 +147,12 @@ class GeminiLLMClient(LLMClient):
                         raw_key = data.get("page_key")
                         if isinstance(raw_key, str) and raw_key.strip():
                             page_key = raw_key.strip()
+                        raw_type = data.get("answer_type")
+                        if isinstance(raw_type, str) and raw_type.strip() in ("answered", "not_found", "off_topic"):
+                            answer_type = raw_type.strip()
+                        raw_sug = data.get("suggestion_keys")
+                        if isinstance(raw_sug, list):
+                            suggestion_keys = [str(k).strip() for k in raw_sug if isinstance(k, str) and k.strip()]
                 except Exception as parse_err:
                     logger.warning(f"Failed to parse JSON response from Gemini: {parse_err}")
                     answer_text = raw_text.strip()
@@ -154,6 +166,8 @@ class GeminiLLMClient(LLMClient):
                 return LLMResponse(
                     answer=answer_text,
                     page_key=page_key,
+                    answer_type=answer_type,
+                    suggestion_keys=suggestion_keys,
                     input_tokens=input_tokens,
                     output_tokens=output_tokens,
                 )
