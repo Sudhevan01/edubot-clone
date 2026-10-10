@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { X, Mic, Paperclip, Plus, Maximize, Minimize } from 'lucide-react';
+import { X, Mic } from 'lucide-react';
 import { WELCOME_MESSAGE, QUICK_REPLIES, getResponse } from '../../data/chatbotResponses';
 import { renderMarkdown } from '../../utils/markdownRenderer';
 import './ChatBot.css';
@@ -108,19 +108,7 @@ function MessageBubble({ msg }) {
       )}
       <div className={`chatbot-bubble ${isBot ? 'bot' : 'user'}`}>
         <div className="bubble-content">
-          {msg.attachment && (
-            <div className="attachment-preview" style={{ marginBottom: msg.text ? '8px' : '0' }}>
-              {msg.attachment.type.startsWith('image/') ? (
-                <img src={msg.attachment.url} alt="attachment" style={{ maxWidth: '100%', borderRadius: '8px' }} />
-              ) : (
-                <div style={{ background: 'rgba(255,255,255,0.1)', padding: '8px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
-                  <Paperclip size={14} />
-                  <span>{msg.attachment.name}</span>
-                </div>
-              )}
-            </div>
-          )}
-          {msg.text && (isBot ? renderMarkdown(msg.text) : <p className="chat-md-p">{msg.text}</p>)}
+          {isBot ? renderMarkdown(msg.text) : <p className="chat-md-p">{msg.text}</p>}
         </div>
         <span className="bubble-time">
           {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -136,10 +124,8 @@ export default function ChatBot({ fullPage = false }) {
   const [isMaximized, setIsMaximized] = useState(false);
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [input, setInput] = useState('');
-  const [attachment, setAttachment] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
-  const [showCameraModal, setShowCameraModal] = useState(false);
   const [unread, setUnread] = useState(0);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -162,21 +148,19 @@ export default function ChatBot({ fullPage = false }) {
     }
   }, [isOpen]);
 
-  const sendMessage = useCallback((text, fileAttachment = attachment) => {
+  const sendMessage = useCallback((text) => {
     const trimmed = text.trim();
-    if ((!trimmed && !fileAttachment) || isTyping) return;
+    if (!trimmed || isTyping) return;
 
     const userMsg = {
       id: Date.now(),
       role: 'user',
       text: trimmed,
-      attachment: fileAttachment ? { name: fileAttachment.name, type: fileAttachment.type, url: URL.createObjectURL(fileAttachment) } : null,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
-    setAttachment(null);
     setShowQuickReplies(false);
     setIsTyping(true);
 
@@ -197,7 +181,7 @@ export default function ChatBot({ fullPage = false }) {
         setUnread((n) => n + 1);
       }
     }, delay);
-  }, [isTyping, isOpen, attachment]);
+  }, [isTyping, isOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -224,41 +208,27 @@ export default function ChatBot({ fullPage = false }) {
   // ── Full-page layout ──────────────────────────
   if (fullPage) {
     return (
-      <>
-        <div className="chatbot-fullpage">
-          <ParticleCanvas />
-          <div className="chatbot-fullpage-inner">
-            <ChatHeader onClear={clearChat} fullPage />
-            <ChatMessages
-              messages={messages}
-              isTyping={isTyping}
-              showQuickReplies={showQuickReplies}
-              onQuickReply={handleQuickReply}
-              messagesEndRef={messagesEndRef}
-            />
-            <ChatInput
-              input={input}
-              setInput={setInput}
-              onSubmit={handleSubmit}
-              onKeyDown={handleKeyDown}
-              inputRef={inputRef}
-              isTyping={isTyping}
-              attachment={attachment}
-              setAttachment={setAttachment}
-              setShowCameraModal={setShowCameraModal}
-            />
-          </div>
-        </div>
-        {showCameraModal && (
-          <CameraModal 
-            onCapture={(file) => {
-              setAttachment(file);
-              setShowCameraModal(false);
-            }} 
-            onClose={() => setShowCameraModal(false)} 
+      <div className="chatbot-fullpage">
+        <ParticleCanvas />
+        <div className="chatbot-fullpage-inner">
+          <ChatHeader onClear={clearChat} fullPage />
+          <ChatMessages
+            messages={messages}
+            isTyping={isTyping}
+            showQuickReplies={showQuickReplies}
+            onQuickReply={handleQuickReply}
+            messagesEndRef={messagesEndRef}
           />
-        )}
-      </>
+          <ChatInput
+            input={input}
+            setInput={setInput}
+            onSubmit={handleSubmit}
+            onKeyDown={handleKeyDown}
+            inputRef={inputRef}
+            isTyping={isTyping}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -303,20 +273,8 @@ export default function ChatBot({ fullPage = false }) {
           onKeyDown={handleKeyDown}
           inputRef={inputRef}
           isTyping={isTyping}
-          attachment={attachment}
-          setAttachment={setAttachment}
-          setShowCameraModal={setShowCameraModal}
         />
       </div>
-      {showCameraModal && (
-        <CameraModal 
-          onCapture={(file) => {
-            setAttachment(file);
-            setShowCameraModal(false);
-          }} 
-          onClose={() => setShowCameraModal(false)} 
-        />
-      )}
     </>
   );
 }
@@ -417,23 +375,8 @@ function ChatMessages({ messages, isTyping, showQuickReplies, onQuickReply, mess
   );
 }
 
-function ChatInput({ input, setInput, onSubmit, onKeyDown, inputRef, isTyping, attachment, setAttachment, setShowCameraModal }) {
+function ChatInput({ input, setInput, onSubmit, onKeyDown, inputRef, isTyping }) {
   const [isListening, setIsListening] = useState(false);
-  const [showAttachMenu, setShowAttachMenu] = useState(false);
-  const [acceptType, setAcceptType] = useState('*/*');
-  const [captureType, setCaptureType] = useState(null);
-  const fileInputRef = useRef(null);
-  const menuRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setShowAttachMenu(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const toggleListening = () => {
     if (isListening) return;
@@ -462,93 +405,9 @@ function ChatInput({ input, setInput, onSubmit, onKeyDown, inputRef, isTyping, a
     recognition.start();
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setAttachment(e.target.files[0]);
-    }
-  };
-
-  const handleAttachClick = (type, capture = null) => {
-    setShowAttachMenu(false);
-    
-    if (capture === 'environment') {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      if (!isMobile && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        setShowCameraModal(true);
-        return;
-      }
-    }
-
-    setAcceptType(type);
-    setCaptureType(capture);
-    setTimeout(() => {
-      fileInputRef.current?.click();
-    }, 0);
-  };
-
-  const removeAttachment = () => {
-    setAttachment(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const isSendActive = (input.trim() || attachment) && !isTyping;
-
   return (
     <form className="chatbot-input-area" onSubmit={onSubmit}>
-      {attachment && (
-        <div className="input-attachment-preview" style={{ padding: '8px', marginBottom: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', color: '#fff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Paperclip size={14} />
-            <span style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{attachment.name}</span>
-          </div>
-          <button type="button" onClick={removeAttachment} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-            <X size={14} />
-          </button>
-        </div>
-      )}
       <div className="input-wrapper">
-        <input 
-          type="file" 
-          ref={fileInputRef} 
-          style={{ display: 'none' }} 
-          accept={acceptType}
-          {...(captureType ? { capture: captureType } : {})}
-          onChange={handleFileChange} 
-        />
-        <div ref={menuRef} style={{ position: 'relative' }}>
-          <button
-            type="button"
-            className="chatbot-attach-btn"
-            onClick={() => setShowAttachMenu(!showAttachMenu)}
-            disabled={isTyping}
-            title="Attach file"
-            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '12px', flexShrink: 0, transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
-          >
-            <Plus size={22} style={{ transition: 'transform 0.2s', transform: showAttachMenu ? 'rotate(45deg)' : 'rotate(0)' }} />
-          </button>
-          
-          {showAttachMenu && (
-            <div className="attach-menu" style={{ position: 'absolute', bottom: '45px', left: '0', background: 'var(--cb-glass2)', backdropFilter: 'blur(10px)', border: '1px solid var(--cb-border)', borderRadius: '12px', padding: '8px', display: 'flex', flexDirection: 'column', gap: '4px', zIndex: 10, boxShadow: '0 4px 20px rgba(0,0,0,0.5)', minWidth: '150px', animation: 'msg-appear 0.2s ease-out' }}>
-              <button type="button" onClick={() => handleAttachClick('image/*')} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'transparent', border: 'none', color: '#fff', padding: '8px 12px', cursor: 'pointer', borderRadius: '8px', fontSize: '13px', fontWeight: '500', textAlign: 'left', width: '100%' }} className="attach-menu-item">
-                <span style={{ fontSize: '18px' }}>🖼️</span> Image
-              </button>
-              <button type="button" onClick={() => handleAttachClick('image/*', 'environment')} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'transparent', border: 'none', color: '#fff', padding: '8px 12px', cursor: 'pointer', borderRadius: '8px', fontSize: '13px', fontWeight: '500', textAlign: 'left', width: '100%' }} className="attach-menu-item">
-                <span style={{ fontSize: '18px' }}>📷</span> Camera
-              </button>
-              <button type="button" onClick={() => handleAttachClick('.pdf,.doc,.docx,.txt')} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'transparent', border: 'none', color: '#fff', padding: '8px 12px', cursor: 'pointer', borderRadius: '8px', fontSize: '13px', fontWeight: '500', textAlign: 'left', width: '100%' }} className="attach-menu-item">
-                <span style={{ fontSize: '18px' }}>📄</span> Document
-              </button>
-              <button type="button" onClick={() => handleAttachClick('video/*')} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'transparent', border: 'none', color: '#fff', padding: '8px 12px', cursor: 'pointer', borderRadius: '8px', fontSize: '13px', fontWeight: '500', textAlign: 'left', width: '100%' }} className="attach-menu-item">
-                <span style={{ fontSize: '18px' }}>🎥</span> Video
-              </button>
-              <button type="button" onClick={() => handleAttachClick('audio/*')} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'transparent', border: 'none', color: '#fff', padding: '8px 12px', cursor: 'pointer', borderRadius: '8px', fontSize: '13px', fontWeight: '500', textAlign: 'left', width: '100%' }} className="attach-menu-item">
-                <span style={{ fontSize: '18px' }}>🎵</span> Audio
-              </button>
-            </div>
-          )}
-        </div>
         <textarea
           ref={inputRef}
           id="chatbot-input"
@@ -575,8 +434,8 @@ function ChatInput({ input, setInput, onSubmit, onKeyDown, inputRef, isTyping, a
           <button
             type="submit"
             id="chatbot-send-btn"
-            className={`chatbot-send-btn ${isSendActive ? 'active' : ''}`}
-            disabled={!isSendActive}
+            className={`chatbot-send-btn ${input.trim() && !isTyping ? 'active' : ''}`}
+            disabled={!input.trim() || isTyping}
             aria-label="Send message"
           >
             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -587,80 +446,5 @@ function ChatInput({ input, setInput, onSubmit, onKeyDown, inputRef, isTyping, a
       </div>
       <p className="input-hint">Press Enter to send • Shift+Enter for new line</p>
     </form>
-  );
-}
-
-// ── Camera Modal Component ──────────────────────────
-function CameraModal({ onCapture, onClose }) {
-  const videoRef = useRef(null);
-  const streamRef = useRef(null);
-  const [error, setError] = useState(null);
-  const [isFullScreen, setIsFullScreen] = useState(false);
-
-  useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
-        }
-      })
-      .catch((err) => {
-        console.error("Error accessing camera:", err);
-        setError("Could not access camera. Please check permissions.");
-      });
-
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, []);
-
-  const handleTakePic = () => {
-    if (videoRef.current && streamRef.current) {
-      const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const file = new File([blob], "camera-capture.jpg", { type: "image/jpeg" });
-          onCapture(file);
-        }
-      }, 'image/jpeg', 0.9);
-    }
-  };
-
-  return (
-    <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)', zIndex: 99999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: isFullScreen ? '0' : '20px' }}>
-      <div style={{ background: 'var(--cb-bg)', padding: isFullScreen ? '20px' : '16px', borderRadius: isFullScreen ? '0' : '16px', display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: isFullScreen ? '100%' : '500px', height: isFullScreen ? '100%' : 'auto', border: isFullScreen ? 'none' : '1px solid var(--cb-border)', boxShadow: isFullScreen ? 'none' : '0 10px 30px rgba(0,0,0,0.5)' }}>
-        
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, color: '#fff', fontSize: '18px', fontFamily: 'var(--cb-font)' }}>Take Photo</h3>
-          <button onClick={() => setIsFullScreen(!isFullScreen)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: '8px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} title={isFullScreen ? "Exit Full Screen" : "Full Screen"}>
-            {isFullScreen ? <Minimize size={16} /> : <Maximize size={16} />}
-          </button>
-        </div>
-
-        {error ? (
-          <p style={{ color: '#ef4444', fontSize: '13px', textAlign: 'center', margin: 0 }}>{error}</p>
-        ) : (
-          <div style={{ width: '100%', flex: isFullScreen ? 1 : 'none', aspectRatio: isFullScreen ? 'auto' : '16/9', background: '#000', borderRadius: '8px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'contain' }} playsInline muted />
-          </div>
-        )}
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: 'auto' }}>
-          <button onClick={onClose} style={{ padding: '10px 20px', background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontFamily: 'var(--cb-font)' }}>Cancel</button>
-          {!error && (
-            <button onClick={handleTakePic} style={{ padding: '10px 24px', background: 'var(--cb-primary)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontFamily: 'var(--cb-font)', fontWeight: 'bold' }}>Capture</button>
-          )}
-        </div>
-      </div>
-    </div>
   );
 }
