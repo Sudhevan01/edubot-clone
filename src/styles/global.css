@@ -3,6 +3,7 @@
    =========================== */
 
 @import './variables.css';
+@import './responsive.css';
 
 .anim-fade-in {
   animation: fadeIn 0.4s ease-out;
@@ -82,8 +83,6 @@ body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  transform: translateZ(0);
-  /* Enable GPU acceleration */
 }
 
 

@@ -1,0 +1,602 @@
+/* ============================================================
+   EDUCROP — GLOBAL RESPONSIVE STYLESHEET
+   Covers: Homepage, About, Benefits, Contact, Product, Docs,
+           LandingFooter, ChatBot FAB
+   Breakpoints:
+     XS  ≤ 360px  (very small phones)
+     SM  ≤ 480px  (phones)
+     MD  ≤ 768px  (large phones / small tablets)
+     LG  ≤ 1024px (tablets / landscape tablets)
+     XL  ≤ 1200px (small laptops — many already handled)
+   ============================================================ */
+
+/* ---------------------------------------------------------
+   BASE: Prevent horizontal overflow site-wide
+--------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* ---------------------------------------------------------
+   TABLET  <= 1024px
+--------------------------------------------------------- */
+@media (max-width: 1024px) {
+
+  /* Homepage: Support grid 3 to 2 cols */
+  .support-grid-3col {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px !important;
+  }
+
+  .support-subgrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Homepage: CTA banner padding */
+  .cta-banner-section {
+    padding: 60px 6% !important;
+  }
+
+  /* Benefits: hero 2-col grid tighten */
+  .ben-hero-v2-container {
+    gap: 2.5rem !important;
+  }
+
+  .ben-hero-v2-title {
+    font-size: 3rem !important;
+  }
+
+  /* Docs layout */
+  .docs-layout {
+    grid-template-columns: 260px 1fr !important;
+    gap: 2.5rem !important;
+    padding: 3rem 1.5rem !important;
+  }
+
+  /* Footer */
+  .footer-container {
+    gap: 2rem !important;
+  }
+
+  .footer-brand-col {
+    width: 240px !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   TABLET PORTRAIT  <= 768px
+--------------------------------------------------------- */
+@media (max-width: 768px) {
+
+  /* HOMEPAGE */
+
+  /* Hero */
+  .landing-hero {
+    min-height: 100svh !important;
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
+
+  .hero-content-wrapper {
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0 5% !important;
+  }
+
+  .hero-left {
+    max-width: 100% !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .hero-badge {
+    font-size: 11px !important;
+    padding: 6px 14px !important;
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+  }
+
+  .hero-title {
+    font-size: clamp(1.9rem, 7vw, 2.8rem) !important;
+    align-items: center !important;
+    text-align: center !important;
+    white-space: normal !important;
+  }
+
+  .hero-desc {
+    font-size: 15px !important;
+    text-align: center !important;
+    max-width: 520px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .hero-actions {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  .btn-explore,
+  .btn-demo {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 14px 24px !important;
+    font-size: 15px !important;
+  }
+
+  /* Support Section */
+  .support-section {
+    padding: 48px 5% !important;
+  }
+
+  .support-title {
+    font-size: 26px !important;
+  }
+
+  .support-subtitle {
+    font-size: 15px !important;
+    margin-bottom: 32px !important;
+  }
+
+  .support-grid-3col {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .support-card-3col {
+    height: 280px !important;
+  }
+
+  .support-subgrid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* CTA Banner */
+  .cta-banner-section {
+    padding: 56px 6% 60px !important;
+  }
+
+  .cta-title {
+    font-size: 26px !important;
+  }
+
+  .cta-desc {
+    font-size: 14px !important;
+    margin: 14px auto 28px !important;
+  }
+
+  .cta-buttons {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    max-width: 300px !important;
+    margin: 0 auto !important;
+  }
+
+  .btn-cta-primary,
+  .btn-cta-secondary {
+    width: 100% !important;
+    padding: 14px 24px !important;
+    font-size: 14px !important;
+  }
+
+  /* Floating icons: hide on small screens */
+  .cta-floating-icon {
+    display: none !important;
+  }
+
+  /* ABOUT */
+
+  .about-page .hero-heading {
+    font-size: 2rem !important;
+  }
+
+  /* BENEFITS */
+
+  .ben-hero-v2 {
+    min-height: auto !important;
+    padding: 7rem 5% 4rem !important;
+  }
+
+  .ben-hero-v2-container {
+    grid-template-columns: 1fr !important;
+    gap: 3rem !important;
+    text-align: center !important;
+  }
+
+  .ben-hero-v2-text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .ben-hero-v2-title {
+    font-size: 2.4rem !important;
+  }
+
+  .ben-hero-v2-subtitle {
+    font-size: 1rem !important;
+    max-width: 480px !important;
+  }
+
+  .ben-hero-v2-cta {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 14px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+  }
+
+  .ben-hero-v2-btn-primary,
+  .ben-hero-v2-btn-secondary {
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+  }
+
+  .ben-section-title {
+    font-size: 2rem !important;
+  }
+
+  /* PRODUCT */
+
+  .product-hero-title-new {
+    font-size: 2rem !important;
+  }
+
+  /* CONTACT */
+
+  .contact-hero {
+    padding: 4rem 5% !important;
+    min-height: 300px !important;
+  }
+
+  .contact-hero-content .hero-title {
+    font-size: 2rem !important;
+  }
+
+  .contact-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* DOCS */
+
+  .docs-hero {
+    padding: 4rem 1.5rem 3rem !important;
+  }
+
+  .docs-hero h1 {
+    font-size: 2.2rem !important;
+  }
+
+  .docs-hero p {
+    font-size: 1rem !important;
+  }
+
+  .docs-layout {
+    grid-template-columns: 1fr !important;
+    padding: 2rem 1.5rem !important;
+  }
+
+  .sidebar-sticky-box {
+    position: relative !important;
+    top: 0 !important;
+  }
+
+  /* CHATBOT — handled in ChatBot.css */
+
+  /* LANDING FOOTER */
+
+  .footer-container {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 2.5rem 5% 1.5rem !important;
+    gap: 2rem !important;
+  }
+
+  .footer-brand-col {
+    width: 100% !important;
+  }
+
+  .footer-links-grid {
+    width: 100% !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 2rem 1.5rem !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   PHONE  <= 480px
+--------------------------------------------------------- */
+@media (max-width: 480px) {
+
+  /* HOMEPAGE */
+
+  .landing-hero {
+    padding-top: 70px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .hero-title {
+    font-size: clamp(1.7rem, 8vw, 2.2rem) !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .hero-badge {
+    font-size: 10px !important;
+  }
+
+  .hero-desc {
+    font-size: 13.5px !important;
+  }
+
+  .support-section {
+    padding: 36px 4% !important;
+  }
+
+  .support-title {
+    font-size: 22px !important;
+  }
+
+  .support-card-3col {
+    height: 240px !important;
+    border-radius: 18px !important;
+  }
+
+  .support-card-content {
+    padding: 20px 16px !important;
+    gap: 12px !important;
+  }
+
+  .support-card-text h3 {
+    font-size: 17px !important;
+  }
+
+  .support-card-text p {
+    font-size: 13px !important;
+  }
+
+  .cta-banner-section {
+    padding: 44px 5% 48px !important;
+  }
+
+  .cta-title {
+    font-size: 22px !important;
+    line-height: 1.25 !important;
+  }
+
+  .cta-desc {
+    font-size: 13.5px !important;
+  }
+
+  /* ABOUT */
+
+  .who-we-are-text h2 {
+    font-size: 1.8rem !important;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .about-stat-card h3 {
+    font-size: 1.4rem !important;
+  }
+
+  /* BENEFITS */
+
+  .ben-hero-v2 {
+    padding: 6rem 4% 3rem !important;
+  }
+
+  .ben-hero-v2-title {
+    font-size: 2rem !important;
+  }
+
+  .ben-hero-v2-subtitle {
+    font-size: 0.95rem !important;
+  }
+
+  .ben-section-title {
+    font-size: 1.75rem !important;
+  }
+
+  /* PRODUCT */
+
+  .product-hero-new {
+    padding: 24px 16px 40px !important;
+  }
+
+  .product-hero-title-new {
+    font-size: 1.8rem !important;
+  }
+
+  /* CONTACT */
+
+  .contact-hero-content .hero-title {
+    font-size: 1.75rem !important;
+  }
+
+  .contact-form-card {
+    padding: 1.25rem !important;
+  }
+
+  /* DOCS */
+
+  .docs-hero h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .docs-content-card {
+    padding: 1.25rem !important;
+  }
+
+  /* FOOTER */
+
+  .footer-links-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .footer-col:last-child {
+    grid-column: auto !important;
+  }
+
+  .footer-copy,
+  .footer-credit {
+    font-size: 0.75rem !important;
+    text-align: center !important;
+  }
+
+  /* CHATBOT — handled in ChatBot.css */
+}
+
+/* ---------------------------------------------------------
+   VERY SMALL PHONES  <= 360px
+--------------------------------------------------------- */
+@media (max-width: 360px) {
+
+  .hero-title {
+    font-size: 1.6rem !important;
+  }
+
+  .btn-explore,
+  .btn-demo,
+  .btn-cta-primary,
+  .btn-cta-secondary,
+  .ben-hero-v2-btn-primary,
+  .ben-hero-v2-btn-secondary {
+    font-size: 13px !important;
+    padding: 12px 18px !important;
+    height: auto !important;
+  }
+
+  .support-card-3col {
+    height: 220px !important;
+  }
+
+  .cta-title {
+    font-size: 20px !important;
+  }
+
+  .ben-hero-v2-title {
+    font-size: 1.75rem !important;
+    letter-spacing: -0.5px !important;
+  }
+
+  .docs-hero h1 {
+    font-size: 1.6rem !important;
+  }
+
+  .footer-logo-img {
+    height: 40px !important;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .about-stat-card {
+    padding: 1rem !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   LANDSCAPE PHONE  (short + wide)
+--------------------------------------------------------- */
+@media (max-height: 500px) and (orientation: landscape) {
+
+  .landing-hero {
+    height: auto !important;
+    min-height: 0 !important;
+    padding-top: 48px !important;
+    padding-bottom: 40px !important;
+  }
+
+  .chatbot-window {
+    height: 95svh !important;
+    max-height: 95svh !important;
+  }
+
+  .chatbot-fab {
+    bottom: 10px !important;
+    right: 14px !important;
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   TOUCH / HOVER IMPROVEMENTS
+--------------------------------------------------------- */
+@media (hover: none) {
+  /* Disable hover transforms on touch devices to prevent stuck states */
+  .support-card-3col:hover {
+    transform: none !important;
+  }
+
+  .subcard:hover {
+    transform: none !important;
+  }
+
+  .btn-explore:hover,
+  .btn-demo:hover,
+  .btn-login:hover {
+    transform: none !important;
+  }
+
+  .footer-link:hover .link-arrow {
+    transform: none !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   HOMEPAGE X-FOOTER — fix 180px/220px gap overflow
+--------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .x-footer-right-columns {
+    gap: 60px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .x-footer-right-columns {
+    gap: 40px !important;
+    justify-content: center !important;
+  }
+
+  .x-footer-col {
+    align-items: center !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .x-landing-footer {
+    padding: 20px 5% !important;
+  }
+
+  .x-footer-right-columns {
+    flex-direction: column !important;
+    gap: 24px !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  .x-footer-col {
+    align-items: center !important;
+    text-align: center !important;
+  }
+}
