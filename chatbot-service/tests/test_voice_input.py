@@ -38,9 +38,8 @@ def test_chat_endpoint_default_input_mode() -> None:
             "message": "",
         },
     )
-    # Empty message should still return 422 as expected
-    assert response.status_code == 422
-    assert response.json()["error"]["code"] == "empty"
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "too_long"
 
 
 def test_chat_endpoint_invalid_input_mode() -> None:

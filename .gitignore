@@ -39,13 +39,20 @@ Thumbs.db
 # Excel temporary/lock files
 ~$*
 
-# Environment variables
+# Environment variables (secrets ignored, template tracked)
 .env
 .env*.local
-.env.example
+.env.production
+!.env.example
 
-# Python & Pytest cache
+# Python & Pytest cache / virtual environments
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 .pytest_cache/
+venv/
+.venv/
+env/
+ENV/
+*.log
 

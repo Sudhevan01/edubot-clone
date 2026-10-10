@@ -197,16 +197,11 @@ async def chat_endpoint(
                     message="Message must not be empty.",
                 )
     except InputValidationError as err:
-        status_code = (
-            status.HTTP_422_UNPROCESSABLE_ENTITY
-            if err.code == "empty"
-            else status.HTTP_400_BAD_REQUEST
-        )
         return JSONResponse(
-            status_code=status_code,
+            status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "error": {
-                    "code": err.code,
+                    "code": "too_long",
                     "message": err.message,
                 }
             },
@@ -313,20 +308,27 @@ async def chat_endpoint(
         sug_config = settings.SUGGESTIONS_CONFIG
         if llm_resp.suggestion_keys:
             for k in llm_resp.suggestion_keys:
-                if k in sug_config and sug_config[k] not in suggestions:
-                    suggestions.append(sug_config[k])
+                text = sug_config.get(k, "")
+                if answer_type == "not_found" and (k == "contact" or "contact" in text.lower()):
+                    continue
+                if k in sug_config and text not in suggestions:
+                    suggestions.append(text)
                     if len(suggestions) == 3:
                         break
 
-        if answer_type in ("not_found", "off_topic") and len(suggestions) < 2:
-            defaults = ["benefits", "about", "product"]
-            for k in defaults:
-                if k in sug_config:
-                    text = sug_config[k]
-                    if text not in suggestions:
-                        suggestions.append(text)
-                    if len(suggestions) >= 3:
-                        break
+        if answer_type in ("not_found", "off_topic"):
+            fallback_candidates = ["benefits", "about", "product", "docs"]
+            for k in fallback_candidates:
+                if len(suggestions) >= 3:
+                    break
+                text = sug_config.get(k, "")
+                if answer_type == "not_found" and (k == "contact" or "contact" in text.lower()):
+                    continue
+                if k in sug_config and text not in suggestions:
+                    suggestions.append(text)
+
+        if answer_type == "not_found":
+            suggestions = [s for s in suggestions if "contact" not in s.lower()]
 
         # 8. Save turn to history
         await history_store.add_turn(

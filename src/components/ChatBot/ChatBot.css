@@ -630,6 +630,45 @@
   transform: translateY(0);
 }
 
+/* ── Additional Message Elements ───────────────── */
+.chatbot-bubble.bot.not-found {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%);
+}
+
+.chatbot-bubble.bot.error-bubble {
+  border-color: rgba(239, 68, 68, 0.45);
+  background: linear-gradient(135deg, rgba(254, 242, 242, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%);
+}
+
+.msg-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.msg-suggestions {
+  margin-top: 10px;
+}
+
+a.quick-reply-chip {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mic-denied-notice {
+  font-size: 11px;
+  color: #ef4444;
+  background: rgba(254, 242, 242, 0.9);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
 /* ═══════════════════════════════════════════════════════════
    INPUT AREA
    ═══════════════════════════════════════════════════════════ */

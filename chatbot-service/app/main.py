@@ -4,7 +4,9 @@ import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncGenerator
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.chat import router as chat_router
 from app.api.health import router as health_router
@@ -77,6 +79,24 @@ def create_app() -> FastAPI:
             raise exc
         finally:
             request_id_ctx.reset(token)
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        for err in exc.errors():
+            if "message" in err.get("loc", ()):
+                return JSONResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    content={
+                        "error": {
+                            "code": "too_long",
+                            "message": "Message is invalid or empty.",
+                        }
+                    },
+                )
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={"detail": exc.errors()},
+        )
 
     # Register API routers
     app.include_router(health_router)

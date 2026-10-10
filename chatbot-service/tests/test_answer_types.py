@@ -99,6 +99,35 @@ def test_not_found_response_actions_and_suggestions() -> None:
             assert data["actions"][1]["value"] == "Educropblr@gmail.com"
             assert data["actions"][1]["subject"] == "Question from website"
             assert len(data["suggestions"]) >= 2
+            # Ensure no suggestion contains contact
+            for sug in data["suggestions"]:
+                assert "contact" not in sug.lower()
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_not_found_excludes_contact_suggestions() -> None:
+    """Test that 'not_found' answer_type excludes contact suggestions and fills with non-contact config suggestions."""
+    mock_resp = LLMResponse(
+        answer="I don't have that information right now. You can reach the school directly using the options below.",
+        page_key=None,
+        answer_type="not_found",
+        suggestion_keys=["contact", "benefits", "about"],
+    )
+    app.dependency_overrides[get_llm_client] = lambda: DummyLLMClient(mock_resp)
+
+    try:
+        with TestClient(app) as client:
+            res = client.post(
+                "/api/chat",
+                json={"session_id": "test-sess-nf-sug", "message": "What is the fee structure?"},
+            )
+            assert res.status_code == 200
+            data = res.json()
+            assert data["answer_type"] == "not_found"
+            for sug in data["suggestions"]:
+                assert "contact" not in sug.lower()
+            assert len(data["suggestions"]) >= 2
     finally:
         app.dependency_overrides.clear()
 

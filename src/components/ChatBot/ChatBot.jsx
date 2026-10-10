@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { X, Mic } from 'lucide-react';
-import { WELCOME_MESSAGE, QUICK_REPLIES, getResponse } from '../../data/chatbotResponses';
+import { useNavigate } from 'react-router-dom';
+import { X, Mic, ArrowRight, Mail } from 'lucide-react';
+import { WELCOME_MESSAGE, QUICK_REPLIES } from '../../data/chatbotResponses';
+import { sendChatMessage } from '../../services/chatApi';
 import { renderMarkdown } from '../../utils/markdownRenderer';
 import './ChatBot.css';
 
@@ -97,8 +99,11 @@ function TypingDots() {
 }
 
 // ── Single message bubble ─────────────────────────
-function MessageBubble({ msg }) {
+function MessageBubble({ msg, onSuggestionClick }) {
   const isBot = msg.role === 'bot';
+  const isError = Boolean(msg.isError);
+  const navigate = useNavigate();
+
   return (
     <div className={`chatbot-message ${isBot ? 'bot-message' : 'user-message'}`}>
       {isBot && (
@@ -106,10 +111,73 @@ function MessageBubble({ msg }) {
           <img src="/assets/images/chatbot-icon-v2.png" alt="EduBot" />
         </div>
       )}
-      <div className={`chatbot-bubble ${isBot ? 'bot' : 'user'}`}>
+      <div
+        className={`chatbot-bubble ${isBot ? 'bot' : 'user'} ${
+          msg.answer_type === 'not_found' ? 'not-found' : ''
+        } ${isError ? 'error-bubble' : ''}`}
+      >
         <div className="bubble-content">
           {isBot ? renderMarkdown(msg.text) : <p className="chat-md-p">{msg.text}</p>}
         </div>
+
+        {/* Render Actions */}
+        {isBot && Array.isArray(msg.actions) && msg.actions.length > 0 && (
+          <div className="msg-actions">
+            {msg.actions.map((act, idx) => {
+              if (act.type === 'navigate' && act.url && act.url.startsWith('/')) {
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    className="quick-reply-chip action-btn navigate-btn"
+                    onClick={() => navigate(act.url)}
+                  >
+                    <ArrowRight size={15} style={{ marginRight: '6px', verticalAlign: 'middle', display: 'inline-block' }} />
+                    <span>{act.label || 'View Page'}</span>
+                  </button>
+                );
+              }
+              if (act.type === 'email' && act.value) {
+                const mailtoUrl = `mailto:${act.value}?subject=${encodeURIComponent(
+                  act.subject || 'Question from website'
+                )}`;
+                return (
+                  <a
+                    key={idx}
+                    href={mailtoUrl}
+                    className="quick-reply-chip action-btn email-btn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Mail size={15} style={{ marginRight: '6px', verticalAlign: 'middle', display: 'inline-block' }} />
+                    <span>{act.label || 'Email the school'}</span>
+                  </a>
+                );
+              }
+              return null;
+            })}
+          </div>
+        )}
+
+        {/* Render Suggestions */}
+        {isBot && Array.isArray(msg.suggestions) && msg.suggestions.length > 0 && (
+          <div className="msg-suggestions">
+            <p className="quick-replies-label">Suggested topics:</p>
+            <div className="quick-replies-grid">
+              {msg.suggestions.map((sug, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className="quick-reply-chip"
+                  onClick={() => onSuggestionClick && onSuggestionClick(sug)}
+                >
+                  {sug}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <span className="bubble-time">
           {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
@@ -127,6 +195,8 @@ export default function ChatBot({ fullPage = false }) {
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [unread, setUnread] = useState(0);
+  const [isVoiceTranscript, setIsVoiceTranscript] = useState(false);
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -148,40 +218,63 @@ export default function ChatBot({ fullPage = false }) {
     }
   }, [isOpen]);
 
-  const sendMessage = useCallback((text) => {
-    const trimmed = text.trim();
-    if (!trimmed || isTyping) return;
+  const sendMessage = useCallback(
+    async (text, overrideInputMode = null) => {
+      const trimmed = text.trim();
+      if (!trimmed || isTyping) return;
 
-    const userMsg = {
-      id: Date.now(),
-      role: 'user',
-      text: trimmed,
-      timestamp: new Date(),
-    };
+      const inputMode = overrideInputMode || (isVoiceTranscript ? 'voice' : 'text');
 
-    setMessages((prev) => [...prev, userMsg]);
-    setInput('');
-    setShowQuickReplies(false);
-    setIsTyping(true);
-
-    // Simulate natural typing delay
-    const delay = 800 + Math.random() * 600;
-    setTimeout(() => {
-      const responseText = getResponse(trimmed);
-      const botMsg = {
-        id: Date.now() + 1,
-        role: 'bot',
-        text: responseText,
+      const userMsg = {
+        id: Date.now(),
+        role: 'user',
+        text: trimmed,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, botMsg]);
+
+      setMessages((prev) => [...prev, userMsg]);
+      setInput('');
+      setIsVoiceTranscript(false);
+      setShowQuickReplies(false);
+      setIsTyping(true);
+
+      const result = await sendChatMessage({
+        message: trimmed,
+        inputMode: inputMode,
+      });
+
+      if (result.success) {
+        const { answer, answer_type, page, actions, suggestions } = result.data;
+        const botMsg = {
+          id: Date.now() + 1,
+          role: 'bot',
+          text: answer,
+          answer_type,
+          page,
+          actions,
+          suggestions,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botMsg]);
+      } else {
+        const botErrMsg = {
+          id: Date.now() + 1,
+          role: 'bot',
+          isError: true,
+          text: result.error?.message || 'An error occurred. Please try again.',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botErrMsg]);
+      }
+
       setIsTyping(false);
 
       if (!isOpen) {
         setUnread((n) => n + 1);
       }
-    }, delay);
-  }, [isTyping, isOpen]);
+    },
+    [isTyping, isOpen, isVoiceTranscript]
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -189,7 +282,11 @@ export default function ChatBot({ fullPage = false }) {
   };
 
   const handleQuickReply = (qr) => {
-    sendMessage(qr.query);
+    sendMessage(qr.query, 'text');
+  };
+
+  const handleSuggestionClick = (sugText) => {
+    sendMessage(sugText, 'text');
   };
 
   const handleKeyDown = (e) => {
@@ -203,6 +300,7 @@ export default function ChatBot({ fullPage = false }) {
     setMessages([WELCOME_MESSAGE]);
     setShowQuickReplies(true);
     setUnread(0);
+    setIsVoiceTranscript(false);
   };
 
   // ── Full-page layout ──────────────────────────
@@ -217,6 +315,7 @@ export default function ChatBot({ fullPage = false }) {
             isTyping={isTyping}
             showQuickReplies={showQuickReplies}
             onQuickReply={handleQuickReply}
+            onSuggestionClick={handleSuggestionClick}
             messagesEndRef={messagesEndRef}
           />
           <ChatInput
@@ -226,6 +325,8 @@ export default function ChatBot({ fullPage = false }) {
             onKeyDown={handleKeyDown}
             inputRef={inputRef}
             isTyping={isTyping}
+            isVoiceTranscript={isVoiceTranscript}
+            setIsVoiceTranscript={setIsVoiceTranscript}
           />
         </div>
       </div>
@@ -249,21 +350,29 @@ export default function ChatBot({ fullPage = false }) {
             <img src="/assets/images/chatbot-icon-v2.png" alt="EduBot" className="fab-avatar" />
           )}
         </div>
-        {!isOpen && unread > 0 && (
-          <span className="fab-badge">{unread}</span>
-        )}
+        {!isOpen && unread > 0 && <span className="fab-badge">{unread}</span>}
         <div className="fab-ripple" />
       </button>
 
       {/* Chat window */}
-      <div className={`chatbot-window ${isOpen ? 'open' : ''} ${isMaximized ? 'maximized' : ''}`} role="dialog" aria-label="EduBot Chat">
+      <div
+        className={`chatbot-window ${isOpen ? 'open' : ''} ${isMaximized ? 'maximized' : ''}`}
+        role="dialog"
+        aria-label="EduBot Chat"
+      >
         <ParticleCanvas />
-        <ChatHeader onClear={clearChat} onClose={() => setIsOpen(false)} isMaximized={isMaximized} setIsMaximized={setIsMaximized} />
+        <ChatHeader
+          onClear={clearChat}
+          onClose={() => setIsOpen(false)}
+          isMaximized={isMaximized}
+          setIsMaximized={setIsMaximized}
+        />
         <ChatMessages
           messages={messages}
           isTyping={isTyping}
           showQuickReplies={showQuickReplies}
           onQuickReply={handleQuickReply}
+          onSuggestionClick={handleSuggestionClick}
           messagesEndRef={messagesEndRef}
         />
         <ChatInput
@@ -273,6 +382,8 @@ export default function ChatBot({ fullPage = false }) {
           onKeyDown={handleKeyDown}
           inputRef={inputRef}
           isTyping={isTyping}
+          isVoiceTranscript={isVoiceTranscript}
+          setIsVoiceTranscript={setIsVoiceTranscript}
         />
       </div>
     </>
@@ -316,8 +427,8 @@ function ChatHeader({ onClear, onClose, fullPage, isMaximized, setIsMaximized })
             <button
               className="header-action-btn"
               onClick={() => setIsMaximized(!isMaximized)}
-              title={isMaximized ? "Restore" : "Maximize"}
-              aria-label={isMaximized ? "Restore chat" : "Maximize chat"}
+              title={isMaximized ? 'Restore' : 'Maximize'}
+              aria-label={isMaximized ? 'Restore chat' : 'Maximize chat'}
             >
               {isMaximized ? (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -346,11 +457,18 @@ function ChatHeader({ onClear, onClose, fullPage, isMaximized, setIsMaximized })
   );
 }
 
-function ChatMessages({ messages, isTyping, showQuickReplies, onQuickReply, messagesEndRef }) {
+function ChatMessages({
+  messages,
+  isTyping,
+  showQuickReplies,
+  onQuickReply,
+  onSuggestionClick,
+  messagesEndRef,
+}) {
   return (
     <div className="chatbot-messages" role="log" aria-live="polite" aria-label="Chat messages">
       {messages.map((msg) => (
-        <MessageBubble key={msg.id} msg={msg} />
+        <MessageBubble key={msg.id} msg={msg} onSuggestionClick={onSuggestionClick} />
       ))}
       {isTyping && <TypingDots />}
       {showQuickReplies && !isTyping && (
@@ -375,45 +493,82 @@ function ChatMessages({ messages, isTyping, showQuickReplies, onQuickReply, mess
   );
 }
 
-function ChatInput({ input, setInput, onSubmit, onKeyDown, inputRef, isTyping }) {
+function ChatInput({
+  input,
+  setInput,
+  onSubmit,
+  onKeyDown,
+  inputRef,
+  isTyping,
+  isVoiceTranscript,
+  setIsVoiceTranscript,
+}) {
   const [isListening, setIsListening] = useState(false);
+  const [micDenied, setMicDenied] = useState(false);
+
+  const SpeechRecognition =
+    typeof window !== 'undefined'
+      ? window.SpeechRecognition || window.webkitSpeechRecognition
+      : null;
+
+  const isSpeechSupported = Boolean(SpeechRecognition);
 
   const toggleListening = () => {
-    if (isListening) return;
+    if (isListening || !isSpeechSupported) return;
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Your browser does not support speech recognition.");
-      return;
-    }
-
+    setMicDenied(false);
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
+    recognition.lang = 'en-IN';
 
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
     recognition.onerror = (e) => {
-      console.error(e);
+      console.error('Speech recognition error:', e);
       setIsListening(false);
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        setMicDenied(true);
+      }
     };
     recognition.onresult = (e) => {
-      const transcript = e.results[0][0].transcript;
-      setInput((prev) => prev + (prev ? ' ' : '') + transcript);
+      if (e.results && e.results[0] && e.results[0][0]) {
+        const transcript = e.results[0][0].transcript;
+        setInput((prev) => (prev ? prev + ' ' + transcript : transcript));
+        setIsVoiceTranscript(true);
+      }
     };
 
-    recognition.start();
+    try {
+      recognition.start();
+    } catch (err) {
+      console.error('Failed to start speech recognition:', err);
+      setIsListening(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setInput(val);
+    if (!val.trim()) {
+      setIsVoiceTranscript(false);
+    }
   };
 
   return (
     <form className="chatbot-input-area" onSubmit={onSubmit}>
+      {micDenied && (
+        <div className="mic-denied-notice">
+          Microphone permission denied. Please allow microphone access in browser settings.
+        </div>
+      )}
       <div className="input-wrapper">
         <textarea
           ref={inputRef}
           id="chatbot-input"
           className="chatbot-input"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           onKeyDown={onKeyDown}
           placeholder="Ask me anything about EduCrop..."
           rows={1}
@@ -421,16 +576,18 @@ function ChatInput({ input, setInput, onSubmit, onKeyDown, inputRef, isTyping })
           aria-label="Type your message"
         />
         <div className="input-actions">
-          <button
-            type="button"
-            className={`chatbot-voice-btn ${isListening ? 'listening' : ''}`}
-            onClick={toggleListening}
-            disabled={isTyping}
-            aria-label="Voice message"
-            title="Voice message"
-          >
-            <Mic size={20} />
-          </button>
+          {isSpeechSupported && (
+            <button
+              type="button"
+              className={`chatbot-voice-btn ${isListening ? 'listening' : ''}`}
+              onClick={toggleListening}
+              disabled={isTyping}
+              aria-label="Voice message"
+              title="Voice message (Web Speech API)"
+            >
+              <Mic size={20} />
+            </button>
+          )}
           <button
             type="submit"
             id="chatbot-send-btn"
