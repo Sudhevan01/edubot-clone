@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Mic, ArrowRight, Mail } from 'lucide-react';
-import { WELCOME_MESSAGE, QUICK_REPLIES } from '../../data/chatbotResponses';
+import { WELCOME_MESSAGE } from '../../data/chatbotResponses';
 import { sendChatMessage } from '../../services/chatApi';
 import { renderMarkdown } from '../../utils/markdownRenderer';
 import './ChatBot.css';
@@ -99,7 +99,7 @@ function TypingDots() {
 }
 
 // ── Single message bubble ─────────────────────────
-function MessageBubble({ msg, onSuggestionClick }) {
+function MessageBubble({ msg, onSuggestionClick, onNavigate }) {
   const isBot = msg.role === 'bot';
   const isError = Boolean(msg.isError);
   const navigate = useNavigate();
@@ -130,7 +130,13 @@ function MessageBubble({ msg, onSuggestionClick }) {
                     key={idx}
                     type="button"
                     className="quick-reply-chip action-btn navigate-btn"
-                    onClick={() => navigate(act.url)}
+                    onClick={() => {
+                      if (onNavigate) {
+                        onNavigate(act.url);
+                      } else {
+                        navigate(act.url);
+                      }
+                    }}
                   >
                     <ArrowRight size={15} style={{ marginRight: '6px', verticalAlign: 'middle', display: 'inline-block' }} />
                     <span>{act.label || 'View Page'}</span>
@@ -188,12 +194,12 @@ function MessageBubble({ msg, onSuggestionClick }) {
 
 // ── Main ChatBot widget ───────────────────────────
 export default function ChatBot({ fullPage = false }) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(fullPage);
   const [isMaximized, setIsMaximized] = useState(false);
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [unread, setUnread] = useState(0);
   const [isVoiceTranscript, setIsVoiceTranscript] = useState(false);
 
@@ -235,7 +241,6 @@ export default function ChatBot({ fullPage = false }) {
       setMessages((prev) => [...prev, userMsg]);
       setInput('');
       setIsVoiceTranscript(false);
-      setShowQuickReplies(false);
       setIsTyping(true);
 
       const result = await sendChatMessage({
@@ -281,12 +286,14 @@ export default function ChatBot({ fullPage = false }) {
     sendMessage(input);
   };
 
-  const handleQuickReply = (qr) => {
-    sendMessage(qr.query, 'text');
-  };
-
   const handleSuggestionClick = (sugText) => {
     sendMessage(sugText, 'text');
+  };
+
+  const handleNavigate = (url) => {
+    setIsOpen(false);
+    setIsMaximized(false);
+    navigate(url);
   };
 
   const handleKeyDown = (e) => {
@@ -298,7 +305,6 @@ export default function ChatBot({ fullPage = false }) {
 
   const clearChat = () => {
     setMessages([WELCOME_MESSAGE]);
-    setShowQuickReplies(true);
     setUnread(0);
     setIsVoiceTranscript(false);
   };
@@ -313,9 +319,8 @@ export default function ChatBot({ fullPage = false }) {
           <ChatMessages
             messages={messages}
             isTyping={isTyping}
-            showQuickReplies={showQuickReplies}
-            onQuickReply={handleQuickReply}
             onSuggestionClick={handleSuggestionClick}
+            onNavigate={handleNavigate}
             messagesEndRef={messagesEndRef}
           />
           <ChatInput
@@ -370,9 +375,8 @@ export default function ChatBot({ fullPage = false }) {
         <ChatMessages
           messages={messages}
           isTyping={isTyping}
-          showQuickReplies={showQuickReplies}
-          onQuickReply={handleQuickReply}
           onSuggestionClick={handleSuggestionClick}
+          onNavigate={handleNavigate}
           messagesEndRef={messagesEndRef}
         />
         <ChatInput
@@ -460,34 +464,21 @@ function ChatHeader({ onClear, onClose, fullPage, isMaximized, setIsMaximized })
 function ChatMessages({
   messages,
   isTyping,
-  showQuickReplies,
-  onQuickReply,
   onSuggestionClick,
+  onNavigate,
   messagesEndRef,
 }) {
   return (
     <div className="chatbot-messages" role="log" aria-live="polite" aria-label="Chat messages">
       {messages.map((msg) => (
-        <MessageBubble key={msg.id} msg={msg} onSuggestionClick={onSuggestionClick} />
+        <MessageBubble
+          key={msg.id}
+          msg={msg}
+          onSuggestionClick={onSuggestionClick}
+          onNavigate={onNavigate}
+        />
       ))}
       {isTyping && <TypingDots />}
-      {showQuickReplies && !isTyping && (
-        <div className="quick-replies">
-          <p className="quick-replies-label">Quick questions:</p>
-          <div className="quick-replies-grid">
-            {QUICK_REPLIES.map((qr) => (
-              <button
-                key={qr.id}
-                className="quick-reply-chip"
-                onClick={() => onQuickReply(qr)}
-                type="button"
-              >
-                {qr.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
       <div ref={messagesEndRef} />
     </div>
   );
