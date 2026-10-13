@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     # LLM Settings
     GEMINI_MODEL: str = Field(
-        default="gemini-3.5-flash-lite",
+        default="gemini-3.1-flash-lite",
         description="Google Gemini model name for the chatbot",
     )
 

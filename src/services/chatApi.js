@@ -46,7 +46,7 @@ export function getSessionId() {
 export async function sendChatMessage({ message, inputMode = 'text' }) {
   const sessionId = getSessionId();
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const timeoutId = setTimeout(() => controller.abort(), 45000);
 
   try {
     const response = await fetch('/api/chat', {

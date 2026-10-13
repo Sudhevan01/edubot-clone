@@ -44,6 +44,7 @@ class GeminiLLMClient(LLMClient):
         self._client: Optional[genai.Client] = None
         self._cached_content_name: Optional[str] = None
         self._cached_prompt: Optional[str] = None
+        self._cache_failed: bool = False
 
     def _get_client(self) -> genai.Client:
         """Return or lazily initialize the google-genai Client."""
@@ -57,6 +58,9 @@ class GeminiLLMClient(LLMClient):
         self, client: genai.Client, system_prompt: str
     ) -> Optional[str]:
         """Try creating context cache for system prompt if supported."""
+        if self._cache_failed:
+            return None
+
         if self._cached_content_name and self._cached_prompt == system_prompt:
             return self._cached_content_name
 
@@ -75,6 +79,7 @@ class GeminiLLMClient(LLMClient):
                 logger.info(f"Created Gemini context cache: {cache.name}")
                 return cache.name
         except Exception as err:
+            self._cache_failed = True
             logger.debug(f"Context caching not used/supported for model {self.model_name}: {err}")
         return None
 
@@ -119,19 +124,25 @@ class GeminiLLMClient(LLMClient):
 
         config = types.GenerateContentConfig(**config_kwargs)
 
-        max_attempts = 4
+        candidate_models = [self.model_name]
+        for alt in ["gemini-flash-lite-latest", "gemini-3.8-flash"]:
+            if alt not in candidate_models:
+                candidate_models.append(alt)
+
+        max_attempts = len(candidate_models) + 1
         last_error: Optional[Exception] = None
 
         for attempt in range(1, max_attempts + 1):
+            current_model = candidate_models[min(attempt - 1, len(candidate_models) - 1)]
             try:
                 response = await asyncio.wait_for(
                     asyncio.to_thread(
                         client.models.generate_content,
-                        model=self.model_name,
+                        model=current_model,
                         contents=contents,
                         config=config,
                     ),
-                    timeout=20.0,
+                    timeout=16.0,
                 )
 
                 raw_text = response.text or ""
@@ -176,15 +187,15 @@ class GeminiLLMClient(LLMClient):
                 last_error = exc
                 err_msg = str(exc)
                 logger.warning(
-                    f"Gemini generate_content attempt {attempt}/{max_attempts} failed: {exc}"
+                    f"Gemini generate_content attempt {attempt}/{max_attempts} with {current_model} failed: {exc}"
                 )
 
                 if attempt < max_attempts:
                     if "RESOURCE_EXHAUSTED" in err_msg or "429" in err_msg:
-                        logger.info("Gemini rate limit hit. Waiting 15s before retry...")
-                        await asyncio.sleep(15.0)
+                        logger.info("Gemini rate limit hit. Waiting 3s before retry...")
+                        await asyncio.sleep(3.0)
                     else:
-                        await asyncio.sleep(2.0)
+                        await asyncio.sleep(1.0)
 
         logger.error(f"All {max_attempts} attempts to Gemini model failed: {last_error}")
         raise last_error or RuntimeError("Gemini API request failed")
