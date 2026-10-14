@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe, GraduationCap, BookOpen, Award, School, Brain } from 'lucide-react';
+import { ArrowRight, BarChart3, Menu, X, Shield, Check, Network, Sparkles, Users, Globe, GraduationCap, BookOpen, Award, School, Brain, Download } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
 import schoolHeroImg from '../assets/images/school-hero-indian.png';
@@ -43,61 +43,69 @@ const Homepage = ({ onLoginClick }) => {
         <div className="hero-content-wrapper">
           <div className="hero-left">
             <div className="hero-badge">
-              Smart Education Management Software
+              All-in-One Institutional ERP
             </div>
             <h1 className="hero-title">
-              <span className="hero-title-line line-1">Empowering</span>
-              <span className="hero-title-line line-2">Academic Excellence</span>
+              <span className="hero-title-line line-1">Simplify Campus Administration.</span>
+              <span className="hero-title-line line-2">Elevate Student Success.</span>
             </h1>
             <div className="hero-accent-line hidden-except-tablet"></div>
             <p className="hero-desc">
-              Educrop provides the robust structural foundation and digital orchestration required for modern educational institutions to thrive in an era of rapid digital transformation.
+              EduCrop connects academics, attendance, and campus security into one intuitive platform—giving principals, educators, and parents real-time control.
             </p>
             <div className="hero-actions">
-              <button className="btn-explore" onClick={onLoginClick}>
-                Explore Platform <ArrowRight size={18} />
+              <button className="btn-explore" onClick={() => navigate('/contact')}>
+                Book a 15-Min Live Demo <ArrowRight size={18} />
               </button>
-              <button className="btn-demo" onClick={() => navigate('/contact')}>
-                Schedule Demo
+              <button className="btn-demo" onClick={() => navigate('/product')}>
+                Explore Product Modules
               </button>
             </div>
+            <a
+              className="btn-playstore"
+              href="https://play.google.com/store/apps/details?id=com.Educrop.printerwrapper"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Download size={18} /> Download the App on Google Play
+            </a>
           </div>
         </div>
       </main>
 
       {/* Section 2: Unmatched Institutional Support */}
       <section className="support-section" id="product">
-        <h2 className="support-title">Unmatched Institutional Support</h2>
+        <h2 className="support-title">Engineered for Every Aspect of Campus Operations</h2>
         <p className="support-subtitle">
-          Our platform is built to handle the most demanding administrative and pedagogical needs of modern global education.
+          From smart attendance and visitor tracking to academic reporting, EduCrop reduces admin overhead by up to 40%.
         </p>
 
         <div className="support-grid-3col">
-          {/* Card 1: Global Scalability */}
+          {/* Card 1: Fast, Cloud-Reliable Uptime */}
           <div className="support-card-3col">
-            <img src="/assets/images/card1.png" alt="Global Scalability" className="support-card-img" />
+            <img src="/assets/images/card1.png" alt="Fast, Cloud-Reliable Uptime" className="support-card-img" />
             <div className="support-card-overlay"></div>
             <div className="support-card-content">
               <div className="support-card-icon" style={{ color: '#2563EB' }}>
                 <Globe size={22} />
               </div>
               <div className="support-card-text">
-                <h3>Global Scalability</h3>
-                <p>Infrastructure designed to support millions of users across diverse geographical regions without latency.</p>
+                <h3>Fast, Cloud-Reliable Uptime</h3>
+                <p>Reliable, lag-free access during high-traffic periods like exam result announcements and annual admissions.</p>
               </div>
             </div>
           </div>
 
-          {/* Card 2: Pedagogical Excellence */}
+          {/* Card 2: Academic & Curriculum Tracking */}
           <div className="support-card-3col">
-            <img src="/assets/images/card2.png" alt="Pedagogical Excellence" className="support-card-img" />
+            <img src="/assets/images/card2.png" alt="Academic & Curriculum Tracking" className="support-card-img" />
             <div className="support-card-overlay"></div>
             <div className="support-card-content">
               <div className="support-card-icon" style={{ color: '#9333EA' }}>
                 <GraduationCap size={22} />
               </div>
               <div className="support-card-text">
-                <h3>Pedagogical Excellence</h3>
+                <h3>Academic &amp; Curriculum Tracking</h3>
                 <p>Tools crafted in collaboration with leading educators to enhance learning outcomes and engagement.</p>
               </div>
             </div>

@@ -229,7 +229,7 @@ const Docs = ({ onLoginClick }) => {
                 <h3>EduCrop Mobile APK</h3>
                 <p>Used by security at the gate to instantly generate visitor gate passes via Bluetooth.</p>
               </div>
-              <a href="/downloads/educrop-mobile.apk" download="educrop-mobile.apk" className="main-download-btn" style={{ textDecoration: 'none', textAlign: 'center' }}>
+              <a href="https://play.google.com/store/apps/details?id=com.Educrop.printerwrapper" target="_blank" rel="noopener noreferrer" className="main-download-btn" style={{ textDecoration: 'none', textAlign: 'center' }}>
                 Install APK
               </a>
             </div>
