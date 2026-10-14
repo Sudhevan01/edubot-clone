@@ -251,7 +251,10 @@ async def chat_endpoint(
 
         # 6. Record Token Usage Cost
         turn_cost = await cost_tracker.record_usage(
-            llm_resp.input_tokens, llm_resp.output_tokens, settings
+            llm_resp.input_tokens,
+            llm_resp.output_tokens,
+            settings,
+            session_id=request.session_id,
         )
 
         # 7. Determine answer_type and map page_key / actions / suggestions

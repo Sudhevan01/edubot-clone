@@ -91,3 +91,103 @@ class HealthResponse(BaseModel):
     """Health check endpoint response schema."""
 
     status: str = Field(default="ok", description="Service health status indicator")
+
+
+class PricingRates(BaseModel):
+    """Token pricing configuration schema."""
+
+    input_per_million_usd: float = Field(
+        ..., description="Price per 1,000,000 input tokens in USD"
+    )
+    output_per_million_usd: float = Field(
+        ..., description="Price per 1,000,000 output tokens in USD"
+    )
+
+
+class SessionTokenStats(BaseModel):
+    """Per-session token and message usage statistics."""
+
+    session_id: str = Field(
+        ...,
+        description="Session identifier UUID",
+        json_schema_extra={"example": "123e4567-e89b-12d3-a456-426614174000"},
+    )
+    messages_count: int = Field(
+        ..., description="Total messages sent in this session"
+    )
+    remaining_messages_allowed: int = Field(
+        ...,
+        description="Remaining messages allowed for this session before hitting max limit",
+    )
+    input_tokens: int = Field(
+        ..., description="Total input tokens consumed by this session"
+    )
+    output_tokens: int = Field(
+        ..., description="Total output tokens generated for this session"
+    )
+    total_tokens: int = Field(
+        ..., description="Total tokens (input + output) consumed by this session"
+    )
+    session_cost_usd: float = Field(
+        ..., description="Total cost accumulated by this session in USD"
+    )
+
+
+class CostTrackerMetricsResponse(BaseModel):
+    """Live cost, token, and budget cap metrics schema for Swagger & admin monitoring."""
+
+    date: str = Field(
+        ...,
+        description="Current tracking date in IST (UTC+05:30)",
+        json_schema_extra={"example": "2026-10-14 (IST)"},
+    )
+    status: Literal["ok", "cap_exceeded"] = Field(
+        ..., description="Budget status: 'ok' or 'cap_exceeded'"
+    )
+    total_requests: int = Field(
+        ..., description="Total chat requests processed today across all users"
+    )
+
+    # Live Token Totals
+    total_tokens_used: int = Field(
+        ..., description="Total tokens used today (input + output)"
+    )
+    total_input_tokens: int = Field(
+        ..., description="Total input/prompt tokens used today"
+    )
+    total_output_tokens: int = Field(
+        ..., description="Total output/response tokens generated today"
+    )
+
+    # Financial / Budget Spend & Pending
+    total_spent_usd: float = Field(
+        ..., description="Total amount spent today in USD"
+    )
+    daily_budget_cap_usd: float = Field(
+        ..., description="Configured daily spending limit in USD"
+    )
+    pending_budget_usd: float = Field(
+        ..., description="Remaining pending budget for today in USD before limit is reached"
+    )
+    budget_used_percentage: str = Field(
+        ..., description="Percentage of today's budget used"
+    )
+    is_cap_exceeded: bool = Field(
+        ..., description="True if daily spend cap is reached or exceeded"
+    )
+
+    # Pricing & Sessions
+    pricing: PricingRates = Field(
+        ..., description="Current pricing rates per million tokens"
+    )
+    current_session: Optional[SessionTokenStats] = Field(
+        default=None,
+        description="Stats for requested session_id (or latest session if none specified)",
+    )
+    active_sessions_count: int = Field(
+        ..., description="Number of unique active sessions tracked today"
+    )
+    active_session_ids: List[str] = Field(
+        default_factory=list,
+        description="List of all active session UUIDs tracked today",
+    )
