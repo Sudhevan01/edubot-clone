@@ -1,3 +1,11 @@
+/* Pages set overflow:auto on <body> (and global.css sets overflow-x:hidden),
+   which turns <body> into a non-scrolling scroll container and breaks
+   position:sticky. On pages with this header, let <html> own scrolling. */
+body:has(.landing-header) {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
 /* Shared landing header styles */
 .landing-header {
   display: flex;
