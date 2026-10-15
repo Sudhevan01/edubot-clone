@@ -87,6 +87,24 @@ class Settings(BaseSettings):
         default=False, description="Whether to trust reverse proxy X-Forwarded-For headers"
     )
 
+    # TTS Voice Settings
+    GEMINI_TTS_VOICE: str = Field(
+        default="Kore",
+        description="Default prebuilt female voice for Gemini TTS (overridable via GEMINI_TTS_VOICE in .env)",
+    )
+    GEMINI_TTS_STYLE: str = Field(
+        default="speak as a warm, friendly, professional female assistant with a natural Indian English accent, at a calm and natural pace.",
+        description="Style instruction for Gemini TTS audio generation",
+    )
+    GEMINI_TTS_MODEL: str = Field(
+        default="gemini-3.8-flash-tts",
+        description="Google Gemini model name for TTS speech synthesis",
+    )
+    TTS_CACHE_DIR: Path = Field(
+        default=PROJECT_ROOT / "chatbot-service" / "audio_cache",
+        description="Directory for caching generated TTS audio files",
+    )
+
     model_config = SettingsConfigDict(
         env_file=str(DOTENV_PATH),
         env_file_encoding="utf-8",

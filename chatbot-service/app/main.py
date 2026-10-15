@@ -14,6 +14,7 @@ from app.api.health import router as health_router
 from app.config import get_settings
 from app.knowledge import load_knowledge
 from app.logging_config import logger, request_id_ctx
+from app.tts import clear_tts_cache_if_config_changed
 
 SERVICE_DIR = Path(__file__).resolve().parent.parent
 KNOWLEDGE_DIR = SERVICE_DIR / "knowledge"
@@ -31,6 +32,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     except Exception as err:
         logger.error(f"Failed to load knowledge base at startup: {err}")
         raise err
+
+    # Verify and clear TTS audio cache if voice or style changed
+    try:
+        clear_tts_cache_if_config_changed(settings)
+    except Exception as err:
+        logger.warning(f"Error checking TTS cache at startup: {err}")
 
     yield
 

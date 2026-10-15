@@ -530,12 +530,6 @@ img {
     max-height: 95svh !important;
   }
 
-  .chatbot-fab {
-    bottom: 10px !important;
-    right: 14px !important;
-    width: 48px !important;
-    height: 48px !important;
-  }
 }
 
 /* ---------------------------------------------------------
