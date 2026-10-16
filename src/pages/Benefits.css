@@ -6,7 +6,8 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #0f172a;
   background-color: #ffffff;
-  overflow-x: hidden;
+  /* clip (not hidden) so the sticky header keeps working */
+  overflow-x: clip;
 }
 
 .ben-section-title {

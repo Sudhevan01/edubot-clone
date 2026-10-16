@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Check, Network, Sparkles, Database, Cpu, Smartphone, Cloud, ArrowUpRight, Menu, X, Receipt, Building, Calendar, GraduationCap, ClipboardList, Award, TrendingUp, CalendarCheck, CalendarX, Bell, Users, BookOpen, Bus, MapPin, Route, UserCheck } from 'lucide-react';
+import { ArrowRight, Shield, Check, Network, Database, Cpu, Smartphone, Cloud, ArrowUpRight, Menu, X, Receipt, Building, Calendar, GraduationCap, ClipboardList, Award, TrendingUp, CalendarCheck, CalendarX, Bell, Users, BookOpen, Bus, MapPin, Route, UserCheck, CreditCard, Wallet, FileText } from 'lucide-react';
 import LandingFooter from '../components/LandingFooter';
 import Header from '../components/Header';
 import './Product.css';
@@ -100,7 +100,7 @@ const Product = ({ onLoginClick }) => {
           <div className="system-row-container reverse-row">
             <div className="system-text-col reveal-on-scroll">
               <div className="system-icon-box uims-purple-box">
-                <Sparkles size={24} />
+                <GraduationCap size={24} />
               </div>
               <h2 className="system-title">AMS: Academic Management System</h2>
               <p className="system-subtitle">
@@ -164,21 +164,21 @@ const Product = ({ onLoginClick }) => {
 
               <div className="receipt-features-stack">
                 <div className="receipt-card-item reveal-on-scroll stagger-1">
-                  <div className="receipt-icon"><Sparkles size={18} /></div>
+                  <div className="receipt-icon"><CreditCard size={18} /></div>
                   <div className="receipt-desc">
                     <h4>Fee Management</h4>
                     <p>Automated generation of student fee receipts and payment tracking.</p>
                   </div>
                 </div>
                 <div className="receipt-card-item reveal-on-scroll stagger-2">
-                  <div className="receipt-icon"><Sparkles size={18} /></div>
+                  <div className="receipt-icon"><Wallet size={18} /></div>
                   <div className="receipt-desc">
                     <h4>Payroll Processing</h4>
                     <p>Seamless generation of staff salary slips and compensation records.</p>
                   </div>
                 </div>
                 <div className="receipt-card-item reveal-on-scroll stagger-3">
-                  <div className="receipt-icon"><Sparkles size={18} /></div>
+                  <div className="receipt-icon"><FileText size={18} /></div>
                   <div className="receipt-desc">
                     <h4>Financial Reporting</h4>
                     <p>Comprehensive audit logs and transaction history for all financial documents.</p>

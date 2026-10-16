@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, ShieldCheck, Layers, BookOpen, ChevronRight, GraduationCap } from 'lucide-react';
+import { Mail, ShieldCheck, Layers, BookOpen, Bus, ChevronRight, GraduationCap } from 'lucide-react';
 import './LandingFooter.css';
 
 const LandingFooter = () => {
@@ -70,6 +70,13 @@ const LandingFooter = () => {
               <div className="platform-text">
                 <span className="platform-title">AMS</span>
                 <span className="platform-sub">Academic Management System</span>
+              </div>
+            </div>
+            <div className="platform-item" onClick={(e) => handleScrollNav(e, '/product', 'tms')}>
+              <div className="platform-icon"><Bus size={20} /></div>
+              <div className="platform-text">
+                <span className="platform-title">TMS</span>
+                <span className="platform-sub">Transport Management System</span>
               </div>
             </div>
           </div>

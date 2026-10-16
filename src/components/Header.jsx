@@ -11,12 +11,11 @@ const Header = ({ onLoginClick }) => {
   const isActive = (path) => location.pathname === path;
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Product', path: '/product' },
+    { name: 'Modules', path: '/product' },
+    { name: 'Benefits', path: '/benefits' },
     { name: 'Docs', path: '/docs' },
     { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
-    { name: 'Benefits', path: '/benefits' }
+    { name: 'Contact', path: '/contact' }
   ];
 
   const handleNavClick = (e, path) => {
@@ -43,6 +42,16 @@ const Header = ({ onLoginClick }) => {
   return (
     <React.Fragment>
 
+      {/* ── Top Contact Bar ── */}
+      <div className="landing-topbar">
+        <a href="mailto:contact@educrop.com" className="topbar-item">
+          <Mail size={14} /> contact@educrop.com
+        </a>
+        <a href="tel:+917337840612" className="topbar-item">
+          <Phone size={14} /> +91 73378 40612
+        </a>
+      </div>
+
       {/* ── Sticky Header Bar ── */}
       <header className="landing-header">
         <div className="landing-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
@@ -64,6 +73,7 @@ const Header = ({ onLoginClick }) => {
 
         <div className="landing-auth">
           <button className="btn-login" onClick={onLoginClick}>Login</button>
+          <button className="btn-schedule-demo" onClick={() => navigate('/contact')}>Schedule Demo</button>
         </div>
 
         <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>
@@ -110,12 +120,18 @@ const Header = ({ onLoginClick }) => {
           >
             Login
           </button>
+          <button
+            className="drawer-demo-btn"
+            onClick={() => { navigate('/contact'); setMobileMenuOpen(false); }}
+          >
+            Schedule Demo
+          </button>
         </div>
 
         <div className="drawer-contact">
           <p className="drawer-contact-label">CONTACT</p>
-          <a href="mailto:Educropblr@gmail.com" className="drawer-contact-item">
-            <Mail size={14} /> Educropblr@gmail.com
+          <a href="mailto:contact@educrop.com" className="drawer-contact-item">
+            <Mail size={14} /> contact@educrop.com
           </a>
           <a href="mailto:info@devcreationsblr.com" className="drawer-contact-item">
             <Mail size={14} /> info@devcreationsblr.com
