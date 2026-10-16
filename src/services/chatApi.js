@@ -107,3 +107,47 @@ export async function sendChatMessage({ message, inputMode = 'text' }) {
     };
   }
 }
+
+/**
+ * Request speech audio (WAV blob URL) for chatbot response text using the Kore voice.
+ *
+ * @param {string} text - Clean message text to speak
+ * @param {AbortSignal} [signal] - Optional abort signal
+ * @returns {Promise<string>} Blob URL pointing to audio/wav
+ */
+export async function fetchChatTTS(text, externalSignal) {
+  const controller = new AbortController();
+  // 15000ms timeout for cloud Kore TTS audio synthesis
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  if (externalSignal) {
+    if (externalSignal.aborted) {
+      controller.abort();
+    } else {
+      externalSignal.addEventListener('abort', () => controller.abort(), { once: true });
+    }
+  }
+
+  try {
+    const response = await fetch('/api/chat/tts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`TTS synthesis failed with status ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
+  }
+}
