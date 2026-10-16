@@ -125,7 +125,13 @@ class GeminiLLMClient(LLMClient):
         config = types.GenerateContentConfig(**config_kwargs)
 
         candidate_models = [self.model_name]
-        for alt in ["gemini-flash-lite-latest", "gemini-3.8-flash"]:
+        for alt in [
+            "gemini-flash-lite-latest",
+            "gemini-3.5-flash-lite",
+            "gemini-3.1-flash-lite",
+            "gemini-flash-latest",
+            "gemini-3.8-flash",
+        ]:
             if alt not in candidate_models:
                 candidate_models.append(alt)
 
@@ -192,8 +198,11 @@ class GeminiLLMClient(LLMClient):
 
                 if attempt < max_attempts:
                     if "RESOURCE_EXHAUSTED" in err_msg or "429" in err_msg:
-                        logger.info("Gemini rate limit hit. Waiting 3s before retry...")
-                        await asyncio.sleep(3.0)
+                        logger.info("Gemini rate limit hit. Waiting 2.5s before retry...")
+                        await asyncio.sleep(2.5)
+                    elif "503" in err_msg or "high demand" in err_msg.lower() or "unavailable" in err_msg.lower():
+                        logger.info(f"Gemini temporary 503 high demand on {current_model}. Switching model...")
+                        await asyncio.sleep(1.0)
                     else:
                         await asyncio.sleep(1.0)
 

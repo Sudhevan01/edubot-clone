@@ -65,8 +65,6 @@ exhausted_models = set()
 
 def generate_audio_with_retry(client: genai.Client, text: str, voice_name: str, max_retries: int = 4) -> bytes:
     """Generate audio bytes with rate limit backoff and multi-model fallback."""
-    prompt = f"DIRECTOR'S NOTES:\n{STYLE_INSTRUCTION}\n\nTRANSCRIPT:\n{text}"
-
     last_error = None
 
     for attempt in range(1, max_retries + 1):
@@ -78,7 +76,7 @@ def generate_audio_with_retry(client: genai.Client, text: str, voice_name: str, 
             try:
                 response = client.models.generate_content(
                     model=model,
-                    contents=prompt,
+                    contents=text,
                     config=types.GenerateContentConfig(
                         response_modalities=["AUDIO"],
                         speech_config=types.SpeechConfig(
