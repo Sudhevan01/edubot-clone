@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { X, Mic, ArrowRight, Mail, SlidersHorizontal, RotateCcw, Volume2, Square } from 'lucide-react';
+import { X, Mic, ArrowRight, Mail, SlidersHorizontal, RotateCcw, Volume2, Square, Loader2 } from 'lucide-react';
 import { WELCOME_MESSAGE } from '../../data/chatbotResponses';
-import { sendChatMessage } from '../../services/chatApi';
+import { sendChatMessage, fetchChatTTS } from '../../services/chatApi';
 import { renderMarkdown } from '../../utils/markdownRenderer';
 import './ChatBot.css';
 
@@ -161,89 +161,20 @@ function splitIntoSentences(text) {
   return sentences.length > 0 ? sentences : [text];
 }
 
-function getBestVoice(targetLang = 'en-IN') {
-  if (typeof window === 'undefined' || !window.speechSynthesis) return null;
-  try {
-    const voices = window.speechSynthesis.getVoices() || [];
-    if (voices.length === 0) return null;
-
-    const normTarget = targetLang.toLowerCase().replace('_', '-');
-    const isEnglish = normTarget.startsWith('en');
-
-    // Keywords to identify female voices across operating systems and browsers
-    const femaleKeywords = [
-      'female', 'woman', 'girl', 'zira', 'heera', 'neerja', 'hazel',
-      'susan', 'jenny', 'aria', 'eva', 'catherine', 'linda', 'sarah',
-      'karen', 'samantha', 'victoria', 'natasha', 'ayushi', 'veena', 'swara'
-    ];
-    // Keywords to filter out male voices
-    const maleKeywords = [
-      'male', 'man', 'david', 'ravi', 'prabhat', 'mark', 'george',
-      'guy', 'richard', 'james', 'brian'
-    ];
-
-    const isExplicitlyMale = (v) => {
-      const name = (v.name || '').toLowerCase();
-      return maleKeywords.some((m) => name.includes(m));
-    };
-
-    const isExplicitlyFemale = (v) => {
-      const name = (v.name || '').toLowerCase();
-      if (isExplicitlyMale(v)) return false;
-      return femaleKeywords.some((f) => name.includes(f));
-    };
-
-    // 1. Target lang (e.g. en-in) + explicitly female
-    const targetFemale = voices.find(
-      (v) => v.lang && v.lang.toLowerCase().replace('_', '-') === normTarget && isExplicitlyFemale(v)
-    );
-    if (targetFemale) return targetFemale;
-
-    // 2. Target lang (e.g. en-in) + not male
-    const targetNotMale = voices.find(
-      (v) => v.lang && v.lang.toLowerCase().replace('_', '-') === normTarget && !isExplicitlyMale(v)
-    );
-    if (targetNotMale) return targetNotMale;
-
-    // 3. Any English voice + explicitly female (e.g. Microsoft Zira Desktop, Google UK English Female)
-    if (isEnglish) {
-      const anyEnglishFemale = voices.find(
-        (v) => v.lang && v.lang.toLowerCase().startsWith('en') && isExplicitlyFemale(v)
-      );
-      if (anyEnglishFemale) return anyEnglishFemale;
-
-      const anyEnglishNotMale = voices.find(
-        (v) => v.lang && v.lang.toLowerCase().startsWith('en') && !isExplicitlyMale(v)
-      );
-      if (anyEnglishNotMale) return anyEnglishNotMale;
-    }
-
-    // 4. Any explicitly female voice in any language
-    const anyFemale = voices.find((v) => isExplicitlyFemale(v));
-    if (anyFemale) return anyFemale;
-
-    // 5. Any voice that is not explicitly male
-    const anyNotMale = voices.find((v) => !isExplicitlyMale(v));
-    if (anyNotMale) return anyNotMale;
-
-    // 6. Fallback
-    return voices.find((v) => v.default) || voices[0] || null;
-  } catch (err) {
-    console.warn('Error selecting speech voice:', err);
-    return null;
-  }
-}
-
 // ── Single message bubble ─────────────────────────
-function MessageBubble({ msg, onSuggestionClick, onNavigate, isSpeaking, onToggleSpeak }) {
+function MessageBubble({
+  msg,
+  onSuggestionClick,
+  onNavigate,
+  isSpeaking,
+  isLoadingSpeech,
+  onToggleSpeak,
+}) {
   const isBot = msg.role === 'bot';
   const isError = Boolean(msg.isError);
   const navigate = useNavigate();
 
-  const isSpeechSupported =
-    typeof window !== 'undefined' &&
-    'speechSynthesis' in window &&
-    'SpeechSynthesisUtterance' in window;
+  const isSpeechSupported = typeof window !== 'undefined' && typeof Audio !== 'undefined';
 
   return (
     <div className={`chatbot-message ${isBot ? 'bot-message' : 'user-message'}`}>
@@ -261,12 +192,15 @@ function MessageBubble({ msg, onSuggestionClick, onNavigate, isSpeaking, onToggl
         {isBot && isSpeechSupported && (
           <button
             type="button"
-            className={`bubble-speech-btn ${isSpeaking ? 'speaking' : ''}`}
+            className={`bubble-speech-btn ${isSpeaking ? 'speaking' : ''} ${isLoadingSpeech ? 'loading' : ''}`}
             onClick={onToggleSpeak}
-            aria-label={isSpeaking ? 'Stop reading' : 'Read message aloud'}
-            title={isSpeaking ? 'Stop reading' : 'Read message aloud'}
+            disabled={isLoadingSpeech}
+            aria-label={isLoadingSpeech ? 'Preparing Kore audio...' : isSpeaking ? 'Stop reading' : 'Read message aloud'}
+            title={isLoadingSpeech ? 'Preparing Kore audio...' : isSpeaking ? 'Stop reading' : 'Read message aloud'}
           >
-            {isSpeaking ? (
+            {isLoadingSpeech ? (
+              <Loader2 size={12} className="spin-icon" />
+            ) : isSpeaking ? (
               <Square size={11} fill="currentColor" strokeWidth={0} />
             ) : (
               <Volume2 size={13} strokeWidth={2.2} />
@@ -496,12 +430,15 @@ export default function ChatBot({ fullPage = false }) {
   const [unread, setUnread] = useState(0);
   const [isVoiceTranscript, setIsVoiceTranscript] = useState(false);
 
-  // Speech synthesis state & voice config
+  // Speech synthesis state & voice config (Kore voice)
   const [speakingMessageId, setSpeakingMessageId] = useState(null);
+  const [speechLoadingId, setSpeechLoadingId] = useState(null);
   const speakingIdRef = useRef(null);
+  const audioPlayerRef = useRef(null);
+  const ttsAbortCtrlRef = useRef(null);
   const preferredVoiceLang = 'en-IN'; // Structured to easily follow selected language in the future
 
-  // Listen for voiceschanged event so async voices load properly
+  // Listen for voiceschanged event so async fallback voices load properly
   useEffect(() => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
 
@@ -524,6 +461,23 @@ export default function ChatBot({ fullPage = false }) {
   }, []);
 
   const stopSpeaking = useCallback(() => {
+    setSpeechLoadingId(null);
+
+    if (audioPlayerRef.current) {
+      try {
+        audioPlayerRef.current.pause();
+        audioPlayerRef.current.currentTime = 0;
+      } catch {}
+      audioPlayerRef.current = null;
+    }
+
+    if (ttsAbortCtrlRef.current) {
+      try {
+        ttsAbortCtrlRef.current.abort();
+      } catch {}
+      ttsAbortCtrlRef.current = null;
+    }
+
     try {
       if (typeof window !== 'undefined' && window.speechSynthesis) {
         window.speechSynthesis.cancel();
@@ -531,91 +485,181 @@ export default function ChatBot({ fullPage = false }) {
     } catch (err) {
       console.warn('Error stopping speech synthesis:', err);
     }
+
     speakingIdRef.current = null;
     setSpeakingMessageId(null);
   }, []);
 
-  const startSpeaking = useCallback(
-    (msg) => {
-      if (typeof window === 'undefined' || !window.speechSynthesis) return;
+  const speakWithDeviceVoice = useCallback(
+    (cleanText, msgId) => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) {
+        stopSpeaking();
+        return;
+      }
+
+      speakingIdRef.current = msgId;
+      setSpeakingMessageId(msgId);
 
       try {
         window.speechSynthesis.cancel();
-      } catch (err) {
-        console.warn('Error resetting speech synthesis:', err);
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+
+        const voices = window.speechSynthesis.getVoices();
+        // Priority: Indian English female -> any Indian English -> natural female -> any female -> English -> default
+        const preferred =
+          voices.find(
+            (v) => (v.lang === 'en-IN' || v.lang === 'en_IN') && /female|heera|neerja|veena|kavya|ananya/i.test(v.name)
+          ) ||
+          voices.find((v) => v.lang === 'en-IN' || v.lang === 'en_IN') ||
+          voices.find(
+            (v) => v.lang.startsWith('en') && /natural|online|neural/i.test(v.name) && /female|jenny|aria|sonia|libby/i.test(v.name)
+          ) ||
+          voices.find(
+            (v) => v.lang.startsWith('en') && /female|zira|samantha|karen|victoria|susan/i.test(v.name)
+          ) ||
+          voices.find((v) => v.lang.startsWith('en')) ||
+          voices[0];
+
+        if (preferred) utterance.voice = preferred;
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+
+        utterance.onend = () => {
+          if (speakingIdRef.current === msgId) {
+            stopSpeaking();
+          }
+        };
+        utterance.onerror = (e) => {
+          console.warn('Device speech synthesis failed:', e);
+          if (speakingIdRef.current === msgId) {
+            stopSpeaking();
+          }
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        console.warn('Device speech synthesis exception:', e);
+        stopSpeaking();
       }
+    },
+    [stopSpeaking]
+  );
+
+  const startSpeaking = useCallback(
+    (msg) => {
+      stopSpeaking();
 
       const cleanText = cleanTextForSpeech(msg.text);
       if (!cleanText) return;
 
-      const sentences = splitIntoSentences(cleanText);
-      if (sentences.length === 0) return;
+      const isWelcome = msg.id === 'welcome' || msg.text === WELCOME_MESSAGE.text;
 
-      speakingIdRef.current = msg.id;
-      setSpeakingMessageId(msg.id);
-
-      let currentIndex = 0;
-
-      const speakNextSentence = () => {
-        if (speakingIdRef.current !== msg.id) return;
-
-        if (currentIndex >= sentences.length) {
-          speakingIdRef.current = null;
-          setSpeakingMessageId(null);
-          return;
-        }
+      // 1. Welcome Message: play pre-rendered Kore audio from public assets
+      if (isWelcome) {
+        speakingIdRef.current = msg.id;
+        setSpeakingMessageId(msg.id);
 
         try {
-          const sentence = sentences[currentIndex];
-          const utterance = new SpeechSynthesisUtterance(sentence);
-          utterance.rate = 1.0;
-          utterance.pitch = 1.05;
-          utterance.lang = preferredVoiceLang;
+          const audio = new Audio('/assets/audio/welcome.wav');
+          audioPlayerRef.current = audio;
 
-          const voice = getBestVoice(preferredVoiceLang);
-          if (voice) {
-            utterance.voice = voice;
+          audio.onended = () => {
+            if (speakingIdRef.current === msg.id) {
+              stopSpeaking();
+            }
+          };
+
+          audio.onerror = (e) => {
+            console.warn('Failed to load welcome audio, falling back to device voice:', e);
+            if (speakingIdRef.current === msg.id) {
+              speakWithDeviceVoice(cleanText, msg.id);
+            }
+          };
+
+          const playPromise = audio.play();
+          if (playPromise && playPromise.catch) {
+            playPromise.catch((err) => {
+              console.warn('Audio play was prevented or failed:', err);
+              if (speakingIdRef.current === msg.id) {
+                speakWithDeviceVoice(cleanText, msg.id);
+              }
+            });
+          }
+          return;
+        } catch (err) {
+          console.warn('Error initializing audio for welcome message:', err);
+          speakWithDeviceVoice(cleanText, msg.id);
+          return;
+        }
+      }
+
+      // 2. Chatbot response: request high-quality Kore voice audio from backend
+      setSpeechLoadingId(msg.id);
+      speakingIdRef.current = msg.id;
+
+      const abortCtrl = new AbortController();
+      ttsAbortCtrlRef.current = abortCtrl;
+
+      fetchChatTTS(cleanText, abortCtrl.signal)
+        .then((audioUrl) => {
+          setSpeechLoadingId(null);
+          if (speakingIdRef.current !== msg.id) {
+            URL.revokeObjectURL(audioUrl);
+            return;
           }
 
-          utterance.onend = () => {
+          setSpeakingMessageId(msg.id);
+
+          const audio = new Audio(audioUrl);
+          audioPlayerRef.current = audio;
+
+          audio.onended = () => {
+            URL.revokeObjectURL(audioUrl);
             if (speakingIdRef.current === msg.id) {
-              currentIndex++;
-              speakNextSentence();
+              stopSpeaking();
             }
           };
 
-          utterance.onerror = (e) => {
-            if (e.error === 'interrupted' || e.error === 'canceled') {
-              return;
-            }
-            console.warn('Speech synthesis utterance error:', e);
+          audio.onerror = (e) => {
+            URL.revokeObjectURL(audioUrl);
+            console.warn('Error during Kore audio playback, playing fallback voice:', e);
             if (speakingIdRef.current === msg.id) {
-              currentIndex++;
-              speakNextSentence();
+              speakWithDeviceVoice(cleanText, msg.id);
             }
           };
 
-          window.speechSynthesis.speak(utterance);
-        } catch (err) {
-          console.error('Error speaking utterance:', err);
-          stopSpeaking();
-        }
-      };
+          const playPromise = audio.play();
+          if (playPromise && playPromise.catch) {
+            playPromise.catch((err) => {
+              URL.revokeObjectURL(audioUrl);
+              console.warn('Audio play was prevented:', err);
+              if (speakingIdRef.current === msg.id) {
+                speakWithDeviceVoice(cleanText, msg.id);
+              }
+            });
+          }
+        })
+        .catch((err) => {
+          setSpeechLoadingId(null);
+          if (speakingIdRef.current !== msg.id) return;
+          console.warn('Kore TTS limit reached or unavailable, falling back to device voice:', err);
 
-      speakNextSentence();
+          // Automatically speak with device voice so speech works!
+          speakWithDeviceVoice(cleanText, msg.id);
+        });
     },
-    [stopSpeaking, preferredVoiceLang]
+    [stopSpeaking, speakWithDeviceVoice]
   );
 
   const handleToggleSpeak = useCallback(
     (msg) => {
-      if (speakingMessageId === msg.id) {
+      if (speakingMessageId === msg.id || speechLoadingId === msg.id) {
         stopSpeaking();
       } else {
         startSpeaking(msg);
       }
     },
-    [speakingMessageId, startSpeaking, stopSpeaking]
+    [speakingMessageId, speechLoadingId, startSpeaking, stopSpeaking]
   );
 
   // Chrome watchdog timer to keep long speech sessions alive
@@ -975,6 +1019,7 @@ export default function ChatBot({ fullPage = false }) {
             onNavigate={handleNavigate}
             messagesEndRef={messagesEndRef}
             speakingMessageId={speakingMessageId}
+            speechLoadingId={speechLoadingId}
             onToggleSpeak={handleToggleSpeak}
           />
           <ChatInput
@@ -1100,6 +1145,7 @@ export default function ChatBot({ fullPage = false }) {
           onNavigate={handleNavigate}
           messagesEndRef={messagesEndRef}
           speakingMessageId={speakingMessageId}
+          speechLoadingId={speechLoadingId}
           onToggleSpeak={handleToggleSpeak}
         />
         <ChatInput
@@ -1274,6 +1320,7 @@ function ChatMessages({
   onNavigate,
   messagesEndRef,
   speakingMessageId,
+  speechLoadingId,
   onToggleSpeak,
 }) {
   return (
@@ -1285,6 +1332,7 @@ function ChatMessages({
           onSuggestionClick={onSuggestionClick}
           onNavigate={onNavigate}
           isSpeaking={speakingMessageId === msg.id}
+          isLoadingSpeech={speechLoadingId === msg.id}
           onToggleSpeak={() => onToggleSpeak && onToggleSpeak(msg)}
         />
       ))}

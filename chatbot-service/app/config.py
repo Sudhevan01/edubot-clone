@@ -97,7 +97,7 @@ class Settings(BaseSettings):
         description="Style instruction for Gemini TTS audio generation",
     )
     GEMINI_TTS_MODEL: str = Field(
-        default="gemini-3.8-flash-tts",
+        default="gemini-3.8-flash-lite-tts",
         description="Google Gemini model name for TTS speech synthesis",
     )
     TTS_CACHE_DIR: Path = Field(

@@ -93,6 +93,23 @@ class HealthResponse(BaseModel):
     status: str = Field(default="ok", description="Service health status indicator")
 
 
+class TTSRequest(BaseModel):
+    """Text-to-speech request schema."""
+
+    text: str = Field(
+        ...,
+        min_length=1,
+        max_length=1500,
+        description="Text to convert to speech",
+        json_schema_extra={"example": "EduCrop is an all-in-one educational platform."},
+    )
+    voice: Optional[str] = Field(
+        default=None,
+        description="Optional voice override (defaults to configured Kore voice)",
+        json_schema_extra={"example": "Kore"},
+    )
+
+
 class PricingRates(BaseModel):
     """Token pricing configuration schema."""
 

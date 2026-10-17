@@ -1,8 +1,9 @@
 """Chat API endpoint router with full protection guards and OpenAPI examples."""
 
+import asyncio
 import time
 from typing import Optional
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.responses import JSONResponse
 
 from app.api.schemas import (
@@ -11,8 +12,10 @@ from app.api.schemas import (
     ChatResponse,
     ErrorResponse,
     PageResponse,
+    TTSRequest,
 )
 from app.config import Settings, get_settings
+from app.tts import synthesize_speech
 from app.guards.cost_tracker import CostTracker, SpendCapExceeded, default_cost_tracker
 from app.guards.input_guard import (
     InputValidationError,
@@ -371,6 +374,69 @@ async def chat_endpoint(
                 "error": {
                     "code": "unavailable",
                     "message": "The chatbot service is temporarily unavailable. Please try again in a moment.",
+                }
+            },
+        )
+
+
+@router.post(
+    "/api/chat/tts",
+    summary="Generate speech audio for chatbot message using Kore voice",
+    description="Synthesize speech audio using configured Google Gemini TTS voice (default: Kore) with caching.",
+)
+async def chat_tts(
+    request: TTSRequest,
+    settings: Settings = Depends(get_settings),
+) -> Response:
+    """Generate or retrieve cached TTS speech audio (WAV) for chatbot text."""
+    if not request.text or not request.text.strip():
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={"error": {"code": "empty", "message": "Text cannot be empty."}},
+        )
+
+    try:
+        audio_bytes = await asyncio.wait_for(
+            asyncio.to_thread(
+                synthesize_speech,
+                text=request.text,
+                voice=request.voice,
+                settings=settings,
+            ),
+            timeout=15.0,
+        )
+        if not audio_bytes:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"error": {"code": "empty", "message": "No speech generated for provided text."}},
+            )
+        return Response(
+            content=audio_bytes,
+            media_type="audio/wav",
+            headers={
+                "Cache-Control": "public, max-age=604800, immutable",
+                "Content-Disposition": 'inline; filename="speech.wav"',
+            },
+        )
+    except asyncio.TimeoutError:
+        logger.warning(f"TTS audio synthesis timed out after 15s for voice '{request.voice or settings.GEMINI_TTS_VOICE}'")
+        return JSONResponse(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            content={
+                "error": {
+                    "code": "timeout",
+                    "message": "TTS audio synthesis timed out.",
+                }
+            },
+        )
+    except Exception as exc:
+        logger.error(f"TTS generation error: {exc}", exc_info=True)
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "error": {
+                    "code": "unavailable",
+                    "message": "TTS audio synthesis is temporarily unavailable.",
                 }
             },
         )
