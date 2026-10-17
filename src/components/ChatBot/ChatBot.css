@@ -846,30 +846,7 @@
   }
 }
 
-/* ── Quota Notice & Fallback Indicator ──────────────── */
-.cb-tts-notice {
-  margin-top: 8px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: rgba(37, 99, 235, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.22);
-  font-size: 11px;
-  color: #1e40af;
-  line-height: 1.4;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  animation: fadeIn 0.2s ease-in-out;
-}
 
-.cb-tts-notice-icon {
-  flex-shrink: 0;
-  font-size: 11px;
-}
-
-.cb-tts-notice-text {
-  flex: 1;
-}
 
 @keyframes speech-pulse {
   0% {

@@ -168,7 +168,6 @@ function MessageBubble({
   onNavigate,
   isSpeaking,
   isLoadingSpeech,
-  ttsNotice,
   onToggleSpeak,
 }) {
   const isBot = msg.role === 'bot';
@@ -212,14 +211,6 @@ function MessageBubble({
         <div className="bubble-content">
           {isBot ? renderMarkdown(msg.text) : <p className="chat-md-p">{msg.text}</p>}
         </div>
-
-        {/* Quota / Fallback Notice */}
-        {ttsNotice && ttsNotice.msgId === msg.id && (
-          <div className="cb-tts-notice">
-            <span className="cb-tts-notice-icon">ℹ️</span>
-            <span className="cb-tts-notice-text">{ttsNotice.message}</span>
-          </div>
-        )}
 
         {/* Render Actions */}
         {isBot && Array.isArray(msg.actions) && msg.actions.length > 0 && (
@@ -442,7 +433,6 @@ export default function ChatBot({ fullPage = false }) {
   // Speech synthesis state & voice config (Kore voice)
   const [speakingMessageId, setSpeakingMessageId] = useState(null);
   const [speechLoadingId, setSpeechLoadingId] = useState(null);
-  const [ttsNotice, setTtsNotice] = useState(null);
   const speakingIdRef = useRef(null);
   const audioPlayerRef = useRef(null);
   const ttsAbortCtrlRef = useRef(null);
@@ -558,7 +548,6 @@ export default function ChatBot({ fullPage = false }) {
   const startSpeaking = useCallback(
     (msg) => {
       stopSpeaking();
-      setTtsNotice(null);
 
       const cleanText = cleanTextForSpeech(msg.text);
       if (!cleanText) return;
@@ -635,10 +624,6 @@ export default function ChatBot({ fullPage = false }) {
             URL.revokeObjectURL(audioUrl);
             console.warn('Error during Kore audio playback, playing fallback voice:', e);
             if (speakingIdRef.current === msg.id) {
-              setTtsNotice({
-                msgId: msg.id,
-                message: "Playing with device voice (Audio playback error).",
-              });
               speakWithDeviceVoice(cleanText, msg.id);
             }
           };
@@ -649,10 +634,6 @@ export default function ChatBot({ fullPage = false }) {
               URL.revokeObjectURL(audioUrl);
               console.warn('Audio play was prevented:', err);
               if (speakingIdRef.current === msg.id) {
-                setTtsNotice({
-                  msgId: msg.id,
-                  message: "Playing with device voice (Autoplay prevented).",
-                });
                 speakWithDeviceVoice(cleanText, msg.id);
               }
             });
@@ -662,11 +643,6 @@ export default function ChatBot({ fullPage = false }) {
           setSpeechLoadingId(null);
           if (speakingIdRef.current !== msg.id) return;
           console.warn('Kore TTS limit reached or unavailable, falling back to device voice:', err);
-
-          setTtsNotice({
-            msgId: msg.id,
-            message: "Playing with device voice (Kore daily limit reached).",
-          });
 
           // Automatically speak with device voice so speech works!
           speakWithDeviceVoice(cleanText, msg.id);
@@ -1044,7 +1020,6 @@ export default function ChatBot({ fullPage = false }) {
             messagesEndRef={messagesEndRef}
             speakingMessageId={speakingMessageId}
             speechLoadingId={speechLoadingId}
-            ttsNotice={ttsNotice}
             onToggleSpeak={handleToggleSpeak}
           />
           <ChatInput
@@ -1171,7 +1146,6 @@ export default function ChatBot({ fullPage = false }) {
           messagesEndRef={messagesEndRef}
           speakingMessageId={speakingMessageId}
           speechLoadingId={speechLoadingId}
-          ttsNotice={ttsNotice}
           onToggleSpeak={handleToggleSpeak}
         />
         <ChatInput
@@ -1347,7 +1321,6 @@ function ChatMessages({
   messagesEndRef,
   speakingMessageId,
   speechLoadingId,
-  ttsNotice,
   onToggleSpeak,
 }) {
   return (
@@ -1360,7 +1333,6 @@ function ChatMessages({
           onNavigate={onNavigate}
           isSpeaking={speakingMessageId === msg.id}
           isLoadingSpeech={speechLoadingId === msg.id}
-          ttsNotice={ttsNotice}
           onToggleSpeak={() => onToggleSpeak && onToggleSpeak(msg)}
         />
       ))}
