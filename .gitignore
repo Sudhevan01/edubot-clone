@@ -56,3 +56,9 @@ env/
 ENV/
 *.log
 
+# Chatbot audio cache & samples (runtime generated)
+**/audio_cache/
+**/tts_cache/
+audio_samples/
+
+
