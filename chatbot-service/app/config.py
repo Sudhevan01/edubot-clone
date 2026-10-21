@@ -30,7 +30,7 @@ class Settings(BaseSettings):
 
     # Security & CORS
     ALLOWED_ORIGINS: Union[List[str], str] = Field(
-        default=["http://localhost:5174"],
+        default=["http://localhost:5174", "http://localhost:5173", "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
         description="Allowed CORS origins",
     )
 
@@ -97,8 +97,12 @@ class Settings(BaseSettings):
         description="Style instruction for Gemini TTS audio generation",
     )
     GEMINI_TTS_MODEL: str = Field(
-        default="gemini-3.8-flash-lite-tts",
+        default="gemini-2.5-flash-preview-tts",
         description="Google Gemini model name for TTS speech synthesis",
+    )
+    TTS_PROVIDER: str = Field(
+        default="gemini",
+        description="TTS provider name (e.g. gemini)",
     )
     TTS_CACHE_DIR: Path = Field(
         default=PROJECT_ROOT / "chatbot-service" / "audio_cache",

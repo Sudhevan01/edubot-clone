@@ -380,9 +380,14 @@ async def chat_endpoint(
 
 
 @router.post(
+    "/api/tts",
+    summary="Generate speech audio for message using configured voice",
+    description="Synthesize speech audio using configured Google Gemini TTS voice with caching.",
+)
+@router.post(
     "/api/chat/tts",
-    summary="Generate speech audio for chatbot message using Kore voice",
-    description="Synthesize speech audio using configured Google Gemini TTS voice (default: Kore) with caching.",
+    summary="Generate speech audio for message using configured voice",
+    description="Synthesize speech audio using configured Google Gemini TTS voice with caching.",
 )
 async def chat_tts(
     request: TTSRequest,
@@ -395,31 +400,54 @@ async def chat_tts(
             content={"error": {"code": "empty", "message": "Text cannot be empty."}},
         )
 
+    provider = getattr(settings, "TTS_PROVIDER", "gemini")
+    model = settings.GEMINI_TTS_MODEL
+    voice = settings.GEMINI_TTS_VOICE
+
+    if request.voice and request.voice != voice:
+        logger.warning(
+            f"Client requested voice '{request.voice}', but using configured voice '{voice}'. "
+            f"Reason: Server config overrides client voice parameter."
+        )
+
+    # Log INFO line for each /api/tts request with provider, model, and voice used (never the text)
+    logger.info(
+        f"/api/tts request: provider='{provider}', model='{model}', voice='{voice}'"
+    )
+
     try:
         audio_bytes = await asyncio.wait_for(
             asyncio.to_thread(
                 synthesize_speech,
                 text=request.text,
-                voice=request.voice,
                 settings=settings,
             ),
-            timeout=15.0,
+            timeout=25.0,
         )
         if not audio_bytes:
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 content={"error": {"code": "empty", "message": "No speech generated for provided text."}},
             )
+        is_mp3 = (
+            audio_bytes.startswith(b"ID3")
+            or audio_bytes.startswith(b"\xff\xfb")
+            or audio_bytes.startswith(b"\xff\xf3")
+            or audio_bytes.startswith(b"\xff\xf2")
+        )
+        media_type = "audio/mpeg" if is_mp3 else "audio/wav"
+        filename = "speech.mp3" if is_mp3 else "speech.wav"
+
         return Response(
             content=audio_bytes,
-            media_type="audio/wav",
+            media_type=media_type,
             headers={
                 "Cache-Control": "public, max-age=604800, immutable",
-                "Content-Disposition": 'inline; filename="speech.wav"',
+                "Content-Disposition": f'inline; filename="{filename}"',
             },
         )
     except asyncio.TimeoutError:
-        logger.warning(f"TTS audio synthesis timed out after 15s for voice '{request.voice or settings.GEMINI_TTS_VOICE}'")
+        logger.warning(f"TTS audio synthesis timed out after 25s for voice '{voice}'")
         return JSONResponse(
             status_code=status.HTTP_504_GATEWAY_TIMEOUT,
             content={

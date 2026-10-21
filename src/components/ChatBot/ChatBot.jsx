@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { X, Mic, ArrowRight, Mail, SlidersHorizontal, RotateCcw, Volume2, Square, Loader2 } from 'lucide-react';
-import { WELCOME_MESSAGE } from '../../data/chatbotResponses';
+import { WELCOME_MESSAGE, getResponse } from '../../data/chatbotResponses';
 import { sendChatMessage, fetchChatTTS } from '../../services/chatApi';
 import { renderMarkdown } from '../../utils/markdownRenderer';
 import './ChatBot.css';
@@ -169,6 +169,7 @@ function MessageBubble({
   isSpeaking,
   isLoadingSpeech,
   onToggleSpeak,
+  onPrefetch,
 }) {
   const isBot = msg.role === 'bot';
   const isError = Boolean(msg.isError);
@@ -194,6 +195,8 @@ function MessageBubble({
             type="button"
             className={`bubble-speech-btn ${isSpeaking ? 'speaking' : ''} ${isLoadingSpeech ? 'loading' : ''}`}
             onClick={onToggleSpeak}
+            onMouseEnter={onPrefetch}
+            onTouchStart={onPrefetch}
             disabled={isLoadingSpeech}
             aria-label={isLoadingSpeech ? 'Preparing Kore audio...' : isSpeaking ? 'Stop reading' : 'Read message aloud'}
             title={isLoadingSpeech ? 'Preparing Kore audio...' : isSpeaking ? 'Stop reading' : 'Read message aloud'}
@@ -436,28 +439,44 @@ export default function ChatBot({ fullPage = false }) {
   const speakingIdRef = useRef(null);
   const audioPlayerRef = useRef(null);
   const ttsAbortCtrlRef = useRef(null);
-  const preferredVoiceLang = 'en-IN'; // Structured to easily follow selected language in the future
+  const audioCacheRef = useRef(new Map());
 
-  // Listen for voiceschanged event so async fallback voices load properly
+  // Clear any persistent storage audio keys from before the voice change
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-
-    const handleVoicesChanged = () => {
-      try {
-        window.speechSynthesis.getVoices();
-      } catch {}
-    };
-
     try {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
+      Object.keys(sessionStorage).forEach((key) => {
+        if (key.startsWith('educrop_audio_') || key.startsWith('tts_')) {
+          sessionStorage.removeItem(key);
+        }
+      });
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith('educrop_audio_') || key.startsWith('tts_')) {
+          localStorage.removeItem(key);
+        }
+      });
     } catch {}
+  }, []);
 
-    return () => {
-      try {
-        window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
-      } catch {}
-    };
+  // Pre-fetch welcome message greeting so it is ready to play with 0ms delay
+  useEffect(() => {
+    const welcomeClean = cleanTextForSpeech(WELCOME_MESSAGE.text);
+    if (welcomeClean && !audioCacheRef.current.has(welcomeClean)) {
+      fetchChatTTS(welcomeClean)
+        .then((url) => {
+          audioCacheRef.current.set(welcomeClean, url);
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  const handlePrefetch = useCallback((msg) => {
+    const cleanText = cleanTextForSpeech(msg.text);
+    if (!cleanText || audioCacheRef.current.has(cleanText)) return;
+    fetchChatTTS(cleanText)
+      .then((url) => {
+        audioCacheRef.current.set(cleanText, url);
+      })
+      .catch(() => {});
   }, []);
 
   const stopSpeaking = useCallback(() => {
@@ -478,72 +497,9 @@ export default function ChatBot({ fullPage = false }) {
       ttsAbortCtrlRef.current = null;
     }
 
-    try {
-      if (typeof window !== 'undefined' && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-    } catch (err) {
-      console.warn('Error stopping speech synthesis:', err);
-    }
-
     speakingIdRef.current = null;
     setSpeakingMessageId(null);
   }, []);
-
-  const speakWithDeviceVoice = useCallback(
-    (cleanText, msgId) => {
-      if (typeof window === 'undefined' || !window.speechSynthesis) {
-        stopSpeaking();
-        return;
-      }
-
-      speakingIdRef.current = msgId;
-      setSpeakingMessageId(msgId);
-
-      try {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-
-        const voices = window.speechSynthesis.getVoices();
-        // Priority: Indian English female -> any Indian English -> natural female -> any female -> English -> default
-        const preferred =
-          voices.find(
-            (v) => (v.lang === 'en-IN' || v.lang === 'en_IN') && /female|heera|neerja|veena|kavya|ananya/i.test(v.name)
-          ) ||
-          voices.find((v) => v.lang === 'en-IN' || v.lang === 'en_IN') ||
-          voices.find(
-            (v) => v.lang.startsWith('en') && /natural|online|neural/i.test(v.name) && /female|jenny|aria|sonia|libby/i.test(v.name)
-          ) ||
-          voices.find(
-            (v) => v.lang.startsWith('en') && /female|zira|samantha|karen|victoria|susan/i.test(v.name)
-          ) ||
-          voices.find((v) => v.lang.startsWith('en')) ||
-          voices[0];
-
-        if (preferred) utterance.voice = preferred;
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-
-        utterance.onend = () => {
-          if (speakingIdRef.current === msgId) {
-            stopSpeaking();
-          }
-        };
-        utterance.onerror = (e) => {
-          console.warn('Device speech synthesis failed:', e);
-          if (speakingIdRef.current === msgId) {
-            stopSpeaking();
-          }
-        };
-
-        window.speechSynthesis.speak(utterance);
-      } catch (e) {
-        console.warn('Device speech synthesis exception:', e);
-        stopSpeaking();
-      }
-    },
-    [stopSpeaking]
-  );
 
   const startSpeaking = useCallback(
     (msg) => {
@@ -552,89 +508,87 @@ export default function ChatBot({ fullPage = false }) {
       const cleanText = cleanTextForSpeech(msg.text);
       if (!cleanText) return;
 
-      const isWelcome = msg.id === 'welcome' || msg.text === WELCOME_MESSAGE.text;
+      const audio = new Audio();
+      audioPlayerRef.current = audio;
 
-      // 1. Welcome Message: play pre-rendered Kore audio from public assets
-      if (isWelcome) {
+      // 1. Instant Playback from In-Memory Cache (0ms latency!)
+      if (audioCacheRef.current.has(cleanText)) {
+        const cachedUrl = audioCacheRef.current.get(cleanText);
         speakingIdRef.current = msg.id;
         setSpeakingMessageId(msg.id);
 
-        try {
-          const audio = new Audio('/assets/audio/welcome.wav');
-          audioPlayerRef.current = audio;
-
-          audio.onended = () => {
+        audio.src = cachedUrl;
+        audio.currentTime = 0;
+        audio.onended = () => {
+          if (speakingIdRef.current === msg.id) {
+            stopSpeaking();
+          }
+        };
+        audio.onerror = (e) => {
+          console.warn('Error during cached Kore audio playback:', e);
+          if (speakingIdRef.current === msg.id) {
+            stopSpeaking();
+          }
+        };
+        const playPromise = audio.play();
+        if (playPromise && playPromise.catch) {
+          playPromise.catch((err) => {
+            console.warn('Audio play was prevented:', err);
             if (speakingIdRef.current === msg.id) {
               stopSpeaking();
             }
-          };
-
-          audio.onerror = (e) => {
-            console.warn('Failed to load welcome audio, falling back to device voice:', e);
-            if (speakingIdRef.current === msg.id) {
-              speakWithDeviceVoice(cleanText, msg.id);
-            }
-          };
-
-          const playPromise = audio.play();
-          if (playPromise && playPromise.catch) {
-            playPromise.catch((err) => {
-              console.warn('Audio play was prevented or failed:', err);
-              if (speakingIdRef.current === msg.id) {
-                speakWithDeviceVoice(cleanText, msg.id);
-              }
-            });
-          }
-          return;
-        } catch (err) {
-          console.warn('Error initializing audio for welcome message:', err);
-          speakWithDeviceVoice(cleanText, msg.id);
-          return;
+          });
         }
+        return;
       }
 
-      // 2. Chatbot response: request high-quality Kore voice audio from backend
+      // 2. Fresh generation via backend with primed Audio element
       setSpeechLoadingId(msg.id);
       speakingIdRef.current = msg.id;
+
+      audio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+      try {
+        const unlock = audio.play();
+        if (unlock && unlock.catch) {
+          unlock.catch(() => {});
+        }
+      } catch {}
 
       const abortCtrl = new AbortController();
       ttsAbortCtrlRef.current = abortCtrl;
 
       fetchChatTTS(cleanText, abortCtrl.signal)
         .then((audioUrl) => {
+          audioCacheRef.current.set(cleanText, audioUrl);
           setSpeechLoadingId(null);
           if (speakingIdRef.current !== msg.id) {
-            URL.revokeObjectURL(audioUrl);
             return;
           }
 
           setSpeakingMessageId(msg.id);
 
-          const audio = new Audio(audioUrl);
-          audioPlayerRef.current = audio;
+          audio.src = audioUrl;
+          audio.currentTime = 0;
 
           audio.onended = () => {
-            URL.revokeObjectURL(audioUrl);
             if (speakingIdRef.current === msg.id) {
               stopSpeaking();
             }
           };
 
           audio.onerror = (e) => {
-            URL.revokeObjectURL(audioUrl);
-            console.warn('Error during Kore audio playback, playing fallback voice:', e);
+            console.warn('Error during Kore audio playback:', e);
             if (speakingIdRef.current === msg.id) {
-              speakWithDeviceVoice(cleanText, msg.id);
+              stopSpeaking();
             }
           };
 
           const playPromise = audio.play();
           if (playPromise && playPromise.catch) {
             playPromise.catch((err) => {
-              URL.revokeObjectURL(audioUrl);
               console.warn('Audio play was prevented:', err);
               if (speakingIdRef.current === msg.id) {
-                speakWithDeviceVoice(cleanText, msg.id);
+                stopSpeaking();
               }
             });
           }
@@ -642,13 +596,11 @@ export default function ChatBot({ fullPage = false }) {
         .catch((err) => {
           setSpeechLoadingId(null);
           if (speakingIdRef.current !== msg.id) return;
-          console.warn('Kore TTS limit reached or unavailable, falling back to device voice:', err);
-
-          // Automatically speak with device voice so speech works!
-          speakWithDeviceVoice(cleanText, msg.id);
+          console.warn('Kore TTS synthesis error:', err);
+          stopSpeaking();
         });
     },
-    [stopSpeaking, speakWithDeviceVoice]
+    [stopSpeaking]
   );
 
   const handleToggleSpeak = useCallback(
@@ -661,22 +613,6 @@ export default function ChatBot({ fullPage = false }) {
     },
     [speakingMessageId, speechLoadingId, startSpeaking, stopSpeaking]
   );
-
-  // Chrome watchdog timer to keep long speech sessions alive
-  useEffect(() => {
-    if (!speakingMessageId) return;
-
-    const watchdog = setInterval(() => {
-      try {
-        if (window.speechSynthesis && window.speechSynthesis.speaking) {
-          window.speechSynthesis.pause();
-          window.speechSynthesis.resume();
-        }
-      } catch {}
-    }, 10000);
-
-    return () => clearInterval(watchdog);
-  }, [speakingMessageId]);
 
   // Stop speaking when chat panel closes
   useEffect(() => {
@@ -956,15 +892,26 @@ export default function ChatBot({ fullPage = false }) {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, botMsg]);
+        handlePrefetch(botMsg);
       } else {
-        const botErrMsg = {
+        // Fallback: If backend service is not reached (e.g. Netlify static hosting without backend proxy),
+        // answer directly using the client-side knowledge engine so the visitor gets an immediate answer!
+        const fallbackText = getResponse(trimmed);
+        const botMsg = {
           id: Date.now() + 1,
           role: 'bot',
-          isError: true,
-          text: result.error?.message || 'An error occurred. Please try again.',
+          text: fallbackText,
+          answer_type: 'answered',
+          suggestions: [
+            'What is EduCrop?',
+            'What are the key features?',
+            'Tell me about pricing plans',
+            'How do I contact support?',
+          ],
           timestamp: new Date(),
         };
-        setMessages((prev) => [...prev, botErrMsg]);
+        setMessages((prev) => [...prev, botMsg]);
+        handlePrefetch(botMsg);
       }
 
       setIsTyping(false);
@@ -973,7 +920,7 @@ export default function ChatBot({ fullPage = false }) {
         setUnread((n) => n + 1);
       }
     },
-    [isTyping, isOpen, isVoiceTranscript, stopSpeaking]
+    [isTyping, isOpen, isVoiceTranscript, stopSpeaking, handlePrefetch]
   );
 
   const handleSubmit = (e) => {
@@ -1021,6 +968,7 @@ export default function ChatBot({ fullPage = false }) {
             speakingMessageId={speakingMessageId}
             speechLoadingId={speechLoadingId}
             onToggleSpeak={handleToggleSpeak}
+            onPrefetch={handlePrefetch}
           />
           <ChatInput
             input={input}
@@ -1147,6 +1095,7 @@ export default function ChatBot({ fullPage = false }) {
           speakingMessageId={speakingMessageId}
           speechLoadingId={speechLoadingId}
           onToggleSpeak={handleToggleSpeak}
+          onPrefetch={handlePrefetch}
         />
         <ChatInput
           input={input}
@@ -1322,6 +1271,7 @@ function ChatMessages({
   speakingMessageId,
   speechLoadingId,
   onToggleSpeak,
+  onPrefetch,
 }) {
   return (
     <div className="chatbot-messages" role="log" aria-live="polite" aria-label="Chat messages">
@@ -1334,6 +1284,7 @@ function ChatMessages({
           isSpeaking={speakingMessageId === msg.id}
           isLoadingSpeech={speechLoadingId === msg.id}
           onToggleSpeak={() => onToggleSpeak && onToggleSpeak(msg)}
+          onPrefetch={() => onPrefetch && onPrefetch(msg)}
         />
       ))}
       {isTyping && <TypingDots />}

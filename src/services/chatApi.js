@@ -31,6 +31,8 @@ export function getSessionId() {
   }
 }
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+
 /**
  * Send POST /api/chat with timeout and robust error handling.
  *
@@ -49,7 +51,7 @@ export async function sendChatMessage({ message, inputMode = 'text' }) {
   const timeoutId = setTimeout(() => controller.abort(), 45000);
 
   try {
-    const response = await fetch('/api/chat', {
+    const response = await fetch(`${API_BASE}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -108,46 +110,69 @@ export async function sendChatMessage({ message, inputMode = 'text' }) {
   }
 }
 
+// In-flight request tracker to prevent duplicate concurrent network calls for the same text
+const inFlightTTSRequests = new Map();
+
 /**
  * Request speech audio (WAV blob URL) for chatbot response text using the Kore voice.
+ * Deduplicates in-flight requests so background prefetching and manual clicks share the same request.
  *
  * @param {string} text - Clean message text to speak
- * @param {AbortSignal} [signal] - Optional abort signal
+ * @param {AbortSignal} [externalSignal] - Optional abort signal
  * @returns {Promise<string>} Blob URL pointing to audio/wav
  */
 export async function fetchChatTTS(text, externalSignal) {
-  const controller = new AbortController();
-  // 15000ms timeout for cloud Kore TTS audio synthesis
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-  if (externalSignal) {
-    if (externalSignal.aborted) {
-      controller.abort();
-    } else {
-      externalSignal.addEventListener('abort', () => controller.abort(), { once: true });
-    }
+  const cleanKey = (text || '').trim();
+  if (!cleanKey) {
+    throw new Error('Empty text provided for TTS synthesis');
   }
 
-  try {
-    const response = await fetch('/api/chat/tts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ text }),
-      signal: controller.signal,
-    });
+  if (inFlightTTSRequests.has(cleanKey)) {
+    return inFlightTTSRequests.get(cleanKey);
+  }
 
-    clearTimeout(timeoutId);
+  const requestPromise = (async () => {
+    const controller = new AbortController();
+    // 25000ms timeout for cloud Kore TTS audio synthesis
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
 
-    if (!response.ok) {
-      throw new Error(`TTS synthesis failed with status ${response.status}`);
+    if (externalSignal) {
+      if (externalSignal.aborted) {
+        controller.abort();
+      } else {
+        externalSignal.addEventListener('abort', () => controller.abort(), { once: true });
+      }
     }
 
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
-  } catch (err) {
-    clearTimeout(timeoutId);
-    throw err;
+    try {
+      const response = await fetch(`${API_BASE}/api/tts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: cleanKey }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`TTS synthesis failed with status ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      return URL.createObjectURL(blob);
+    } catch (err) {
+      clearTimeout(timeoutId);
+      throw err;
+    }
+  })();
+
+  inFlightTTSRequests.set(cleanKey, requestPromise);
+  try {
+    return await requestPromise;
+  } finally {
+    inFlightTTSRequests.delete(cleanKey);
   }
 }
+
