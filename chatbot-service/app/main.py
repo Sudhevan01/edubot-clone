@@ -1,5 +1,6 @@
 """Main FastAPI application factory and entry point."""
 
+import asyncio
 import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -14,7 +15,7 @@ from app.api.health import router as health_router
 from app.config import get_settings
 from app.knowledge import load_knowledge
 from app.logging_config import logger, request_id_ctx
-from app.tts import clear_tts_cache, clear_tts_cache_if_config_changed, prewarm_tts_cache
+from app.tts import clear_tts_cache_if_config_changed, prewarm_tts_cache
 
 SERVICE_DIR = Path(__file__).resolve().parent.parent
 KNOWLEDGE_DIR = SERVICE_DIR / "knowledge"
@@ -33,10 +34,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         logger.error(f"Failed to load knowledge base at startup: {err}")
         raise err
 
-    # Clear and pre-warm TTS audio cache on startup
+    # Check TTS cache configuration and pre-warm in background without blocking server startup
     try:
-        clear_tts_cache(settings)
-        prewarm_tts_cache(settings)
+        clear_tts_cache_if_config_changed(settings)
+        asyncio.create_task(asyncio.to_thread(prewarm_tts_cache, settings))
     except Exception as err:
         logger.warning(f"Error checking TTS cache at startup: {err}")
 
