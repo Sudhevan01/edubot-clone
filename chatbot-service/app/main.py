@@ -33,9 +33,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         logger.error(f"Failed to load knowledge base at startup: {err}")
         raise err
 
-    # Clear and pre-warm TTS audio cache on startup
+    # Verify cache configuration and pre-warm TTS audio cache on startup
     try:
-        clear_tts_cache(settings)
+        clear_tts_cache_if_config_changed(settings)
         prewarm_tts_cache(settings)
     except Exception as err:
         logger.warning(f"Error checking TTS cache at startup: {err}")
