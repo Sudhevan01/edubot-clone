@@ -1,15 +1,47 @@
 """TTS voice synthesis and audio cache management module."""
 
 import hashlib
+import io
 import json
 from pathlib import Path
 from typing import Optional
+import wave
 
 from google import genai
 from google.genai import types
 
 from app.config import Settings, get_settings
 from app.logging_config import logger
+
+
+def pcm_to_wav(
+    pcm_data: bytes,
+    sample_rate: int = 24000,
+    num_channels: int = 1,
+    sampwidth: int = 2,
+) -> bytes:
+    """Wrap raw 16-bit PCM audio bytes in a standard RIFF/WAVE header.
+
+    If the data already has a RIFF, ID3, or MP3 header, it is returned as-is.
+    """
+    if not pcm_data:
+        return b""
+    if (
+        pcm_data.startswith(b"RIFF")
+        or pcm_data.startswith(b"ID3")
+        or pcm_data.startswith(b"\xff\xfb")
+        or pcm_data.startswith(b"\xff\xf3")
+        or pcm_data.startswith(b"\xff\xf2")
+    ):
+        return pcm_data
+
+    wav_io = io.BytesIO()
+    with wave.open(wav_io, "wb") as wav_file:
+        wav_file.setnchannels(num_channels)
+        wav_file.setsampwidth(sampwidth)
+        wav_file.setframerate(sample_rate)
+        wav_file.writeframes(pcm_data)
+    return wav_io.getvalue()
 
 
 def clear_tts_cache(settings: Optional[Settings] = None) -> int:
@@ -259,7 +291,15 @@ def synthesize_speech(
                 f"TTS audio cache hit for key {cache_key[:8]} "
                 f"(provider={provider}, model={configured_model}, voice={chosen_voice})"
             )
-            return c_file.read_bytes()
+            raw_data = c_file.read_bytes()
+            if c_file == cached_file_wav and not raw_data.startswith(b"RIFF"):
+                wav_data = pcm_to_wav(raw_data)
+                try:
+                    c_file.write_bytes(wav_data)
+                except Exception:
+                    pass
+                return wav_data
+            return raw_data
 
     cached_file = cached_file_wav
 
@@ -322,11 +362,19 @@ def synthesize_speech(
                 if hasattr(part, "inline_data") and part.inline_data:
                     audio_data = part.inline_data.data
                     if audio_data and len(audio_data) > 0:
-                        cached_file.write_bytes(audio_data)
+                        sample_rate = 24000
+                        mime = getattr(part.inline_data, "mime_type", "") or ""
+                        if "rate=" in mime:
+                            try:
+                                sample_rate = int(mime.split("rate=")[1].split(";")[0])
+                            except Exception:
+                                sample_rate = 24000
+                        wav_data = pcm_to_wav(audio_data, sample_rate=sample_rate)
+                        cached_file.write_bytes(wav_data)
                         logger.info(
-                            f"TTS audio generated & cached ({len(audio_data)} bytes, key={cache_key[:8]}, voice={chosen_voice})"
+                            f"TTS audio generated & cached ({len(wav_data)} bytes, key={cache_key[:8]}, voice={chosen_voice})"
                         )
-                        return audio_data
+                        return wav_data
         except Exception as exc:
             err_msg = str(exc)
             if "RESOURCE_EXHAUSTED" in err_msg or "429" in err_msg or "quota" in err_msg.lower():

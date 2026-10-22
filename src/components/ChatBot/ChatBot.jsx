@@ -482,6 +482,12 @@ export default function ChatBot({ fullPage = false }) {
   const stopSpeaking = useCallback(() => {
     setSpeechLoadingId(null);
 
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {}
+    }
+
     if (audioPlayerRef.current) {
       try {
         audioPlayerRef.current.pause();
@@ -500,6 +506,57 @@ export default function ChatBot({ fullPage = false }) {
     speakingIdRef.current = null;
     setSpeakingMessageId(null);
   }, []);
+
+  const speakWithDeviceVoice = useCallback(
+    (cleanText, msgId) => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) {
+        stopSpeaking();
+        return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        const voices = window.speechSynthesis.getVoices();
+        const preferred =
+          voices.find(
+            (v) => (v.lang === 'en-IN' || v.lang === 'en_IN') && /female|natural/i.test(v.name)
+          ) ||
+          voices.find((v) => v.lang === 'en-IN' || v.lang === 'en_IN') ||
+          voices.find(
+            (v) => v.lang.startsWith('en') && /female|zira|samantha|karen|victoria|susan/i.test(v.name)
+          ) ||
+          voices.find((v) => v.lang.startsWith('en')) ||
+          voices[0];
+
+        if (preferred) utterance.voice = preferred;
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+
+        speakingIdRef.current = msgId;
+        setSpeakingMessageId(msgId);
+
+        utterance.onend = () => {
+          if (speakingIdRef.current === msgId) {
+            stopSpeaking();
+          }
+        };
+        utterance.onerror = (e) => {
+          if (e.error !== 'interrupted' && e.error !== 'canceled') {
+            console.warn('Device speech synthesis failed:', e);
+          }
+          if (speakingIdRef.current === msgId) {
+            stopSpeaking();
+          }
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        console.warn('Device speech synthesis exception:', e);
+        stopSpeaking();
+      }
+    },
+    [stopSpeaking]
+  );
 
   const startSpeaking = useCallback(
     (msg) => {
@@ -525,17 +582,17 @@ export default function ChatBot({ fullPage = false }) {
           }
         };
         audio.onerror = (e) => {
-          console.warn('Error during cached Kore audio playback:', e);
+          console.warn('Error during cached Kore audio playback, falling back to device voice:', e);
           if (speakingIdRef.current === msg.id) {
-            stopSpeaking();
+            speakWithDeviceVoice(cleanText, msg.id);
           }
         };
         const playPromise = audio.play();
         if (playPromise && playPromise.catch) {
           playPromise.catch((err) => {
-            console.warn('Audio play was prevented:', err);
+            console.warn('Audio play was prevented, falling back to device voice:', err);
             if (speakingIdRef.current === msg.id) {
-              stopSpeaking();
+              speakWithDeviceVoice(cleanText, msg.id);
             }
           });
         }
@@ -569,6 +626,9 @@ export default function ChatBot({ fullPage = false }) {
 
           audio.src = audioUrl;
           audio.currentTime = 0;
+          try {
+            audio.load();
+          } catch {}
 
           audio.onended = () => {
             if (speakingIdRef.current === msg.id) {
@@ -577,18 +637,18 @@ export default function ChatBot({ fullPage = false }) {
           };
 
           audio.onerror = (e) => {
-            console.warn('Error during Kore audio playback:', e);
+            console.warn('Error during Kore audio playback, falling back to device voice:', e);
             if (speakingIdRef.current === msg.id) {
-              stopSpeaking();
+              speakWithDeviceVoice(cleanText, msg.id);
             }
           };
 
           const playPromise = audio.play();
           if (playPromise && playPromise.catch) {
             playPromise.catch((err) => {
-              console.warn('Audio play was prevented:', err);
+              console.warn('Audio play was prevented, falling back to device voice:', err);
               if (speakingIdRef.current === msg.id) {
-                stopSpeaking();
+                speakWithDeviceVoice(cleanText, msg.id);
               }
             });
           }
@@ -596,11 +656,11 @@ export default function ChatBot({ fullPage = false }) {
         .catch((err) => {
           setSpeechLoadingId(null);
           if (speakingIdRef.current !== msg.id) return;
-          console.warn('Kore TTS synthesis error:', err);
-          stopSpeaking();
+          console.warn('Kore TTS synthesis error, falling back to device voice:', err);
+          speakWithDeviceVoice(cleanText, msg.id);
         });
     },
-    [stopSpeaking]
+    [stopSpeaking, speakWithDeviceVoice]
   );
 
   const handleToggleSpeak = useCallback(
