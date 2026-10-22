@@ -57,10 +57,11 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # CORS configuration - restrict strictly to ALLOWED_ORIGINS
+    # CORS configuration - restrict strictly to ALLOWED_ORIGINS + Netlify preview domains
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.ALLOWED_ORIGINS,
+        allow_origin_regex=r"^https://.*\.netlify\.app$",
         allow_credentials=True,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
