@@ -18,16 +18,21 @@ if (fs.existsSync(DOTENV_PATH)) {
 }
 
 function parseAllowedOrigins(val) {
+  const defaults = [
+    'https://educrop.com',
+    'https://www.educrop.com',
+    'https://educrop.netlify.app',
+    'http://localhost:5174',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+    'http://localhost:8001',
+    'http://127.0.0.1:8001',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+  ];
   if (!val) {
-    return [
-      'https://educrop.com',
-      'https://www.educrop.com',
-      'https://educrop.netlify.app',
-      'http://localhost:5174',
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://127.0.0.1:5174',
-    ];
+    return defaults;
   }
   if (Array.isArray(val)) return val;
   if (typeof val === 'string') {
@@ -44,7 +49,7 @@ function parseAllowedOrigins(val) {
     }
     return trimmed.split(',').map((item) => item.trim()).filter(Boolean);
   }
-  return [];
+  return defaults;
 }
 
 function parseBoolean(val, defaultVal = false) {

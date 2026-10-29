@@ -2,6 +2,8 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import fastifySwagger from '@fastify/swagger';
+import fastifySwaggerUi from '@fastify/swagger-ui';
 import getConfig, { SERVICE_ROOT } from './config.js';
 import { loadKnowledge } from './knowledge.js';
 import { clearTtsConfigIfChanged, prewarmTtsCache } from './tts.js';
@@ -14,9 +16,13 @@ export async function buildApp() {
   const cfg = getConfig();
 
   const fastify = Fastify({
+    ajv: {
+      customOptions: {
+        strict: false,
+      },
+    },
     logger: {
       level: 'info',
-      // Pino logs JSON to stdout by default
       serializers: {
         req(req) {
           return {
@@ -35,13 +41,54 @@ export async function buildApp() {
     trustProxy: cfg.TRUST_PROXY,
   });
 
-  // CORS configuration strictly matching Python ALLOWED_ORIGINS + Netlify preview regex
+  // Swagger and OpenAPI documentation
+  await fastify.register(fastifySwagger, {
+    openapi: {
+      info: {
+        title: 'Landing Page Chatbot Backend',
+        description: 'Fastify service serving landing page visitor chatbot.',
+        version: '0.1.0',
+      },
+      tags: [
+        { name: 'Health', description: 'Service health check endpoints' },
+        { name: 'Chat', description: 'Chatbot message processing endpoints' },
+        { name: 'TTS', description: 'Speech synthesis and audio caching endpoints' },
+        { name: 'Cost & Token Tracker', description: 'Real-time token metrics and spend cap tracking' },
+      ],
+    },
+  });
+
+  await fastify.register(fastifySwaggerUi, {
+    routePrefix: '/docs',
+    uiConfig: {
+      docExpansion: 'list',
+      deepLinking: false,
+    },
+  });
+
+  // CORS configuration strictly matching Python ALLOWED_ORIGINS + Netlify preview regex + Swagger UI local origin
   await fastify.register(cors, {
     origin: (origin, cb) => {
       if (!origin) return cb(null, true);
-      if (cfg.ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
-      if (/^https:\/\/.*\.netlify\.app$/.test(origin)) return cb(null, true);
-      return cb(new Error('Not allowed by CORS'), false);
+      const port = cfg.PORT || 8001;
+      const isLocalhost =
+        origin.startsWith('http://localhost') ||
+        origin.startsWith('http://127.0.0.1') ||
+        origin.startsWith('http://[::1]') ||
+        origin.includes(`:${port}`) ||
+        (cfg.APP_ENV === 'development' && (
+          origin.startsWith('http://192.168.') ||
+          origin.startsWith('http://10.') ||
+          origin.startsWith('http://172.')
+        ));
+      if (
+        isLocalhost ||
+        cfg.ALLOWED_ORIGINS.includes(origin) ||
+        /^https:\/\/.*\.netlify\.app$/.test(origin)
+      ) {
+        return cb(null, true);
+      }
+      return cb(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'OPTIONS'],
@@ -117,7 +164,19 @@ export async function buildApp() {
   await fastify.register(ttsRoutes);
 
   // Live Cost & Token Tracker endpoint matching Python /api/cost
-  fastify.get('/api/cost', async (request, reply) => {
+  fastify.get('/api/cost', {
+    schema: {
+      description: 'Returns real-time live metrics on tokens consumed (total, input, output), daily expenditure vs budget cap, remaining pending budget, and session-specific token usage.',
+      tags: ['Cost & Token Tracker'],
+      summary: 'Live Cost & Token Tracker',
+      querystring: {
+        type: 'object',
+        properties: {
+          session_id: { type: 'string', description: 'Optional session UUID' },
+        },
+      },
+    },
+  }, async (request, reply) => {
     const sessionId = request.query?.session_id || null;
     const metrics = await defaultCostTracker.getMetrics(sessionId, cfg);
     return metrics;
@@ -155,6 +214,7 @@ export async function startServer() {
   try {
     await fastify.listen({ port, host });
     fastify.log.info(`Server listening on ${host}:${port}`);
+    fastify.log.info(`Swagger UI available at http://localhost:${port}/docs`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

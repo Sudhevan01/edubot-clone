@@ -7,6 +7,32 @@ const ttsRequestSchema = z.object({
   voice: z.string().optional().nullable(),
 });
 
+const ttsOpenApiSchema = {
+  tags: ['TTS'],
+  summary: 'Generate speech audio for message using configured voice',
+  description: 'Synthesize speech audio using configured Google Gemini TTS voice with caching.',
+  body: {
+    type: 'object',
+    required: ['text'],
+    properties: {
+      text: {
+        type: 'string',
+        minLength: 1,
+        maxLength: 1500,
+        description: 'Text to convert to speech',
+        default: 'EduCrop is an all-in-one educational platform.',
+        example: 'EduCrop is an all-in-one educational platform.',
+      },
+      voice: {
+        type: 'string',
+        description: 'Optional voice override (defaults to configured Kore voice)',
+        default: 'Kore',
+        example: 'Kore',
+      },
+    },
+  },
+};
+
 export default async function ttsRoutes(fastify) {
   const handleTts = async (request, reply) => {
     const cfg = getConfig();
@@ -95,6 +121,6 @@ export default async function ttsRoutes(fastify) {
     }
   };
 
-  fastify.post('/api/tts', handleTts);
-  fastify.post('/api/chat/tts', handleTts);
+  fastify.post('/api/tts', { schema: ttsOpenApiSchema }, handleTts);
+  fastify.post('/api/chat/tts', { schema: ttsOpenApiSchema }, handleTts);
 }
